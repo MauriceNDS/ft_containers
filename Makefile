@@ -4,9 +4,10 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 INCLUDES = -I./header
 
-HEADER =	header/stack.hpp
+HEADER =	header/vector.hpp				\
+			header/iterator.hpp
 
-SRCS =		src/stack.cpp
+SRCS =		src/main.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 
