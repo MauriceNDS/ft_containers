@@ -2,6 +2,8 @@
 #define VECTOR_HPP
 
 #include <memory>
+#include "iterator.hpp"
+#include "utility.hpp"
 
 namespace ft {
 
@@ -10,302 +12,173 @@ namespace ft {
 
 		private:
 
-			class Iterator 
-			{
+			T*								_arr;
+			size_type						_capacity;
+			size_type						_size;
+			allocator_type					_allocator;
 
-				private:
+			/************************************* Utility *******************************************/
 
-					pointer _ptr;
+			void reallocate( size_type n, value_type val = value_type() ) {
+				T* new_arr = _allocator.allocate( n );
+				for ( size_type i = 0; i < n; i++ ) {
+					if ( i < _size )
+						_allocator.construct( new_arr[i], _arr[i] );
+					else
+						_allocator.construct( new_arr[i], val );
+				}
+				deallocate();
+				_arr = new_arr;
+				_size = n;
+				_capacity = n;
+			}
 
-				public:
+			void destruct( size_type n = _size ) {
+				for ( size_type i = 0; i < n; i++ )
+					_allocator.destruct( _arr[i] );
+			}
 
-					using iterator_category = std::random_access_iterator_tag;
-					using difference_type   = std::ptrdiff_t;
-					using value_type        = T;
-					using pointer           = value_type*;
-					using reference         = value_type&;
+			void deallocate( void ) {
+				destruct();
+				_allocator.deallocate( _arr, _capacity );
+			}
 
-					/************************* Constructors and Destructor ***************************/
-
-					Iterator( void ) {}
-					Iterator( pointer ptr ) : _ptr( ptr ) {}
-					Iterator( Iterator const & cpy ) { 
-						*this = cpy;
-					}
-					~Iterator( void ) {}
-
-					/************************* Implement operators ***********************************/
-
-					Iterator& operator=( Iterator const & rhs ) {
-						this->_ptr = rhs._ptr;
-						return *this;
-					}
-					reference operator*( void ) const {
-						return *_ptr;
-					}
-					pointer operator->( void ) {
-						return _ptr;
-					}
-					Iterator& operator++( void ) {
-						_ptr++;
-						return *this;
-					}
-					Iterator operator++( int ) {
-						Iterator tmp = *this;
-						++( *this );
-						return tmp;
-					}
-					Iterator& operator--( void ) {
-						_ptr--;
-						return *this;
-					}
-					Iterator operator--( int ) {
-						Iterator tmp = *this;
-						--( *this );
-						return tmp;
-					}
-					Iterator operator+( difference_type n ) const {
-						return this->_ptr + n;
-					}
-					Iterator operator-( difference_type n ) const {
-						return this->_ptr - n;
-					}
-					Iterator& operator+=( difference_type n ) {
-						return this->_ptr += n;
-					}
-					Iterator& operator-=( difference_type n ) {
-						return this->_ptr -= n;
-					}
-					Iterator& operator[]( size_t index ) const {
-						return this->_ptr + index;
-					}
-
-			};
-
-			class ConstantIterator 
-			{
-
-				private:
-
-					pointer _ptr;
-
-				public:
-
-					using iterator_category = std::random_access_iterator_tag;
-					using difference_type   = std::ptrdiff_t;
-					using value_type        = T;
-					using pointer           = value_type*;
-					using reference         = value_type&;
-
-					/************************* Constructors and Destructor ***************************/
-
-					ConstantIterator( void ) {}
-					ConstantIterator( pointer ptr ) : _ptr( ptr ) {}
-					ConstantIterator( ConstantIterator const & cpy ) { 
-						*this = cpy;
-					}
-					~ConstantIterator( void ) {}
-
-					/************************* Implement operators ***********************************/
-
-					ConstantIterator& operator=( ConstantIterator const & rhs ) {
-						this->_ptr = rhs._ptr;
-						return *this;
-					}
-					const reference operator*( void ) const {
-						return *_ptr;
-					}
-					pointer operator->( void ) {
-						return _ptr;
-					}
-					ConstantIterator& operator++( void ) {
-						_ptr++;
-						return *this;
-					}
-					ConstantIterator operator++( int ) {
-						ConstantIterator tmp = *this;
-						++( *this );
-						return tmp;
-					}
-					ConstantIterator& operator--( void ) {
-						_ptr--;
-						return *this;
-					}
-					ConstantIterator operator--( int ) {
-						ConstantIterator tmp = *this;
-						--( *this );
-						return tmp;
-					}
-					ConstantIterator operator+( difference_type n ) const {
-						return this->_ptr + n;
-					}
-					ConstantIterator operator-( difference_type n ) const {
-						return this->_ptr - n;
-					}
-					ConstantIterator& operator+=( difference_type n ) {
-						return this->_ptr += n;
-					}
-					ConstantIterator& operator-=( difference_type n ) {
-						return this->_ptr -= n;
-					}
-					ConstantIterator& operator[]( size_t index ) const {
-						return this->_ptr + index;
-					}
-
-			};
-
-			template <class Iterator>
-			class ReverseIterator {
-
-				private:
-
-					Iterator _iter;
-
-				public:
-
-					using iterator_type		= Iterator;
-					using iterator_category = Iterator::iterator_category;
-					using difference_type   = std::ptrdiff_t;
-					using value_type        = Iterator::value_type;
-					using pointer           = Iterator::pointer;
-					using reference         = Iterator::reference;
-
-					/************************* Constructors and Destructor ***************************/
-
-					ReverseIterator( void ) {}
-					explicit ReverseIterator( iterator_type it ) : _iter( it ) {}
-					template <class Iter>
-					ReverseIterator( ReverseIterator<Iter> const & cpy ) { 
-						this->_iter = cpy._iter;
-					}
-					~ReverseIterator( void ) {}
-
-					/************************* Member Functions **************************************/
-
-					iterator_type base( void ) const {
-						return _iter;
-					}
-
-					/************************* Implement operators ***********************************/
-
-					ReverseIterator& operator=( ReverseIterator const & rhs ) {
-						this->_iter = rhs._iter;
-						return *this;
-					}
-					reference operator*( void ) const {
-						return *_iter;
-					}
-					pointer operator->( void ) {
-						return &( *_iter );
-					}
-					ReverseIterator& operator++( void ) {
-						_iter--;
-						return *this;
-					}
-					ReverseIterator operator++( int ) {
-						ReverseIterator tmp = *this;
-						--( *this );
-						return tmp;
-					}
-					ReverseIterator& operator--( void ) {
-						_iter++;
-						return *this;
-					}
-					ReverseIterator operator--( int ) {
-						ReverseIterator tmp = *this;
-						++( *this );
-						return tmp;
-					}
-					ReverseIterator operator+( difference_type n ) const {
-						return this->_iter - n;
-					}
-					ReverseIterator operator-( difference_type n ) const {
-						return this->_iter + n;
-					}
-					ReverseIterator& operator+=( difference_type n ) {
-						return this->_iter += n;
-					}
-					ReverseIterator& operator-=( difference_type n ) {
-						return this->_iter -= n;
-					}
-					ReverseIterator& operator[]( size_t index ) const {
-						return this->_iter - index;
-					}
-			};
-		
 		public:
 
-			/************************* Non member function operators *********************************/
+			/************************************* Typedefs ******************************************/
 
-			bool Iterator::operator== ( Iterator const & lhs, Iterator const & rhs ) {
-				return lhs._ptr == rhs._ptr;
-			}
-			bool Iterator::operator!= ( Iterator const & lhs, Iterator const & rhs ) {
-				return lhs._ptr != rhs._ptr;
-			}
-			bool Iterator::operator<( Iterator const & lhs, Iterator const & rhs ) {
-				return lhs._ptr < rhs._ptr;
-			}
-			bool Iterator::operator>( Iterator const & lhs, Iterator const & rhs ) {
-				return lhs._ptr > rhs._ptr;
-			}
-			bool Iterator::operator<=( Iterator const & lhs, Iterator const & rhs ) {
-				return lhs._ptr <= rhs._ptr;
-			}
-			bool Iterator::operator>=( Iterator const & lhs, Iterator const & rhs ) {
-				return lhs._ptr >= rhs._ptr;
-			}
+			using value_type				= T;
+			using allocator_type			= Alloc;
+			using reference					= allocator_type::reference;
+			using const_reference			= allocator_type::const_reference;
+			using pointer					= allocator_type::pointer;
+			using const_pointer				= allocator_type::const_pointer;
+			using iterator					= Iterator<T>;
+			using const_iterator			= ConstantIterator<T>;
+			using reverse_iterator			= ReverseIterator<T>;
+			using const_reverse_iterator	= ConstantReverseIterator<T>;
+			using difference_type			= iterator_traits<iterator>::difference_type;
+			using size_type					= size_t;
 
-			bool ConstantIterator::operator== ( ConstantIterator const & lhs, ConstantIterator const & rhs ) {
-				return lhs._ptr == rhs._ptr;
-			}
-			bool ConstantIterator::operator!= ( ConstantIterator const & lhs, ConstantIterator const & rhs ) {
-				return lhs._ptr != rhs._ptr;
-			}
-			bool ConstantIterator::operator<( ConstantIterator const & lhs, ConstantIterator const & rhs ) {
-				return lhs._ptr < rhs._ptr;
-			}
-			bool ConstantIterator::operator>( ConstantIterator const & lhs, ConstantIterator const & rhs ) {
-				return lhs._ptr > rhs._ptr;
-			}
-			bool ConstantIterator::operator<=( ConstantIterator const & lhs, ConstantIterator const & rhs ) {
-				return lhs._ptr <= rhs._ptr;
-			}
-			bool ConstantIterator::operator>=( ConstantIterator const & lhs, ConstantIterator const & rhs ) {
-				return lhs._ptr >= rhs._ptr;
+
+			/************************************* Constructors **************************************/
+
+			explicit vector( const allocator_type& alloc = allocator_type() ) {
+				_arr = NULL;
+				_capacity = 0;
+				_size = 0;
+				_allocator = alloc;
 			}
 
-			template <class Iterator>
-			bool ReverseIterator<Iterator>::operator==( ReverseIterator<Iterator> const & lhs, ReverseIterator<Iterator> const & rhs ) {
-				return lhs._iter == rhs._iter;
+			explicit vector( size_type n, const value_type& val = value_type(),
+                const allocator_type& alloc = allocator_type() ) {
+				_capacity = n;
+				_size = n;
+				_allocator = alloc;
+				_arr = _allocator.allocate( _capacity );
+				_allocator.construct( _arr, val );
 			}
-			template <class Iterator>
-			bool ReverseIterator<Iterator>::operator!=( ReverseIterator<Iterator> const & lhs, ReverseIterator<Iterator> const & rhs ) {
-				return lhs._iter != rhs._iter;
+
+			template <class InputIterator>
+        	vector( InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type() ) {
+				size_type i = 0;
+
+				_capacity = vector_do_distance( first, last );
+				_size = _capacity;
+				_allocator = alloc;
+				_arr = _allocator.allocate( _capacity );
+				while ( first != last )
+					_allocator.construct( _arr[i++], *first++ );
 			}
-			template <class Iterator>
-			bool ReverseIterator<Iterator>::operator<( ReverseIterator<Iterator> const & lhs, ReverseIterator<Iterator> const & rhs ) {
-				return lhs._iter > rhs._iter;
+
+			vector( const vector& x ) {
+				_capacity = x._capacity;
+				_size = x._size;
+				_allocator = x.allocator_type()
+				_arr = _allocator.alloc( _capacity );
+				for ( size_type i = 0; i < _size; i++ )
+					_allocator.construct( _arr[i], x._arr[i] );
 			}
-			template <class Iterator>
-			bool ReverseIterator<Iterator>::operator<=( ReverseIterator<Iterator> const & lhs, ReverseIterator<Iterator> const & rhs ) {
-				return lhs._iter >= rhs._iter;
+
+			/************************************* Destructor ****************************************/
+
+			~vector( void ) {
+				deallocate();
 			}
-			template <class Iterator>
-			bool ReverseIterator<Iterator>::operator>( ReverseIterator<Iterator> const & lhs, ReverseIterator<Iterator> const & rhs ) {
-				return lhs._iter < rhs._iter;
+
+			/************************************* Operator = ****************************************/
+			
+			vector& operator=( const vector& x ) {
+				if ( _capacity < x._capacity ) {
+					deallocate();
+					_size = x._size
+					_capacity = x._capacity;
+					_arr = _allocator.allocate( _capacity );
+					for ( size_type i = 0; i < _size; i++ )
+						_allocator.construct( _arr[i], x._arr[i] );
+				}
+				else {
+					destruct();
+					_size = x._size;
+					for ( size_type i = 0; i < _size; i++ )
+						_allocator.construct( _arr[i], x._arr[i] );
+				}
+				return *this;
 			}
-			template <class Iterator>
-			bool ReverseIterator<Iterator>::operator>=( ReverseIterator<Iterator> const & lhs, ReverseIterator<Iterator> const & rhs ) {
-				return lhs._iter <= rhs._iter;
+
+			/************************************* Iterators *****************************************/
+
+			iterator begin( void ) {
+				return iterator( _arr );
 			}
-			template <class Iterator>
-			ReverseIterator<Iterator> ReverseIterator<Iterator>::operator+( typename ReverseIterator<Iterator>::difference_type n, ReverseIterator<Iterator> const & rev_it ) {
-				return rev_it - n;
+
+			const_iterator begin( void ) const {
+				return const_iterator( _arr );
 			}
-			template <class Iterator>
-			typename ReverseIterator<Iterator>::difference_type ReverseIterator<Iterator>::operator- ( ReverseIterator<Iterator> const & lhs, ReverseIterator<Iterator> const & rhs ) {
-				return rhs.base() - lhs.base();
+
+			iterator end( void ) {
+				return iterator( _arr + _size );
+			}
+
+			const_iterator end( void ) const {
+				return const_iterator( _arr + _size );
+			}
+
+			reverse_iterator rbegin( void ) {
+				return reverse_iterator( _arr + _size - 1);
+			}
+
+			const_reverse_iterator rbegin( void ) const {
+				return const_reverse_iterator( _arr + _size - 1 );
+			}
+
+			reverse_iterator rend( void ) {
+				return reverse_iterator( _arr - 1);
+			}
+
+			const_reverse_iterator rend( void ) const {
+				return const_reverse_iterator( _arr - 1 );
+			}
+
+			/************************************* Capacity ******************************************/
+
+			size_type size( void ) const {
+				return _size;
+			}
+
+			size_type max_size( void ) const {
+				return _allocator.max_size();
+			}
+
+			void resize( size_type n, value_type val = value_type() ) {
+				if ( n < _size )
+					for ( size_type i = n; i < _size; i++ )
+						_allocator.destruct( _arr[i] );
+				else if ( n > _capacity )
+					reallocate( n, val );
+				else
+					for ( size_type i = _size; i < n; i++ )
+						_allocator.construct( _arr[i], val );
 			}
 
 	};

@@ -4,8 +4,9 @@ CFLAGS = -Wall -Wextra -Werror -std=c++98
 
 INCLUDES = -I./header
 
-HEADER =	header/vector.hpp				\
-			header/iterator.hpp
+HEADER =	header/iterator.hpp				\
+			header/utility.hpp				\
+			header/vector.hpp		
 
 SRCS =		src/main.cpp
 
