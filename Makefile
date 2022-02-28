@@ -6,7 +6,8 @@ INCLUDES = -I./header
 
 HEADER =	header/iterator.hpp				\
 			header/utility.hpp				\
-			header/vector.hpp		
+			header/type_traits.hpp			\
+			header/vector.hpp
 
 SRCS =		src/main.cpp
 

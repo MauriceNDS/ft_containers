@@ -10,72 +10,72 @@ namespace ft {
 	class Iterator 
 	{
 
+		public:
+
+			typedef std::random_access_iterator_tag		iterator_category;
+			typedef std::ptrdiff_t						difference_type;
+			typedef T									value_type;
+			typedef value_type*							pointer;
+			typedef value_type&							reference;
+
+			/************************* Constructors and Destructor ***************************/
+
+			Iterator( void ) {}
+			Iterator( pointer ptr ) : _ptr( ptr ) {}
+			Iterator( Iterator const & cpy ) { 
+				*this = cpy;
+			}
+			~Iterator( void ) {}
+
+			/************************* Implement operators ***********************************/
+
+			Iterator& operator=( Iterator const & rhs ) {
+				this->_ptr = rhs._ptr;
+				return *this;
+			}
+			reference operator*( void ) const {
+				return *_ptr;
+			}
+			pointer operator->( void ) {
+				return _ptr;
+			}
+			Iterator& operator++( void ) {
+				_ptr++;
+				return *this;
+			}
+			Iterator operator++( int ) {
+				Iterator tmp = *this;
+				++( *this );
+				return tmp;
+			}
+			Iterator& operator--( void ) {
+				_ptr--;
+				return *this;
+			}
+			Iterator operator--( int ) {
+				Iterator tmp = *this;
+				--( *this );
+				return tmp;
+			}
+			Iterator operator+( difference_type n ) const {
+				return this->_ptr + n;
+			}
+			Iterator operator-( difference_type n ) const {
+				return this->_ptr - n;
+			}
+			Iterator& operator+=( difference_type n ) {
+				return this->_ptr += n;
+			}
+			Iterator& operator-=( difference_type n ) {
+				return this->_ptr -= n;
+			}
+			Iterator& operator[]( size_t index ) const {
+				return this->_ptr + index;
+			}
+
 		private:
 
 			pointer _ptr;
-
-		public:
-
-			using iterator_category = std::random_access_iterator_tag;
-			using difference_type   = std::ptrdiff_t;
-			using value_type        = T;
-			using pointer           = value_type*;
-			using reference         = value_type&;
-
-		/************************* Constructors and Destructor ***************************/
-
-		Iterator( void ) {}
-		Iterator( pointer ptr ) : _ptr( ptr ) {}
-		Iterator( Iterator const & cpy ) { 
-			*this = cpy;
-		}
-		~Iterator( void ) {}
-
-		/************************* Implement operators ***********************************/
-
-		Iterator& operator=( Iterator const & rhs ) {
-			this->_ptr = rhs._ptr;
-			return *this;
-		}
-		reference operator*( void ) const {
-			return *_ptr;
-		}
-		pointer operator->( void ) {
-			return _ptr;
-		}
-		Iterator& operator++( void ) {
-			_ptr++;
-			return *this;
-		}
-		Iterator operator++( int ) {
-			Iterator tmp = *this;
-			++( *this );
-			return tmp;
-		}
-		Iterator& operator--( void ) {
-			_ptr--;
-			return *this;
-		}
-		Iterator operator--( int ) {
-			Iterator tmp = *this;
-			--( *this );
-			return tmp;
-		}
-		Iterator operator+( difference_type n ) const {
-			return this->_ptr + n;
-		}
-		Iterator operator-( difference_type n ) const {
-			return this->_ptr - n;
-		}
-		Iterator& operator+=( difference_type n ) {
-			return this->_ptr += n;
-		}
-		Iterator& operator-=( difference_type n ) {
-			return this->_ptr -= n;
-		}
-		Iterator& operator[]( size_t index ) const {
-			return this->_ptr + index;
-		}
 
 	};
 
@@ -83,17 +83,13 @@ namespace ft {
 	class ConstantIterator 
 	{
 
-		private:
-
-			pointer _ptr;
-
 		public:
 
-			using iterator_category = std::random_access_iterator_tag;
-			using difference_type   = std::ptrdiff_t;
-			using value_type        = T;
-			using pointer           = value_type*;
-			using reference         = value_type&;
+			typedef std::random_access_iterator_tag		iterator_category;
+			typedef std::ptrdiff_t						difference_type;
+			typedef T									value_type;
+			typedef value_type*							pointer;
+			typedef value_type&							reference;
 
 			/************************* Constructors and Destructor ***************************/
 
@@ -110,7 +106,7 @@ namespace ft {
 				this->_ptr = rhs._ptr;
 				return *this;
 			}
-			const reference operator*( void ) const {
+			value_type const & operator*( void ) const {
 				return *_ptr;
 			}
 			pointer operator->( void ) {
@@ -150,6 +146,10 @@ namespace ft {
 				return this->_ptr + index;
 			}
 
+		private:
+
+			pointer _ptr;
+
 	};
 
 	template <class Iter>
@@ -161,19 +161,19 @@ namespace ft {
 
 		public:
 
-			using iterator_type		= Iter;
-			using iterator_category = Iter::iterator_category;
-			using difference_type   = std::ptrdiff_t;
-			using value_type        = Iter::value_type;
-			using pointer           = Iter::pointer;
-			using reference         = Iter::reference;
+			typedef Iter								iterator_type;
+			typedef typename Iter::iterator_category	iterator_category;
+			typedef std::ptrdiff_t						difference_type;
+			typedef typename Iter::value_type			value_type;
+			typedef typename Iter::pointer				pointer;
+			typedef typename Iter::reference			reference;
 
 			/************************* Constructors and Destructor ***************************/
 
 			ReverseIterator( void ) {}
 			explicit ReverseIterator( iterator_type it ) : _iter( it ) {}
-			template <class Iter>
-			ReverseIterator( ReverseIterator<Iter> const & cpy ) { 
+			template <class It>
+			ReverseIterator( ReverseIterator<It> const & cpy ) { 
 				this->_iter = cpy._iter;
 			}
 			~ReverseIterator( void ) {}
@@ -240,19 +240,19 @@ namespace ft {
 
 		public:
 
-			using iterator_type		= ConstIter;
-			using iterator_category = ConstIter::iterator_category;
-			using difference_type   = std::ptrdiff_t;
-			using value_type        = ConstIter::value_type;
-			using pointer           = ConstIter::pointer;
-			using reference         = ConstIter::reference;
+			typedef ConstIter									iterator_type;
+			typedef typename ConstIter::iterator_category		iterator_category;
+			typedef std::ptrdiff_t								difference_type;
+			typedef typename ConstIter::value_type				value_type;
+			typedef typename ConstIter::pointer					pointer;
+			typedef typename ConstIter::reference				reference;
 
 			/************************* Constructors and Destructor ***************************/
 
 			ConstantReverseIterator( void ) {}
 			explicit ConstantReverseIterator( iterator_type it ) : _iter( it ) {}
-			template <class ConstIter>
-			ConstantReverseIterator( ConstantReverseIterator<ConstIter> const & cpy ) { 
+			template <class ConstIt>
+			ConstantReverseIterator( ConstantReverseIterator<ConstIt> const & cpy ) { 
 				this->_iter = cpy._iter;
 			}
 			~ConstantReverseIterator( void ) {}
@@ -314,27 +314,27 @@ namespace ft {
 
 	template <class T>
 	bool operator== ( Iterator<T> const & lhs, Iterator<T> const & rhs ) {
-		return lhs._ptr == rhs._ptr;
+		return *lhs == *rhs;
 	}
 	template <class T>
 	bool operator!= ( Iterator<T> const & lhs, Iterator<T> const & rhs ) {
-		return lhs._ptr != rhs._ptr;
+		return *lhs != *rhs;
 	}
 	template <class T>
 	bool operator<( Iterator<T> const & lhs, Iterator<T> const & rhs ) {
-		return lhs._ptr < rhs._ptr;
+		return *lhs < *rhs;
 	}
 	template <class T>
 	bool operator>( Iterator<T> const & lhs, Iterator<T> const & rhs ) {
-		return lhs._ptr > rhs._ptr;
+		return *lhs > *rhs;
 	}
 	template <class T>
 	bool operator<=( Iterator<T> const & lhs, Iterator<T> const & rhs ) {
-		return lhs._ptr <= rhs._ptr;
+		return *lhs <= *rhs;
 	}
 	template <class T>
 	bool operator>=( Iterator<T> const & lhs, Iterator<T> const & rhs ) {
-		return lhs._ptr >= rhs._ptr;
+		return *lhs >= *rhs;
 	}
 	template <class T>
 	Iterator<T> operator+( typename Iterator<T>::difference_type n, Iterator<T> const & rev_it ) {
@@ -348,27 +348,27 @@ namespace ft {
 
 	template <class T>
 	bool operator== ( ConstantIterator<T> const & lhs, ConstantIterator<T> const & rhs ) {
-		return lhs._ptr == rhs._ptr;
+		return *lhs == *rhs;
 	}
 	template <class T>
 	bool operator!= ( ConstantIterator<T> const & lhs, ConstantIterator<T> const & rhs ) {
-		return lhs._ptr != rhs._ptr;
+		return *lhs != *rhs;
 	}
 	template <class T>
 	bool operator<( ConstantIterator<T> const & lhs, ConstantIterator<T> const & rhs ) {
-		return lhs._ptr < rhs._ptr;
+		return *lhs < *rhs;
 	}
 	template <class T>
 	bool operator>( ConstantIterator<T> const & lhs, ConstantIterator<T> const & rhs ) {
-		return lhs._ptr > rhs._ptr;
+		return *lhs > *rhs;
 	}
 	template <class T>
 	bool operator<=( ConstantIterator<T> const & lhs, ConstantIterator<T> const & rhs ) {
-		return lhs._ptr <= rhs._ptr;
+		return *lhs <= *rhs;
 	}
 	template <class T>
 	bool operator>=( ConstantIterator<T> const & lhs, ConstantIterator<T> const & rhs ) {
-		return lhs._ptr >= rhs._ptr;
+		return *lhs >= *rhs;
 	}
 	template <class T>
 	ConstantIterator<T> operator+( typename ConstantIterator<T>::difference_type n, ConstantIterator<T> const & rev_it ) {
@@ -382,27 +382,27 @@ namespace ft {
 
 	template <class Iter>
 	bool operator==( ReverseIterator<Iter> const & lhs, ReverseIterator<Iter> const & rhs ) {
-		return lhs._iter == rhs._iter;
+		return *lhs == *rhs;
 	}
 	template <class Iter>
 	bool operator!=( ReverseIterator<Iter> const & lhs, ReverseIterator<Iter> const & rhs ) {
-		return lhs._iter != rhs._iter;
+		return *lhs != *rhs;
 	}
 	template <class Iter>
 	bool operator<( ReverseIterator<Iter> const & lhs, ReverseIterator<Iter> const & rhs ) {
-		return lhs._iter > rhs._iter;
+		return *lhs > *rhs;
 	}
 	template <class Iter>
 	bool operator<=( ReverseIterator<Iter> const & lhs, ReverseIterator<Iter> const & rhs ) {
-		return lhs._iter >= rhs._iter;
+		return *lhs >= *rhs;
 	}
 	template <class Iter>
 	bool operator>( ReverseIterator<Iter> const & lhs, ReverseIterator<Iter> const & rhs ) {
-		return lhs._iter < rhs._iter;
+		return *lhs < *rhs;
 	}
 	template <class Iter>
 	bool operator>=( ReverseIterator<Iter> const & lhs, ReverseIterator<Iter> const & rhs ) {
-		return lhs._iter <= rhs._iter;
+		return *lhs <= *rhs;
 	}
 	template <class Iter>
 	ReverseIterator<Iter> operator+( typename ReverseIterator<Iter>::difference_type n, ReverseIterator<Iter> const & rev_it ) {
@@ -416,27 +416,27 @@ namespace ft {
 
 	template <class ConstIter>
 	bool operator==( ConstantReverseIterator<ConstIter> const & lhs, ConstantReverseIterator<ConstIter> const & rhs ) {
-		return lhs._iter == rhs._iter;
+		return *lhs == *rhs;
 	}
 	template <class ConstIter>
 	bool operator!=( ConstantReverseIterator<ConstIter> const & lhs, ConstantReverseIterator<ConstIter> const & rhs ) {
-		return lhs._iter != rhs._iter;
+		return *lhs != *rhs;
 	}
 	template <class ConstIter>
 	bool operator<( ConstantReverseIterator<ConstIter> const & lhs, ConstantReverseIterator<ConstIter> const & rhs ) {
-		return lhs._iter > rhs._iter;
+		return *lhs > *rhs;
 	}
 	template <class ConstIter>
 	bool operator<=( ConstantReverseIterator<ConstIter> const & lhs, ConstantReverseIterator<ConstIter> const & rhs ) {
-		return lhs._iter >= rhs._iter;
+		return *lhs >= *rhs;
 	}
 	template <class ConstIter>
 	bool operator>( ConstantReverseIterator<ConstIter> const & lhs, ConstantReverseIterator<ConstIter> const & rhs ) {
-		return lhs._iter < rhs._iter;
+		return *lhs < *rhs;
 	}
 	template <class ConstIter>
 	bool operator>=( ConstantReverseIterator<ConstIter> const & lhs, ConstantReverseIterator<ConstIter> const & rhs ) {
-		return lhs._iter <= rhs._iter;
+		return *lhs <= *rhs;
 	}
 	template <class ConstIter>
 	ConstantReverseIterator<ConstIter> operator+( typename ConstantReverseIterator<ConstIter>::difference_type n, ConstantReverseIterator<ConstIter> const & rev_it ) {
