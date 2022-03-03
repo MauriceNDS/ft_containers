@@ -61,6 +61,10 @@
 		"type_traits": "cpp",
 		"typeinfo": "cpp",
 		"memory_resource": "cpp",
-		"__memory": "cpp"
+		"__memory": "cpp",
+		"__tree": "cpp",
+		"deque": "cpp",
+		"map": "cpp",
+		"stack": "cpp"
 	}
 }

@@ -1,6 +1,7 @@
 CC = clang++
 
 CFLAGS = -Wall -Wextra -Werror -std=c++98
+STLFLAG = -DSTL_CONTAINERS
 
 INCLUDES = -I./header
 
