@@ -247,19 +247,25 @@ namespace ft {
 				return tmp;
 			}
 			reverse_iterator operator+( difference_type n ) const {
-				return this->_iter - n;
+				ft::reverse_iterator<value_type> res( *this );
+				res -= n;
+				return res;
 			}
 			reverse_iterator operator-( difference_type n ) const {
-				return this->_iter + n;
+				ft::reverse_iterator<value_type> res( *this );
+				res += n;
+				return res;
 			}
 			reverse_iterator& operator+=( difference_type n ) {
-				return this->_iter += n;
+				this->_ptr -= n;
+				return *this;
 			}
 			reverse_iterator& operator-=( difference_type n ) {
-				return this->_iter -= n;
+				this->_ptr += n;
+				return *this;
 			}
-			reverse_iterator& operator[]( size_t index ) const {
-				return this->_iter - index;
+			reference operator[]( size_t index ) const {
+				return *(this->_iter - index);
 			}
 	};
 
@@ -326,19 +332,25 @@ namespace ft {
 				return tmp;
 			}
 			const_reverse_iterator operator+( difference_type n ) const {
-				return this->_iter - n;
+				ft::const_reverse_iterator<value_type> res( *this );
+				res -= n;
+				return res;
 			}
 			const_reverse_iterator operator-( difference_type n ) const {
-				return this->_iter + n;
+				ft::const_reverse_iterator<value_type> res( *this );
+				res += n;
+				return res;
 			}
 			const_reverse_iterator& operator+=( difference_type n ) {
-				return this->_iter += n;
+				this->_ptr -= n;
+				return *this;
 			}
 			const_reverse_iterator& operator-=( difference_type n ) {
-				return this->_iter -= n;
+				this->_ptr += n;
+				return *this;
 			}
-			const_reverse_iterator& operator[]( size_t index ) const {
-				return this->_iter - index;
+			reference operator[]( size_t index ) const {
+				return *(this->_iter - index);
 			}
 	};
 
