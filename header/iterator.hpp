@@ -135,7 +135,7 @@ namespace ft {
 			value_type const & operator*( void ) const {
 				return *_ptr;
 			}
-			pointer operator->( void ) {
+			T const * operator->( void ) {
 				return _ptr;
 			}
 			const_iterator& operator++( void ) {
@@ -174,7 +174,7 @@ namespace ft {
 				this->_ptr -= n;
 				return *this;
 			}
-			reference operator[]( difference_type index ) const {
+			value_type const & operator[]( difference_type index ) const {
 				return *(this->_ptr + index);
 			}
 
@@ -234,7 +234,7 @@ namespace ft {
 			}
 			reverse_iterator operator++( int ) {
 				reverse_iterator tmp = *this;
-				--( *this );
+				--_iter;
 				return tmp;
 			}
 			reverse_iterator& operator--( void ) {
@@ -243,25 +243,25 @@ namespace ft {
 			}
 			reverse_iterator operator--( int ) {
 				reverse_iterator tmp = *this;
-				++( *this );
+				++_iter;
 				return tmp;
 			}
 			reverse_iterator operator+( difference_type n ) const {
-				ft::reverse_iterator<value_type> res( *this );
-				res -= n;
-				return res;
-			}
-			reverse_iterator operator-( difference_type n ) const {
-				ft::reverse_iterator<value_type> res( *this );
+				ft::reverse_iterator<Iter> res( *this );
 				res += n;
 				return res;
 			}
+			reverse_iterator operator-( difference_type n ) const {
+				ft::reverse_iterator<Iter> res( *this );
+				res -= n;
+				return res;
+			}
 			reverse_iterator& operator+=( difference_type n ) {
-				this->_ptr -= n;
+				this->_iter -= n;
 				return *this;
 			}
 			reverse_iterator& operator-=( difference_type n ) {
-				this->_ptr += n;
+				this->_iter += n;
 				return *this;
 			}
 			reference operator[]( size_t index ) const {
@@ -307,10 +307,10 @@ namespace ft {
 				this->_iter = rhs._iter;
 				return *this;
 			}
-			const reference operator*( void ) const {
+			const value_type & operator*( void ) const {
 				return *_iter;
 			}
-			pointer operator->( void ) {
+			const value_type * operator->( void ) {
 				return &( *_iter );
 			}
 			const_reverse_iterator& operator++( void ) {
@@ -319,7 +319,7 @@ namespace ft {
 			}
 			const_reverse_iterator operator++( int ) {
 				const_reverse_iterator tmp = *this;
-				--( *this );
+				--_iter;
 				return tmp;
 			}
 			const_reverse_iterator& operator--( void ) {
@@ -328,28 +328,28 @@ namespace ft {
 			}
 			const_reverse_iterator operator--( int ) {
 				const_reverse_iterator tmp = *this;
-				++( *this );
+				++_iter;
 				return tmp;
 			}
 			const_reverse_iterator operator+( difference_type n ) const {
-				ft::const_reverse_iterator<value_type> res( *this );
-				res -= n;
-				return res;
-			}
-			const_reverse_iterator operator-( difference_type n ) const {
-				ft::const_reverse_iterator<value_type> res( *this );
+				ft::const_reverse_iterator<ConstIter> res( *this );
 				res += n;
 				return res;
 			}
+			const_reverse_iterator operator-( difference_type n ) const {
+				ft::const_reverse_iterator<ConstIter> res( *this );
+				res -= n;
+				return res;
+			}
 			const_reverse_iterator& operator+=( difference_type n ) {
-				this->_ptr -= n;
+				this->_iter -= n;
 				return *this;
 			}
 			const_reverse_iterator& operator-=( difference_type n ) {
-				this->_ptr += n;
+				this->_iter += n;
 				return *this;
 			}
-			reference operator[]( size_t index ) const {
+			value_type const & operator[]( size_t index ) const {
 				return *(this->_iter - index);
 			}
 	};
@@ -358,11 +358,11 @@ namespace ft {
 
 	template <class T>
 	bool operator== ( iterator<T> const & lhs, iterator<T> const & rhs ) {
-		return *lhs == *rhs;
+		return &*lhs == &*rhs;
 	}
 	template <class T>
 	bool operator!= ( iterator<T> const & lhs, iterator<T> const & rhs ) {
-		return *lhs != *rhs;
+		return &*lhs != &*rhs;
 	}
 	template <class T>
 	bool operator<( iterator<T> const & lhs, iterator<T> const & rhs ) {
@@ -392,11 +392,11 @@ namespace ft {
 
 	template <class T>
 	bool operator== ( const_iterator<T> const & lhs, const_iterator<T> const & rhs ) {
-		return *lhs == *rhs;
+		return &*lhs == &*rhs;
 	}
 	template <class T>
 	bool operator!= ( const_iterator<T> const & lhs, const_iterator<T> const & rhs ) {
-		return *lhs != *rhs;
+		return &*lhs != &*rhs;
 	}
 	template <class T>
 	bool operator<( const_iterator<T> const & lhs, const_iterator<T> const & rhs ) {
@@ -426,11 +426,11 @@ namespace ft {
 
 	template <class Iter>
 	bool operator==( reverse_iterator<Iter> const & lhs, reverse_iterator<Iter> const & rhs ) {
-		return *lhs == *rhs;
+		return &*lhs == &*rhs;
 	}
 	template <class Iter>
 	bool operator!=( reverse_iterator<Iter> const & lhs, reverse_iterator<Iter> const & rhs ) {
-		return *lhs != *rhs;
+		return &*lhs != &*rhs;
 	}
 	template <class Iter>
 	bool operator<( reverse_iterator<Iter> const & lhs, reverse_iterator<Iter> const & rhs ) {
@@ -450,7 +450,7 @@ namespace ft {
 	}
 	template <class Iter>
 	reverse_iterator<Iter> operator+( typename reverse_iterator<Iter>::difference_type n, reverse_iterator<Iter> const & rev_it ) {
-		return rev_it - n;
+		return rev_it + n;
 	}
 	template <class Iter>
 	typename reverse_iterator<Iter>::difference_type operator-( reverse_iterator<Iter> const & lhs, reverse_iterator<Iter> const & rhs ) {
@@ -460,11 +460,11 @@ namespace ft {
 
 	template <class ConstIter>
 	bool operator==( const_reverse_iterator<ConstIter> const & lhs, const_reverse_iterator<ConstIter> const & rhs ) {
-		return *lhs == *rhs;
+		return &*lhs == &*rhs;
 	}
 	template <class ConstIter>
 	bool operator!=( const_reverse_iterator<ConstIter> const & lhs, const_reverse_iterator<ConstIter> const & rhs ) {
-		return *lhs != *rhs;
+		return &*lhs != &*rhs;
 	}
 	template <class ConstIter>
 	bool operator<( const_reverse_iterator<ConstIter> const & lhs, const_reverse_iterator<ConstIter> const & rhs ) {
@@ -484,7 +484,7 @@ namespace ft {
 	}
 	template <class ConstIter>
 	const_reverse_iterator<ConstIter> operator+( typename const_reverse_iterator<ConstIter>::difference_type n, const_reverse_iterator<ConstIter> const & rev_it ) {
-		return rev_it - n;
+		return rev_it + n;
 	}
 	template <class ConstIter>
 	typename const_reverse_iterator<ConstIter>::difference_type operator-( const_reverse_iterator<ConstIter> const & lhs, const_reverse_iterator<ConstIter> const & rhs ) {

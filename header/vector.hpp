@@ -28,7 +28,6 @@ namespace ft {
 			typedef typename ft::iterator_traits<iterator>::difference_type		difference_type;
 			typedef size_t														size_type;
 
-
 			/************************************* Constructors **************************************/
 
 			explicit vector( const allocator_type& alloc = allocator_type() ) {
@@ -53,7 +52,7 @@ namespace ft {
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL ) {
 				size_type i = 0;
 
-				_capacity = ft::vector_do_distance( first, last, std::input_iterator_tag() );
+				_capacity = ft::vector_do_distance( first, last );
 				_size = _capacity;
 				_allocator = alloc;
 				_arr = _allocator.allocate( _capacity );
@@ -213,7 +212,7 @@ namespace ft {
 			template <class InputIterator>
   			void assign( InputIterator first, InputIterator last,
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL ) {
-				size_type a_size = ft::vector_do_distance( first, last, std::input_iterator_tag() );
+				size_type a_size = ft::vector_do_distance( first, last );
 				size_type i;
 				if ( a_size > _capacity )
 					reallocate( 0, a_size );
@@ -238,8 +237,10 @@ namespace ft {
 			}
 
 			void push_back( const value_type& val ) {
-				if ( _size == _capacity )
+				if ( _size == _capacity && _capacity != 0 )
 					reallocate( 0, _capacity * 2 );
+				else if ( _size == _capacity )
+					reallocate( 0, 1 );
 				_allocator.construct( &_arr[_size], val );
 				_size++;				
 			}
@@ -283,7 +284,7 @@ namespace ft {
 			template <class InputIterator>
     		void insert( iterator position, InputIterator first, InputIterator last,
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL ) {
-				size_type n = ft::vector_do_distance( first, last, std::input_iterator_tag() );
+				size_type n = ft::vector_do_distance( first, last );
 				iterator it = end() - 1;
 				if ( _size + n > _capacity )
 					reallocate( 0, _size + n );
@@ -305,7 +306,7 @@ namespace ft {
 			}
 
 			iterator erase( iterator first, iterator last ) {
-				size_type n = ft::vector_do_distance( first, last, std::input_iterator_tag() );
+				size_type n = ft::vector_do_distance( first, last );
 				for ( size_type i = 0; i < n; i++ )
 					_allocator.destroy( &*( first + i ) );
 				for ( iterator it = first; it != last; it++ ) {
@@ -378,7 +379,8 @@ namespace ft {
 
 			void deallocate( void ) {
 				destruct();
-				_allocator.deallocate( _arr, _capacity );
+				if ( _arr )
+					_allocator.deallocate( _arr, _capacity );
 			}
 
 	};
