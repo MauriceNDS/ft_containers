@@ -7,10 +7,11 @@ Constructors:
 15 15
 =======================================================
 Equality operators:
-0
-1
-0
-1
+false
+false
+true
+false
+true
 =======================================================
 Dereferenable:
 5
@@ -40,22 +41,22 @@ Arithmetic operators:
 Comparison operators:
 5 10
 
-0
-1
-0
-1
+false
+true
+false
+true
 5 5
 
-0
-1
-0
-1
+false
+true
+false
+true
 5 0
 
-0
-1
-0
-1
+false
+true
+false
+true
 =======================================================
 Offset dereference operator []:
 5
@@ -72,10 +73,10 @@ Constructors:
 5 5
 =======================================================
 Equality operators:
-0
-1
-0
-1
+false
+true
+false
+true
 =======================================================
 Dereferenable:
 5
@@ -105,10 +106,10 @@ Arithmetic operators:
 Comparison operators:
 5 10
 
-0
-1
-0
-1
+false
+true
+false
+true
 =======================================================
 Offset dereference operator []:
 5
@@ -125,10 +126,10 @@ Constructors:
 45 45
 =======================================================
 Equality operators:
-0
-1
-0
-1
+false
+true
+false
+true
 =======================================================
 Dereferenable:
 35
@@ -158,22 +159,22 @@ Arithmetic operators:
 Comparison operators:
 35 25
 
-0
-1
-0
-1
+false
+true
+false
+true
 35 5
 
-0
-1
-0
-1
+false
+true
+false
+true
 35 0
 
-0
-1
-0
-1
+false
+true
+false
+true
 =======================================================
 Offset dereference operator []:
 35
@@ -190,10 +191,10 @@ Constructors:
 35 35
 =======================================================
 Equality operators:
-0
-1
-0
-1
+false
+true
+false
+true
 =======================================================
 Dereferenable:
 35
@@ -223,22 +224,22 @@ Arithmetic operators:
 Comparison operators:
 35 25
 
-0
-1
-0
-1
+false
+true
+false
+true
 35 25
 
-0
-1
-0
-1
+false
+true
+false
+true
 35 25
 
-0
-1
-0
-1
+false
+true
+false
+true
 =======================================================
 Offset dereference operator []:
 35
@@ -290,3 +291,159 @@ Operator = rhs
 size = 4
 capacity = 4
 
+VECTOR ITERATOR TESTS:
+
+5
+15
+35
+25
+15
+5
+35
+25
+VECTOR CAPACITY TESTS:
+
+=======================================================
+Size'n'capacity test 1
+
+size = 0
+capacity = 0
+
+=======================================================
+Size'n'capacity test 2
+5 
+size = 1
+capacity = 1
+
+=======================================================
+Size'n'capacity test 3
+5 15 
+size = 2
+capacity = 2
+
+=======================================================
+Size'n'capacity test 4
+5 15 25 
+size = 3
+capacity = 4
+
+=======================================================
+Size'n'capacity test 5
+5 15 25 35 
+size = 4
+capacity = 4
+
+=======================================================
+Size'n'capacity test 6
+0 0 0 
+size = 3
+capacity = 3
+
+=======================================================
+Size'n'capacity test 7
+42 42 42 42 42 
+size = 5
+capacity = 5
+
+4611686018427387903
+4611686018427387903
+4611686018427387903
+=======================================================
+Max_size test
+42 42 42 42 42 
+size = 5
+capacity = 5
+
+=======================================================
+Resize test 1
+42 42 
+size = 2
+capacity = 5
+
+=======================================================
+Resize test 2
+42 42 
+size = 2
+capacity = 5
+
+=======================================================
+Resize test 3
+42 42 42 42 42 0 0 0 0 
+size = 9
+capacity = 10
+
+=======================================================
+Resize test 4
+42 42 42 42 42 11 11 11 11 
+size = 9
+capacity = 10
+
+=======================================================
+Resize test 5
+42 42 42 42 42 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+size = 23
+capacity = 23
+
+=======================================================
+Resize test 6
+42 42 42 42 42 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 
+size = 23
+capacity = 23
+
+=======================================================
+Resize test 7
+0 0 0 0 0 
+size = 5
+capacity = 5
+
+=======================================================
+Resize test 8
+13 13 13 13 13 
+size = 5
+capacity = 5
+
+true
+false
+false
+true
+=======================================================
+Reserve test 1
+
+size = 0
+capacity = 3
+
+=======================================================
+Reserve test 2
+0 0 
+size = 2
+capacity = 5
+
+=======================================================
+Reserve test 3
+4 4 
+size = 2
+capacity = 5
+
+=======================================================
+Reserve test 4
+0 0 0 0 0 0 0 0 
+size = 8
+capacity = 8
+
+=======================================================
+Reserve test 5
+4 4 4 4 4 4 4 4 
+size = 8
+capacity = 8
+
+VECTOR ELEMENT ACCESS TESTS:
+
+5
+15
+25
+35
+15
+25
+vector
+5
+35

@@ -146,7 +146,7 @@ namespace ft {
 					_size = n;			
 				}
 				else if ( n > _capacity )
-					reallocate( true, n, val );
+					reallocate( true, n, val ); 
 				else {
 					for ( size_type i = _size; i < n; i++ )
 						_allocator.construct( &_arr[i], val );
@@ -181,13 +181,13 @@ namespace ft {
 
 			reference at( size_type n ) {
 				if ( n >= _size )
-					throw std::out_of_range("at: out of range");
+					throw std::out_of_range("vector");
 				return _arr[n];
 			}
 
 			const_reference at( size_type n ) const {
 				if ( n >= _size )
-					throw std::out_of_range("at: out of range");
+					throw std::out_of_range("vector");
 				return _arr[n];
 			}
 
@@ -252,50 +252,7 @@ namespace ft {
 				_allocator.destroy( &_arr[_size] );
 			}
 
-			iterator insert( iterator position, const value_type& val ) {
-				iterator it = position;
-				value_type copy = val;
-				value_type paste;
-				if ( _size == _capacity )
-					reallocate( 0, _capacity * 2 );
-				_size++;
-				while ( it != end() ) {
-					paste = copy;
-					copy = *it;
-					*it = paste;
-					it++;
-				}
-				return position;
-			}
-
-			void insert( iterator position, size_type n, const value_type& val ) {
-				iterator it = end() - 1;
-				if ( _size + n > _capacity )
-					reallocate( 0, _size + n );
-				while ( it != position - 1 ) {
-					*( it + n ) = *it;
-					it--;
-				}
-				for ( size_type i = 0; i < n; i++ ) {
-					_allocator.construct( &*( position + n ), val );
-				}
-			}
-
-			template <class InputIterator>
-    		void insert( iterator position, InputIterator first, InputIterator last,
-			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL ) {
-				size_type n = ft::vector_do_distance( first, last );
-				iterator it = end() - 1;
-				if ( _size + n > _capacity )
-					reallocate( 0, _size + n );
-				while ( it != position - 1 ) {
-					*( it + n ) = *it;
-					it--;
-				}
-				for ( size_type i = 0; i < n; i++ ) {
-					_allocator.construct( &*( position + n ), *( first + n ) );
-				}
-			}
+			// recode insert
 
 			iterator erase( iterator position ) {
 				_allocator.destroy( &*position );
@@ -356,7 +313,11 @@ namespace ft {
 			/************************************* Utility *******************************************/
 
 			void reallocate( bool mode, size_type n, value_type val = value_type() ) {
-				T* new_arr = _allocator.allocate( n );
+				if ( _capacity * 2 >= n )
+					_capacity *= 2;
+				else
+					_capacity = n;
+				T* new_arr = _allocator.allocate( _capacity );
 				size_type i;
 				for ( i = 0; i < n; i++ ) {
 					if ( i < _size )
@@ -369,7 +330,6 @@ namespace ft {
 				deallocate();
 				_arr = new_arr;
 				_size = i;
-				_capacity = n;
 			}
 
 			void destruct( size_type n = ft::vector<T>::size() ) {
