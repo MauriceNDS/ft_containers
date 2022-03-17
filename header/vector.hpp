@@ -163,9 +163,7 @@ namespace ft {
 			}
 
 			void reserve( size_type n ) {
-				if ( n > max_size() )
-					throw std::length_error("reserve more than max capacity");
-				else if ( n > _capacity )
+				if ( n > _capacity )
 					reallocate( false, n );
 			}
 
@@ -252,7 +250,17 @@ namespace ft {
 				_allocator.destroy( &_arr[_size] );
 			}
 
-			// recode insert
+			iterator insert( iterator position, const value_type& val ) {
+				reserve( _size + 1 );
+				_size++;
+				iterator it = end() - 1;
+				while ( it != position ) {
+					*it = *( it - 1 );
+					it--;
+				}
+				_allocator.construct( &*it, val );
+				return it;
+			}
 
 			iterator erase( iterator position ) {
 				_allocator.destroy( &*position );
@@ -313,6 +321,8 @@ namespace ft {
 			/************************************* Utility *******************************************/
 
 			void reallocate( bool mode, size_type n, value_type val = value_type() ) {
+				if ( n > max_size() )
+					throw std::length_error("reserve more than max capacity");
 				if ( _capacity * 2 >= n )
 					_capacity *= 2;
 				else
