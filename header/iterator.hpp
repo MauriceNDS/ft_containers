@@ -41,7 +41,7 @@ namespace ft {
 			/************************* Constructors and Destructor ***************************/
 
 			iterator( void ) {}
-			iterator( pointer ptr ) : _ptr( ptr ) {}
+			iterator( pointer ptr, size_t idx ) : _ptr( ptr ), _idx( idx ) {}
 			iterator( iterator const & cpy ) { 
 				*this = cpy;
 			}
@@ -51,16 +51,17 @@ namespace ft {
 
 			iterator& operator=( iterator const & rhs ) {
 				this->_ptr = rhs._ptr;
+				this->_idx = rhs._idx;
 				return *this;
 			}
-			reference operator*( void ) const {
-				return *_ptr;
+			T::value_type & operator*( void ) const {
+				return _ptr[_idx];
 			}
-			pointer operator->( void ) {
-				return _ptr;
+			T::value_type * operator->( void ) {
+				return &_ptr[_idx];
 			}
 			iterator& operator++( void ) {
-				_ptr++;
+				_idx++;
 				return *this;
 			}
 			iterator operator++( int ) {
@@ -69,7 +70,7 @@ namespace ft {
 				return tmp;
 			}
 			iterator& operator--( void ) {
-				_ptr--;
+				_idx--;
 				return *this;
 			}
 			iterator operator--( int ) {
@@ -88,20 +89,21 @@ namespace ft {
 				return res;
 			}
 			iterator& operator+=( difference_type n ) {
-				this->_ptr += n;
+				this->_idx += n;
 				return *this;
 			}
 			iterator& operator-=( difference_type n ) {
-				this->_ptr -= n;
+				this->_idx -= n;
 				return *this;
 			}
-			reference operator[]( difference_type index ) const {
-				return *(this->_ptr + index);
+			T::value_type & operator[]( difference_type index ) const {
+				return this->_ptr[_idx + index];
 			}
 
 		private:
 
 			pointer _ptr;
+			size_t _idx;
 
 	};
 
@@ -386,7 +388,7 @@ namespace ft {
 	}
 	template <class T>
 	typename iterator<T>::difference_type operator-( iterator<T> const & lhs, iterator<T> const & rhs ) {
-		return lhs.base() - rhs.base();
+		return &*lhs - &*rhs;
 	}
 
 
@@ -420,7 +422,7 @@ namespace ft {
 	}
 	template <class T>
 	typename const_iterator<T>::difference_type operator-( const_iterator<T> const & lhs, const_iterator<T> const & rhs ) {
-		return lhs.base() - rhs.base();
+		return &*lhs - &*rhs;
 	}
 
 

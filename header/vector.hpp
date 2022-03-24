@@ -21,7 +21,7 @@ namespace ft {
 			typedef typename allocator_type::const_reference					const_reference;
 			typedef typename allocator_type::pointer							pointer;
 			typedef typename allocator_type::const_pointer						const_pointer;
-			typedef typename ft::iterator<T>									iterator;
+			typedef typename ft::iterator<ft::vector<T>>						iterator;
 			typedef typename ft::const_iterator<T>								const_iterator;
 			typedef typename ft::reverse_iterator<iterator>						reverse_iterator;
 			typedef typename ft::const_reverse_iterator<iterator>				const_reverse_iterator;
@@ -98,7 +98,7 @@ namespace ft {
 			/************************************* Iterators *****************************************/
 
 			iterator begin( void ) {
-				return iterator( _arr );
+				return iterator( _arr, 0 );
 			}
 
 			const_iterator begin( void ) const {
@@ -106,7 +106,7 @@ namespace ft {
 			}
 
 			iterator end( void ) {
-				return iterator( _arr + _size );
+				return iterator( _arr, _size - 1 );
 			}
 
 			const_iterator end( void ) const {
