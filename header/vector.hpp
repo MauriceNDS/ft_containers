@@ -114,7 +114,7 @@ namespace ft {
 			}
 
 			reverse_iterator rbegin( void ) {
-				return reverse_iterator( _arr + _size - 1);
+				return reverse_iterator( _arr + _size - 1 );
 			}
 
 			const_reverse_iterator rbegin( void ) const {
@@ -122,7 +122,7 @@ namespace ft {
 			}
 
 			reverse_iterator rend( void ) {
-				return reverse_iterator( _arr - 1);
+				return reverse_iterator( _arr - 1 );
 			}
 
 			const_reverse_iterator rend( void ) const {
@@ -253,11 +253,9 @@ namespace ft {
 			iterator insert( iterator position, const value_type& val ) {
 				reserve( _size + 1 );
 				_size++;
-				iterator it = end() - 1;
-				while ( it != position ) {
+				iterator it = end();
+				while ( --it != position )
 					*it = *( it - 1 );
-					it--;
-				}
 				_allocator.construct( &*it, val );
 				return it;
 			}
