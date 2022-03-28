@@ -901,15 +901,15 @@ void vectorModifiersTests( void ) {
 	// 	displayVect( a, "Insert test 9" );
 	// }
 	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	a.insert( a.end() - 1, 2, 12 );
-	// 	displayVect( a, "Insert test 10" );
-	// 	a.insert( a.end() - 1, 3, 12 );
-	// 	displayVect( a, "Insert test 11" );
-	// 	a.insert( a.end() - 1, 1, 12 );
-	// 	displayVect( a, "Insert test 12" );
-	// 	a.insert( a.end() - 1, 4, 12 );
-	// 	displayVect( a, "Insert test 13" );
+		// ft::vector<int> a( 4, 9 );
+		// a.insert( a.end() - 1, 2, 12 );
+		// displayVect( a, "Insert test 10" );
+		// a.insert( a.end() - 1, 3, 12 );
+		// displayVect( a, "Insert test 11" );
+		// a.insert( a.end() - 1, 1, 12 );
+		// displayVect( a, "Insert test 12" );
+		// a.insert( a.end() - 1, 4, 12 );
+		// displayVect( a, "Insert test 13" );
 	// }
 	// {
 	// 	ft::vector<int> a;
