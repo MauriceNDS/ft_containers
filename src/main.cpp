@@ -880,172 +880,182 @@ void vectorModifiersTests( void ) {
 		a.insert( a.end() - 1, 12 );
 		displayVect( a, "Insert test 5" );
 	}
-	// {
-	// 	ft::vector<int> a;
-	// 	a.insert( a.begin(), 4, 12 );
-	// 	displayVect( a, "Insert test 6" );
-	// }
-	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	a.insert( a.begin(), 2, 12 );
-	// 	displayVect( a, "Insert test 7" );
-	// }
-	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	a.insert( a.begin() + 2, 6, 12 );
-	// 	displayVect( a, "Insert test 8" );
-	// }
-	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	a.insert( a.end() - 1, 7, 12 );
-	// 	displayVect( a, "Insert test 9" );
-	// }
-	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	a.insert( a.end() - 1, 2, 12 );
-	// 	displayVect( a, "Insert test 10" );
-	// 	a.insert( a.end() - 1, 3, 12 );
-	// 	displayVect( a, "Insert test 11" );
-	// 	a.insert( a.end() - 1, 1, 12 );
-	// 	displayVect( a, "Insert test 12" );
-	// 	a.insert( a.end() - 1, 4, 12 );
-	// 	displayVect( a, "Insert test 13" );
-	// }
-	// {
-	// 	ft::vector<int> a;
-	// 	a.insert( a.begin(), 0, 12 );
-	// 	displayVect( a, "Insert test 14" );
-	// }
-	// {
-	// 	ft::vector<int> a;
-	// 	ft::vector<int> b;
-	// 	b.push_back( 5 );
-	// 	b.push_back( 15 );
-	// 	b.push_back( 25 );
-	// 	b.push_back( 35 );
-	// 	a.insert( a.begin(), b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 15" );
-	// }
-	// {
-	// 	ft::vector<int> a;
-	// 	ft::vector<int> b;
-	// 	a.insert( a.begin(), b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 16" );
-	// }
-	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	ft::vector<int> b;
-	// 	b.push_back( 5 );
-	// 	b.push_back( 15 );
-	// 	b.push_back( 25 );
-	// 	b.push_back( 35 );
-	// 	a.insert( a.begin(), b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 17" );
-	// }
-	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	ft::vector<int> b;
-	// 	b.push_back( 5 );
-	// 	b.push_back( 15 );
-	// 	b.push_back( 25 );
-	// 	b.push_back( 35 );
-	// 	a.insert( a.begin() + 2, b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 18" );
-	// }
-	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	ft::vector<int> b;
-	// 	b.push_back( 5 );
-	// 	b.push_back( 15 );
-	// 	b.push_back( 25 );
-	// 	b.push_back( 35 );
-	// 	a.insert( a.end() - 1, b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 19" );
-	// }
-	// {
-	// 	ft::vector<int> a( 4, 9 );
-	// 	ft::vector<int> b;
-	// 	b.push_back( 5 );
-	// 	b.push_back( 15 );
-	// 	b.push_back( 25 );
-	// 	b.push_back( 35 );
-	// 	a.insert( a.end() - 1, b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 20" );
-	// 	a.insert( a.end() - 1, b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 21" );
-	// 	a.insert( a.end() - 1, b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 22" );
-	// 	a.insert( a.end() - 1, b.begin(), b.end() );
-	// 	displayVect( a, "Insert test 23" );
-	// }
-	// {
-	// 	ft::vector<int> a( 9, 17 );
-	// 	a.erase( a.begin() + 4 );
-	// 	displayVect( a, "Erase test 1" );
-	// }
-	// {
-	// 	ft::vector<int> b;
-	// 	b.push_back( 5 );
-	// 	b.push_back( 15 );
-	// 	b.push_back( 25 );
-	// 	b.push_back( 35 );
-	// 	b.erase( b.begin() );
-	// 	displayVect( b, "Erase test 2" );
-	// 	b.erase( b.end() - 1 );
-	// 	displayVect( b, "Erase test 3" );
-	// 	b.erase( b.begin() );
-	// 	displayVect( b, "Erase test 4" );
-	// 	b.erase( b.begin() );
-	// 	displayVect( b, "Erase test 5" );
-	// }
-	// {
-	// 	ft::vector<int> a( 3, 18 );
-	// 	ft::vector<int> b( 18, 3 );
-	// 	a.swap( b );
-	// 	displayVect( a, "Swap test 1" );
-	// 	displayVect( b, "Swap test 2" );
-	// }
-	// {
-	// 	ft::vector<int> a;
-	// 	ft::vector<int> b;
-	// 	b.push_back( 5 );
-	// 	b.push_back( 15 );
-	// 	b.push_back( 25 );
-	// 	b.push_back( 35 );
-	// 	a.swap( b );
-	// 	displayVect( a, "Swap test 3" );
-	// 	displayVect( b, "Swap test 4" );
-	// }
-	// {
-	// 	ft::vector<int> a( 7, 77 );
-	// 	ft::vector<int> b;
-	// 	b.push_back( 5 );
-	// 	b.push_back( 15 );
-	// 	b.push_back( 25 );
-	// 	b.push_back( 35 );
-	// 	a.swap( b );
-	// 	displayVect( a, "Swap test 5" );
-	// 	displayVect( b, "Swap test 6" );
-	// }
-	// {
-	// 	ft::vector<int> a;
-	// 	a.clear();
-	// 	displayVect( a, "Clear test 1" );
-	// }
-	// {
-	// 	ft::vector<int> a( 3, 9 );
-	// 	a.clear();
-	// 	displayVect( a, "Clear test 2" );
-	// }
-	// {
-	// 	ft::vector<int> a;
-	// 	a.push_back( 5 );
-	// 	a.push_back( 15 );
-	// 	a.push_back( 25 );
-	// 	a.push_back( 35 );
-	// 	a.clear();
-	// 	displayVect( a, "Clear test 3" );
-	// }
+	{
+		ft::vector<int> a;
+		a.insert( a.begin(), 4, 12 );
+		displayVect( a, "Insert test 6" );
+	}
+	{
+		ft::vector<int> a( 4, 9 );
+		a.insert( a.begin(), 2, 12 );
+		displayVect( a, "Insert test 7" );
+	}
+	{
+		ft::vector<int> a( 4, 9 );
+		a.insert( a.begin() + 2, 6, 12 );
+		displayVect( a, "Insert test 8" );
+	}
+	{
+		ft::vector<int> a( 4, 9 );
+		a.insert( a.end() - 1, 7, 12 );
+		displayVect( a, "Insert test 9" );
+	}
+	{
+		ft::vector<int> a( 4, 9 );
+		a.insert( a.end() - 1, 2, 12 );
+		displayVect( a, "Insert test 10" );
+		a.insert( a.end() - 1, 3, 12 );
+		displayVect( a, "Insert test 11" );
+		a.insert( a.end() - 1, 1, 12 );
+		displayVect( a, "Insert test 12" );
+		a.insert( a.end() - 1, 4, 12 );
+		displayVect( a, "Insert test 13" );
+	}
+	{
+		ft::vector<int> a;
+		a.insert( a.begin(), 0, 12 );
+		displayVect( a, "Insert test 14" );
+	}
+	{
+		ft::vector<int> a;
+		ft::vector<int> b;
+		b.push_back( 5 );
+		b.push_back( 15 );
+		b.push_back( 25 );
+		b.push_back( 35 );
+		a.insert( a.begin(), b.begin(), b.end() );
+		displayVect( a, "Insert test 15" );
+	}
+	{
+		ft::vector<int> a;
+		ft::vector<int> b;
+		a.insert( a.begin(), b.begin(), b.end() );
+		displayVect( a, "Insert test 16" );
+	}
+	{
+		ft::vector<int> a( 4, 9 );
+		ft::vector<int> b;
+		b.push_back( 5 );
+		b.push_back( 15 );
+		b.push_back( 25 );
+		b.push_back( 35 );
+		a.insert( a.begin(), b.begin(), b.end() );
+		displayVect( a, "Insert test 17" );
+	}
+	{
+		ft::vector<int> a( 4, 9 );
+		ft::vector<int> b;
+		b.push_back( 5 );
+		b.push_back( 15 );
+		b.push_back( 25 );
+		b.push_back( 35 );
+		a.insert( a.begin() + 2, b.begin(), b.end() );
+		displayVect( a, "Insert test 18" );
+	}
+	{
+		ft::vector<int> a( 4, 9 );
+		ft::vector<int> b;
+		b.push_back( 5 );
+		b.push_back( 15 );
+		b.push_back( 25 );
+		b.push_back( 35 );
+		a.insert( a.end() - 1, b.begin(), b.end() );
+		displayVect( a, "Insert test 19" );
+	}
+	{
+		ft::vector<int> a( 4, 9 );
+		ft::vector<int> b;
+		b.push_back( 5 );
+		b.push_back( 15 );
+		b.push_back( 25 );
+		b.push_back( 35 );
+		a.insert( a.end() - 1, b.begin(), b.end() );
+		displayVect( a, "Insert test 20" );
+		a.insert( a.end() - 1, b.begin(), b.end() );
+		displayVect( a, "Insert test 21" );
+		a.insert( a.end() - 1, b.begin(), b.end() );
+		displayVect( a, "Insert test 22" );
+		a.insert( a.end() - 1, b.begin(), b.end() );
+		displayVect( a, "Insert test 23" );
+	}
+	{
+		ft::vector<int> a( 9, 17 );
+		a.erase( a.begin() + 4 );
+		displayVect( a, "Erase test 1" );
+	}
+	{
+		ft::vector<int> b;
+		b.push_back( 5 );
+		b.push_back( 15 );
+		b.push_back( 25 );
+		b.push_back( 35 );
+		b.erase( b.begin() );
+		displayVect( b, "Erase test 2" );
+		b.erase( b.end() - 1 );
+		displayVect( b, "Erase test 3" );
+		b.erase( b.begin() );
+		displayVect( b, "Erase test 4" );
+		b.erase( b.begin() );
+		displayVect( b, "Erase test 5" );
+	}
+	{
+		ft::vector<int> a( 3, 18 );
+		ft::vector<int> b( 18, 3 );
+		a.swap( b );
+		displayVect( a, "Swap test 1" );
+		displayVect( b, "Swap test 2" );
+	}
+	{
+		ft::vector<int> a;
+		ft::vector<int> b;
+		b.push_back( 5 );
+		b.push_back( 15 );
+		b.push_back( 25 );
+		b.push_back( 35 );
+		a.swap( b );
+		displayVect( a, "Swap test 3" );
+		displayVect( b, "Swap test 4" );
+	}
+	{
+		ft::vector<int> a( 7, 77 );
+		ft::vector<int> b;
+		b.push_back( 5 );
+		b.push_back( 15 );
+		b.push_back( 25 );
+		b.push_back( 35 );
+		a.swap( b );
+		displayVect( a, "Swap test 5" );
+		displayVect( b, "Swap test 6" );
+	}
+	{
+		ft::vector<int> a;
+		a.clear();
+		displayVect( a, "Clear test 1" );
+	}
+	{
+		ft::vector<int> a( 3, 9 );
+		a.clear();
+		displayVect( a, "Clear test 2" );
+	}
+	{
+		ft::vector<int> a;
+		a.push_back( 5 );
+		a.push_back( 15 );
+		a.push_back( 25 );
+		a.push_back( 35 );
+		a.clear();
+		displayVect( a, "Clear test 3" );
+	}
+	{
+		ft::vector<int> a;
+		a.push_back( 5 );
+		a.push_back( 15 );
+		a.push_back( 25 );
+		a.push_back( 35 );
+		a.clear();
+		a.clear();
+		displayVect( a, "Clear test 4" );
+	}
 }
 
 int	main(void) {

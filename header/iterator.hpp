@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include "vector.hpp"
 
 namespace ft {
 
@@ -26,7 +27,10 @@ namespace ft {
 		typedef T&                      		   reference;
 	};
 
-	template <class T>
+	template < class T, class Alloc >
+	class vector;
+
+	template < class T, class V = ft::vector<T, std::allocator<T> > >
 	class iterator 
 	{
 
@@ -37,11 +41,13 @@ namespace ft {
 			typedef T												value_type;
 			typedef T*												pointer;
 			typedef T&												reference;
+			typedef V												container_type;
+			typedef V*												container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
 
-			iterator( void ) {}
-			iterator( pointer ptr ) : _ptr( ptr ) {}
+			iterator( void ) : _ptr( NULL ) {}
+			iterator( container_pointer ptr, long idx ) : _ptr( ptr ), _idx( idx ) {}
 			iterator( iterator const & cpy ) { 
 				*this = cpy;
 			}
@@ -51,16 +57,17 @@ namespace ft {
 
 			iterator& operator=( iterator const & rhs ) {
 				this->_ptr = rhs._ptr;
+				this->_idx = rhs._idx;
 				return *this;
 			}
 			reference operator*( void ) const {
-				return *_ptr;
+				return (*_ptr)[_idx];
 			}
 			pointer operator->( void ) {
-				return _ptr;
+				return &(*_ptr)[_idx];
 			}
 			iterator& operator++( void ) {
-				_ptr++;
+				_idx++;
 				return *this;
 			}
 			iterator operator++( int ) {
@@ -69,7 +76,7 @@ namespace ft {
 				return tmp;
 			}
 			iterator& operator--( void ) {
-				_ptr--;
+				_idx--;
 				return *this;
 			}
 			iterator operator--( int ) {
@@ -88,24 +95,25 @@ namespace ft {
 				return res;
 			}
 			iterator& operator+=( difference_type n ) {
-				this->_ptr += n;
+				_idx += n;
 				return *this;
 			}
 			iterator& operator-=( difference_type n ) {
-				this->_ptr -= n;
+				_idx -= n;
 				return *this;
 			}
 			reference operator[]( difference_type index ) const {
-				return *(this->_ptr + index);
+				return (*_ptr)[_idx + index];
 			}
 
 		private:
 
-			pointer _ptr;
+			container_pointer _ptr;
+			long _idx;
 
 	};
 
-	template <class T>
+	template < class T, class V = const ft::vector<T, std::allocator<T> > >
 	class const_iterator 
 	{
 
@@ -116,11 +124,15 @@ namespace ft {
 			typedef T												value_type;
 			typedef T*												pointer;
 			typedef T&												reference;
+			typedef T const *										const_pointer;
+			typedef T const &										const_reference;
+			typedef V												container_type;
+			typedef V*												container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
 
-			const_iterator( void ) {}
-			const_iterator( pointer ptr ) : _ptr( ptr ) {}
+			const_iterator( void ) : _ptr( NULL ) {}
+			const_iterator( container_pointer ptr, long idx ) : _ptr( ptr ), _idx( idx ) {}
 			const_iterator( const_iterator const & cpy ) { 
 				*this = cpy;
 			}
@@ -130,16 +142,17 @@ namespace ft {
 
 			const_iterator& operator=( const_iterator const & rhs ) {
 				this->_ptr = rhs._ptr;
+				this->_idx = rhs._idx;
 				return *this;
 			}
-			value_type const & operator*( void ) const {
-				return *_ptr;
+			const_reference operator*( void ) const {
+				return (*_ptr)[_idx];
 			}
-			T const * operator->( void ) {
-				return _ptr;
+			const_pointer operator->( void ) {
+				return &(*_ptr)[_idx];
 			}
 			const_iterator& operator++( void ) {
-				_ptr++;
+				_idx++;
 				return *this;
 			}
 			const_iterator operator++( int ) {
@@ -148,7 +161,7 @@ namespace ft {
 				return tmp;
 			}
 			const_iterator& operator--( void ) {
-				_ptr--;
+				_idx--;
 				return *this;
 			}
 			const_iterator operator--( int ) {
@@ -167,20 +180,21 @@ namespace ft {
 				return res;
 			}
 			const_iterator& operator+=( difference_type n ) {
-				this->_ptr += n;
+				_idx += n;
 				return *this;
 			}
 			const_iterator& operator-=( difference_type n ) {
-				this->_ptr -= n;
+				_idx -= n;
 				return *this;
 			}
-			value_type const & operator[]( difference_type index ) const {
-				return *(this->_ptr + index);
+			const_reference operator[]( difference_type index ) const {
+				return (*_ptr)[_idx + index];
 			}
 
 		private:
 
-			pointer _ptr;
+			container_pointer _ptr;
+			long _idx;
 
 	};
 
@@ -199,11 +213,12 @@ namespace ft {
 			typedef typename iterator_traits<Iter>::value_type			value_type;
 			typedef typename iterator_traits<Iter>::pointer				pointer;
 			typedef typename iterator_traits<Iter>::reference			reference;
+			typedef typename Iter::container_pointer					container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
 
 			reverse_iterator( void ) {}
-			explicit reverse_iterator( iterator_type it ) : _iter( it ) {}
+			explicit reverse_iterator( container_pointer ptr, long idx ) : _iter( ptr, idx ) {}
 			template <class It>
 			reverse_iterator( reverse_iterator<It> const & cpy ) { 
 				this->_iter = cpy._iter;
@@ -284,11 +299,13 @@ namespace ft {
 			typedef typename iterator_traits<ConstIter>::value_type			value_type;
 			typedef typename iterator_traits<ConstIter>::pointer			pointer;
 			typedef typename iterator_traits<ConstIter>::reference			reference;
+			typedef typename ConstIter::container_pointer					container_pointer;
+
 
 			/************************* Constructors and Destructor ***************************/
 
 			const_reverse_iterator( void ) {}
-			explicit const_reverse_iterator( iterator_type it ) : _iter( it ) {}
+			explicit const_reverse_iterator( container_pointer ptr, long idx ) : _iter( ptr, idx ) {}
 			template <class ConstIt>
 			const_reverse_iterator( const_reverse_iterator<ConstIt> const & cpy ) { 
 				this->_iter = cpy._iter;
@@ -386,7 +403,7 @@ namespace ft {
 	}
 	template <class T>
 	typename iterator<T>::difference_type operator-( iterator<T> const & lhs, iterator<T> const & rhs ) {
-		return lhs.base() - rhs.base();
+		return &*lhs - &*rhs;
 	}
 
 
@@ -420,7 +437,7 @@ namespace ft {
 	}
 	template <class T>
 	typename const_iterator<T>::difference_type operator-( const_iterator<T> const & lhs, const_iterator<T> const & rhs ) {
-		return lhs.base() - rhs.base();
+		return &*lhs - &*rhs;
 	}
 
 

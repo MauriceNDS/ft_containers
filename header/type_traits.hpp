@@ -36,7 +36,6 @@ namespace ft {
 
 	template<typename T> struct is_integral : public is_integral_base<T> {};
 
-
 }
 
 #endif

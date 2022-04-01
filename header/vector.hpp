@@ -8,6 +8,9 @@
 
 namespace ft {
 
+	template < class T, class V >
+	class iterator;
+
 	template < class T, class Alloc = std::allocator<T> >
 	class vector {
 
@@ -24,7 +27,7 @@ namespace ft {
 			typedef typename ft::iterator<T>									iterator;
 			typedef typename ft::const_iterator<T>								const_iterator;
 			typedef typename ft::reverse_iterator<iterator>						reverse_iterator;
-			typedef typename ft::const_reverse_iterator<iterator>				const_reverse_iterator;
+			typedef typename ft::const_reverse_iterator<const_iterator>				const_reverse_iterator;
 			typedef typename ft::iterator_traits<iterator>::difference_type		difference_type;
 			typedef size_t														size_type;
 
@@ -98,35 +101,35 @@ namespace ft {
 			/************************************* Iterators *****************************************/
 
 			iterator begin( void ) {
-				return iterator( _arr );
+				return iterator( this, 0 );
 			}
 
 			const_iterator begin( void ) const {
-				return const_iterator( _arr );
+				return const_iterator( this, 0 );
 			}
 
 			iterator end( void ) {
-				return iterator( _arr + _size );
+				return iterator( this, _size );
 			}
 
 			const_iterator end( void ) const {
-				return const_iterator( _arr + _size );
+				return const_iterator( this, _size );
 			}
 
 			reverse_iterator rbegin( void ) {
-				return reverse_iterator( _arr + _size - 1 );
+				return reverse_iterator( this, _size - 1 );
 			}
 
 			const_reverse_iterator rbegin( void ) const {
-				return const_reverse_iterator( _arr + _size - 1 );
+				return const_reverse_iterator( this, _size - 1 );
 			}
 
 			reverse_iterator rend( void ) {
-				return reverse_iterator( _arr - 1 );
+				return reverse_iterator( this, -1 );
 			}
 
 			const_reverse_iterator rend( void ) const {
-				return const_reverse_iterator( _arr - 1 );
+				return const_reverse_iterator( this, -1 );
 			}
 
 			/************************************* Capacity ******************************************/
@@ -212,8 +215,10 @@ namespace ft {
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL ) {
 				size_type a_size = ft::vector_do_distance( first, last );
 				size_type i;
-				if ( a_size > _capacity )
+				if ( a_size > _capacity ) {
+					_capacity = 0;
 					reallocate( 0, a_size );
+				}
 				for ( i = 0; i < a_size; i++ ) {
 					if ( i < _size )
 						_allocator.destroy( &_arr[i] );
@@ -224,8 +229,10 @@ namespace ft {
 
 			void assign( size_type n, const value_type& val ) {
 				size_type i;
-				if ( n > _capacity )
+				if ( n > _capacity ) {
+					_capacity = 0;
 					reallocate( 0, n );
+				}
 				for ( i = 0; i < n; i++ ) {
 					if ( i < _size )
 						_allocator.destroy( &_arr[i] );
@@ -258,6 +265,42 @@ namespace ft {
 					*it = *( it - 1 );
 				_allocator.construct( &*it, val );
 				return it;
+			}
+
+			void insert( iterator position, size_type n, const value_type& val ) {
+				reserve( _size + n );
+				iterator end = ( position + n < this->end() ) ? this->end() - 1 : position + n - 1;
+				iterator begin = this->end() + n - 1;
+				size_type i = 1;
+				while ( begin != end ) {
+					*begin = *( this->end() - i++ );
+					begin--;
+				}
+				for ( size_type j = 0; j < n; j++ ) {
+					_allocator.construct( &*position, val );
+					position++;
+				}
+				_size += n;
+			}
+
+			template <class InputIterator>
+    		void insert( iterator position, InputIterator first, InputIterator last, 
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL ) {
+				size_type n = ft::vector_do_distance( first, last );
+				reserve( _size + n );
+				iterator end = ( position + n < this->end() ) ? this->end() - 1 : position + n - 1;
+				iterator begin = this->end() + n - 1;
+				size_type i = 1;
+				while ( begin != end ) {
+					*begin = *( this->end() - i++ );
+					begin--;
+				}
+				while ( first != last ) {
+					_allocator.construct( &*position, *first );
+					position++;
+					first++;
+				}
+				_size += n;
 			}
 
 			iterator erase( iterator position ) {
