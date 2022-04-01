@@ -6,9 +6,10 @@ STLFLAG = -DSTL_CONTAINERS
 INCLUDES = -I./header
 
 HEADER =	header/iterator.hpp				\
+			header/stack.hpp				\
 			header/utility.hpp				\
 			header/type_traits.hpp			\
-			header/vector.hpp
+			header/vector.hpp				\
 
 SRCS =		src/main.cpp
 

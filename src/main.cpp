@@ -1,11 +1,14 @@
 #include <iostream>
+#include <deque>
 
 #ifdef STL_CONTAINERS
 	#include <iterator>
 	#include <vector>
+	#include <stack>
 	namespace ft = std;
 #else
 	#include "vector.hpp"
+	#include "stack.hpp"
 #endif
 
 template<typename T>
@@ -1058,6 +1061,244 @@ void vectorModifiersTests( void ) {
 	}
 }
 
+void vectorNonMemberOverloadsTests( void ) {
+	std::cout << "VECTOR NON MEMBER OVERLOADS TESTS:" << std::endl << std::endl;
+
+	{
+		ft::vector<int> foo ( 3,100 );
+		ft::vector<int> bar ( 2,200 );
+
+		if ( foo == bar ) std::cout << "foo and bar are equal" << std::endl;
+		if ( foo != bar ) std::cout << "foo and bar are not equal" << std::endl;
+		if ( foo < bar ) std::cout << "foo is less than bar" << std::endl;
+		if ( foo > bar ) std::cout << "foo is greater than bar" << std::endl;
+		if ( foo <= bar ) std::cout << "foo is less than or equal to bar" << std::endl;
+		if ( foo >= bar ) std::cout << "foo is greater than or equal to bar" << std::endl;
+	}
+	{
+		ft::vector<int> foo ( 4,100 );
+		ft::vector<int> bar ( 4,100 );
+
+		if ( foo == bar ) std::cout << "foo and bar are equal" << std::endl;
+		if ( foo != bar ) std::cout << "foo and bar are not equal" << std::endl;
+		if ( foo < bar ) std::cout << "foo is less than bar" << std::endl;
+		if ( foo > bar ) std::cout << "foo is greater than bar" << std::endl;
+		if ( foo <= bar ) std::cout << "foo is less than or equal to bar" << std::endl;
+		if ( foo >= bar ) std::cout << "foo is greater than or equal to bar" << std::endl;
+	}
+	{
+		ft::vector<int> foo ( 4,400 );
+		ft::vector<int> bar ( 2,100 );
+
+		if ( foo == bar ) std::cout << "foo and bar are equal" << std::endl;
+		if ( foo != bar ) std::cout << "foo and bar are not equal" << std::endl;
+		if ( foo < bar ) std::cout << "foo is less than bar" << std::endl;
+		if ( foo > bar ) std::cout << "foo is greater than bar" << std::endl;
+		if ( foo <= bar ) std::cout << "foo is less than or equal to bar" << std::endl;
+		if ( foo >= bar ) std::cout << "foo is greater than or equal to bar" << std::endl;
+	}
+	{
+		ft::vector<int> foo ( 2,100 );
+		ft::vector<int> bar ( 4,400 );
+
+		if ( foo == bar ) std::cout << "foo and bar are equal" << std::endl;
+		if ( foo != bar ) std::cout << "foo and bar are not equal" << std::endl;
+		if ( foo < bar ) std::cout << "foo is less than bar" << std::endl;
+		if ( foo > bar ) std::cout << "foo is greater than bar" << std::endl;
+		if ( foo <= bar ) std::cout << "foo is less than or equal to bar" << std::endl;
+		if ( foo >= bar ) std::cout << "foo is greater than or equal to bar" << std::endl;
+	}
+	{
+		ft::vector<int> foo ( 4,400 );
+		ft::vector<int> bar ( 2,100 );
+		ft::swap( foo, bar );
+		displayVect( foo, "Swap test 1.1" );
+		displayVect( bar, "Swap test 1.2" );
+	}
+	{
+		ft::vector<int> foo ( 2,100 );
+		ft::vector<int> bar ( 4,400 );
+		ft::swap( foo, bar );
+		displayVect( foo, "Swap test 2.1" );
+		displayVect( bar, "Swap test 2.2" );
+	}
+	{
+		ft::vector<int> foo ( 4,100 );
+		ft::vector<int> bar ( 4,100 );
+		ft::swap( foo, bar );
+		displayVect( foo, "Swap test 3.1" );
+		displayVect( bar, "Swap test 3.2" );
+	}
+	{
+		ft::vector<int> foo ( 3,100 );
+		ft::vector<int> bar ( 2,200 );
+		ft::swap( foo, bar );
+		displayVect( foo, "Swap test 4.1" );
+		displayVect( bar, "Swap test 4.2" );
+	}
+}
+
+void stackConstructorTests( void ) {
+	std::cout << "STACK CONSTRUCTOR TESTS:" << std::endl << std::endl;
+
+	{
+		std::deque<int> mydeque( 3, 100 );
+		ft::vector<int> myvector( 2, 200 );
+
+		ft::stack<int> first;
+		ft::stack<int,ft::vector<int> > second( myvector );
+
+		ft::stack<int,std::deque<int> > third;
+		ft::stack<int,std::deque<int> > fourth( mydeque );
+
+		std::cout << "size of first: " << first.size() << std::endl;
+		std::cout << "size of second: " << second.size() << std::endl;
+		std::cout << "size of third: " << third.size() << std::endl;
+		std::cout << "size of fourth: " << fourth.size() << std::endl;
+		std::cout << "second top: " << second.top() << std::endl;
+		std::cout << "fourth top: " << fourth.top() << std::endl;
+	}
+}
+
+void stackMemberFunctionTests( void ) {
+	std::cout << "STACK MEMBER FUNCTION TESTS:" << std::endl << std::endl;
+
+	{
+		std::cout << "Empty tests" << std::endl << std::endl;
+		std::cout << "=======================================================" << std::endl;
+		ft::stack<int> stk;
+		std::cout << std::boolalpha << stk.empty() << std::endl;
+		stk.push( 42 );
+		std::cout << std::boolalpha << stk.empty() << std::endl;
+		stk.pop();
+		std::cout << std::boolalpha << stk.empty() << std::endl;
+	}
+	{
+		ft::stack<int> mystack;
+		int sum( 0 );
+		for ( int i = 1; i <= 10; i++ )
+			mystack.push( i );
+		while ( !mystack.empty() ) {
+			sum += mystack.top();
+			mystack.pop();
+		}
+		std::cout << "total: " << sum << std::endl;
+	}
+	{
+		std::cout << "Size tests" << std::endl << std::endl;
+		std::cout << "=======================================================" << std::endl;
+		ft::stack<int> mystack;
+		std::cout << mystack.size() << std::endl;
+		mystack.push( 1 );
+		std::cout << mystack.size() << std::endl;
+		mystack.push( 4 );
+		std::cout << mystack.size() << std::endl;
+		mystack.pop();
+		std::cout << mystack.size() << std::endl;
+		mystack.pop();
+		std::cout << mystack.size() << std::endl;
+	}
+	{
+		ft::stack<int> mystack;
+		for ( size_t i = 0; i < 100; i++ )
+			mystack.push( i );
+		std::cout << mystack.size() << std::endl;
+		for ( size_t i = 0; i < 42; i++ )
+			mystack.pop();
+		std::cout << mystack.size() << std::endl;
+		while ( !mystack.empty() )
+			mystack.pop();
+		std::cout << mystack.size() << std::endl;
+	}
+	{
+		std::cout << "Top tests" << std::endl << std::endl;
+		std::cout << "=======================================================" << std::endl;
+		ft::stack<int> mystack;
+		mystack.push( 1 );
+		std::cout << mystack.top() << std::endl;
+		mystack.push( 4 );
+		std::cout << mystack.top() << std::endl;
+		mystack.pop();
+		std::cout << mystack.top() << std::endl;
+	}
+	{
+		ft::stack<int> mystack;
+		for ( size_t i = 0; i < 100; i++ )
+			mystack.push( i );
+		std::cout << mystack.top() << std::endl;
+		for ( size_t i = 0; i < 42; i++ )
+			mystack.pop();
+		std::cout << mystack.top() << std::endl;
+		while ( !mystack.empty() )
+			mystack.pop();
+	}
+	{
+		std::cout << "Push and pop tests" << std::endl << std::endl;
+		std::cout << "=======================================================" << std::endl;
+		ft::stack<int> a;
+		a.push( 42 );
+		std::cout << a.top() << " " << a.size() << std::endl;
+		a.push( 29 );
+		std::cout << a.top() << " " << a.size() << std::endl;
+		a.push( 41 );
+		std::cout << a.top() << " " << a.size() << std::endl;
+		a.push( 79 );
+		std::cout << a.top() << " " << a.size() << std::endl;
+		a.pop();
+		std::cout << a.top() << " " << a.size() << std::endl;
+		a.pop();
+		std::cout << a.top() << " " << a.size() << std::endl;
+		a.pop();
+		std::cout << a.top() << " " << a.size() << std::endl;
+		a.pop();
+	}
+	{
+		ft::stack<int> a;
+		for ( size_t i = 0; i < 42; i++ ) {
+			a.push( i * 3 );
+			std::cout << a.top() << " " << a.size() << std::endl;
+		}
+	}
+}
+
+void stackNonMemberOverloadsTests( void ) {
+	std::cout << "STACK NON MEMBER OVERLOADS TESTS:" << std::endl << std::endl;
+
+	{
+		ft::stack<int> foo;
+		ft::stack<int> bar;
+		std::cout << std::boolalpha << ( foo == bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo != bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo < bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo <= bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo > bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo >= bar ) << std::endl;
+		foo.push( 42 );
+		foo.push( 84 );
+		std::cout << std::boolalpha << ( foo == bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo != bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo < bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo <= bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo > bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo >= bar ) << std::endl;
+		bar.push( 42 );
+		bar.push( 84 );
+		std::cout << std::boolalpha << ( foo == bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo != bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo < bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo <= bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo > bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo >= bar ) << std::endl;
+		foo.pop();
+		std::cout << std::boolalpha << ( foo == bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo != bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo < bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo <= bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo > bar ) << std::endl;
+		std::cout << std::boolalpha << ( foo >= bar ) << std::endl;
+	}
+}
+
 int	main(void) {
 	// Iterator Tests
 	iteratorTests();
@@ -1071,6 +1312,12 @@ int	main(void) {
 	vectorCapacityTests();
 	vectorElementAccessTests();
 	vectorModifiersTests();
+	vectorNonMemberOverloadsTests();
+
+	// Stack Tests
+	stackConstructorTests();
+	stackMemberFunctionTests();
+	stackNonMemberOverloadsTests();
 
 	return (0);
 }

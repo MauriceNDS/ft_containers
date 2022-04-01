@@ -413,11 +413,7 @@ namespace ft {
 
 	template <class T, class Alloc>
 	bool operator<( const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs ) {
-		typename ft::vector<T>::size_type len = ( lhs.size() < rhs.size() ) ? lhs.size : rhs.size();
-		for ( typename ft::vector<T>::size_type i = 0; i < len; i++ )
-			if ( lhs[i] >= rhs[i] )
-				return false;
-		return true;
+		return ft::lexicographical_compare( lhs.begin(), lhs.end(), rhs.begin(), rhs.end() );
 	}
 
 	template <class T, class Alloc>
@@ -432,7 +428,7 @@ namespace ft {
 
 	template <class T, class Alloc>
 	bool operator>=( const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs ) {
-		return !( lhs < rhs );
+		return !ft::lexicographical_compare( lhs.begin(), lhs.end(), rhs.begin(), rhs.end() );
 	}
 
 	template <class T, class Alloc>
