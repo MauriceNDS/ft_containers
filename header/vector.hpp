@@ -267,19 +267,41 @@ namespace ft {
 				return it;
 			}
 
-			// void insert( iterator position, size_type n, const value_type& val ) {
-			// 	reserve( _size + n );
-			// 	_size += n;
-			// 	iterator it = position + n;
-			// 	for ( size_type i = 0; i < n; i++ ) {
-			// 		*it = *( position + i );
-			// 		it++;
-			// 	}
-			// 	for ( size_type i = 0; i < n; i++ ) {
-			// 		_allocator.construct( &*position, val );
-			// 		position++;
-			// 	}
-			// }
+			void insert( iterator position, size_type n, const value_type& val ) {
+				reserve( _size + n );
+				iterator end = ( position + n < this->end() ) ? this->end() - 1 : position + n - 1;
+				iterator begin = this->end() + n - 1;
+				size_type i = 1;
+				while ( begin != end ) {
+					*begin = *( this->end() - i++ );
+					begin--;
+				}
+				for ( size_type j = 0; j < n; j++ ) {
+					_allocator.construct( &*position, val );
+					position++;
+				}
+				_size += n;
+			}
+
+			template <class InputIterator>
+    		void insert( iterator position, InputIterator first, InputIterator last, 
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL ) {
+				size_type n = ft::vector_do_distance( first, last );
+				reserve( _size + n );
+				iterator end = ( position + n < this->end() ) ? this->end() - 1 : position + n - 1;
+				iterator begin = this->end() + n - 1;
+				size_type i = 1;
+				while ( begin != end ) {
+					*begin = *( this->end() - i++ );
+					begin--;
+				}
+				while ( first != last ) {
+					_allocator.construct( &*position, *first );
+					position++;
+					first++;
+				}
+				_size += n;
+			}
 
 			iterator erase( iterator position ) {
 				_allocator.destroy( &*position );
