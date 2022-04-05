@@ -8,6 +8,7 @@
 namespace ft {
 
 	struct random_access_iterator_tag {};
+	struct bidirectional_iterator_tag {};
 
 	template <class Iterator>
 	struct iterator_traits {
@@ -113,6 +114,7 @@ namespace ft {
 
 	};
 
+
 	template < class T, class V = const ft::vector<T, std::allocator<T> > >
 	class const_iterator 
 	{
@@ -195,6 +197,162 @@ namespace ft {
 
 			container_pointer _ptr;
 			long _idx;
+
+	};
+
+	template <class T>
+	class tree_iterator {
+
+		public:
+
+			typedef ft::bidirectional_iterator_tag					iterator_category;
+			typedef std::ptrdiff_t									difference_type;
+			typedef T												value_type;
+			typedef T*												pointer;
+			typedef T&												reference;
+
+			/************************* Constructors and Destructor ***************************/
+
+			tree_iterator( void ) {}
+			tree_iterator( tree_iterator const & copy ) {
+				*this = copy;
+			}
+			~tree_iterator( void );
+
+			/************************* Implement operators ***********************************/
+
+			tree_iterator& operator=( tree_iterator const & rhs ) {
+				_ptr = copy;
+				return *this;
+			}
+
+			reference operator*( void ) const {
+				return _ptr->value;
+			}
+
+			pointer operator->( void ) {
+				return &_ptr->value;
+			}
+
+			tree_iterator& operator++( void ) {
+				if ( _ptr->right == NULL ) {
+					while ( _ptr->parent && _ptr->parent->value < _ptr->value )
+						_ptr = _ptr->parent;
+					_ptr = _ptr->parent;
+				}
+				else {
+					_ptr = _ptr->right;
+					while ( _ptr->left )
+						_ptr = _ptr->left;
+				}
+				return *this;
+			}
+			tree_iterator operator++( int ) {
+				tree_iterator tmp = *this;
+				++( *this );
+				return tmp;
+			}
+			tree_iterator& operator--( void ) {
+				if ( _ptr->left == NULL ) {
+					while ( _ptr->parent && _ptr->parent->value > _ptr->value )
+						_ptr = _ptr->parent;
+					_ptr = _ptr->parent;
+				}
+				else {
+					_ptr = _ptr->left;
+					while ( _ptr->right )
+						_ptr = _ptr->right;
+				}
+				return *this;
+			}
+			tree_iterator operator--( int ) {
+				tree_iterator tmp = *this;
+				--( *this );
+				return tmp;
+			}
+
+		private:
+
+			tree_node<T> * _ptr;
+
+	};
+
+	template <class T>
+	class const_tree_iterator {
+
+		public:
+
+			typedef ft::bidirectional_iterator_tag					iterator_category;
+			typedef std::ptrdiff_t									difference_type;
+			typedef T												value_type;
+			typedef T*												pointer;
+			typedef T&												reference;
+			typedef T const *										const_pointer;
+			typedef T const &										const_reference;
+
+			/************************* Constructors and Destructor ***************************/
+
+			const_tree_iterator( void ) {}
+			const_tree_iterator( const_tree_iterator const & copy ) {
+				*this = copy;
+			}
+			~const_tree_iterator( void );
+
+			/************************* Implement operators ***********************************/
+
+			const_tree_iterator& operator=( const_tree_iterator const & rhs ) {
+				_ptr = copy;
+				return *this;
+			}
+
+			const_reference operator*( void ) const {
+				return _ptr->value;
+			}
+
+			const_pointer operator->( void ) {
+				return &_ptr->value;
+			}
+
+			const_tree_iterator& operator++( void ) {
+				if ( _ptr->right == NULL ) {
+					while ( _ptr->parent && _ptr->parent->value < _ptr->value )
+						_ptr = _ptr->parent;
+					_ptr = _ptr->parent;
+				}
+				else {
+					_ptr = _ptr->right;
+					while ( _ptr->left )
+						_ptr = _ptr->left;
+				}
+				return *this;
+			}
+			const_tree_iterator operator++( int ) {
+				const_tree_iterator tmp = *this;
+				++( *this );
+				return tmp;
+			}
+			const_tree_iterator& operator--( void ) {
+				if ( _ptr->left == NULL ) {
+					while ( _ptr->parent && _ptr->parent->value > _ptr->value )
+						_ptr = _ptr->parent;
+					_ptr = _ptr->parent;
+				}
+				else {
+					_ptr = _ptr->left;
+					while ( _ptr->right )
+						_ptr = _ptr->right;
+				}
+				return *this;
+			}
+			const_tree_iterator operator--( int ) {
+				const_tree_iterator tmp = *this;
+				--( *this );
+				return tmp;
+			}
+
+		private:
+
+			tree_node<T> * _ptr;
 
 	};
 
@@ -440,6 +598,23 @@ namespace ft {
 		return &*lhs - &*rhs;
 	}
 
+	template <class T>
+	bool operator==( tree_iterator<T> const & lhs, tree_iterator<T> const & rhs ) {
+		return &*lhs == &*rhs;
+	}
+	template <class T>
+	bool operator!=( tree_iterator<T> const & lhs, tree_iterator<T> const & rhs ) {
+		return &*lhs != &*rhs;
+	}
+
+	template <class T>
+	bool operator==( const_tree_iterator<T> const & lhs, const_tree_iterator<T> const & rhs ) {
+		return &*lhs == &*rhs;
+	}
+	template <class T>
+	bool operator!=( const_tree_iterator<T> const & lhs, const_tree_iterator<T> const & rhs ) {
+		return &*lhs != &*rhs;
+	}
 
 	template <class Iter>
 	bool operator==( reverse_iterator<Iter> const & lhs, reverse_iterator<Iter> const & rhs ) {

@@ -1,15 +1,16 @@
 #include <iostream>
 #include <deque>
 
-#ifdef STL_CONTAINERS
+// #ifdef STL_CONTAINERS
 	#include <iterator>
 	#include <vector>
 	#include <stack>
+	#include <map>
 	namespace ft = std;
-#else
-	#include "vector.hpp"
-	#include "stack.hpp"
-#endif
+// #else
+// 	#include "vector.hpp"
+// 	#include "stack.hpp"
+// #endif
 
 template<typename T>
 void	displayVect( ft::vector<T> &vect, std::string test ) {
