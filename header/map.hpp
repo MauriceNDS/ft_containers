@@ -8,6 +8,18 @@
 namespace ft {
 
 	template <class T>
+	class tree_iterator;
+
+	template <class T>
+	class const_tree_iterator;
+
+	template <class Iter>
+	class reverse_iterator;
+
+	template <class ConstIter>
+	class const_reverse_iterator;
+
+	template <class T>
 	struct tree_node {
 
 		T			value;
@@ -25,11 +37,11 @@ namespace ft {
 	template <class T1, class T2>
 	struct pair {
 
-		first_type						first;
-		second_type						second;
-		
 		typedef T1						first_type;
 		typedef T2						second_type;
+
+		first_type						first;
+		second_type						second;
 
 		pair( void ) {}
 
@@ -55,6 +67,28 @@ namespace ft {
 	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
 	class map {
 
+		private: coucou
+
+			class value_comp {
+
+				friend class map;
+
+			protected:
+
+				Compare comp;
+				value_comp( Compare c ) : comp( c ) {}
+
+			public:
+
+				typedef bool 		result_type;
+				typedef T			first_argument_type;
+				typedef T			second_argument_type;
+				bool operator()( const T& x, const T& y ) const {
+				  return comp( x.first, y.first );
+				}
+
+			};
+
 		public:
 
 			/************************************* Typedefs ******************************************/
@@ -62,12 +96,12 @@ namespace ft {
 			typedef Key															key_type;
 			typedef T															mapped_type;
 			typedef Compare														key_compare;
-			typedef value_comp( key_compare )									value_compare;
+			typedef value_comp													value_compare; // ?
 			typedef Alloc														allocator_type;
-			typedef allocator_type::reference									reference;
-			typedef allocator_type::const_reference								const_reference;
-			typedef allocator_type::pointer										pointer;
-			typedef allocator_type::const_pointer								const_pointer;
+			typedef typename allocator_type::reference							reference;
+			typedef typename allocator_type::const_reference					const_reference;
+			typedef typename allocator_type::pointer							pointer;
+			typedef typename allocator_type::const_pointer						const_pointer;
 			typedef tree_iterator< pair< key_type, mapped_type > >				iterator;
 			typedef const_tree_iterator< pair< key_type, mapped_type > >		const_iterator;
 			typedef reverse_iterator<iterator>									reverse_iterator;
@@ -79,12 +113,35 @@ namespace ft {
 
 			tree_node< pair< key_type, mapped_type > > * _root;
 			size_type _size;
+			allocator_type _allocator;
+			key_compare _comparer;
+
+		public:
+
+			/************************************* Constructors **************************************/
+
+			explicit map( const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() ) : _size( 0 ), _root( NULL ) {
+				_comparer = comp;
+				_allocator = alloc;
+			}
+
+			template <class InputIterator>
+			map( InputIterator first, InputIterator last, const key_compare& comp = key_compare(),const allocator_type& alloc = allocator_type() ) {
+				_comparer = comp;
+				_allocator = alloc;
+				// to be continued
+			}
+
+		private:
 
 			void add( pair< key_type, mapped_type > p ) {
+				if ( check_duplicates( p ) )
+					return ;
+				// TO change
 				tree_node< pair< key_type, mapped_type > > * node = new tree_node< pair< key_type, mapped_type > >( p );
-				if ( root == NULL ) {
+				if ( _root == NULL ) {
 					_root = node;
-					_root.black = true;
+					_root->black = true;
 					_size++;
 					return ;
 				}
@@ -111,9 +168,16 @@ namespace ft {
 				}
 				return add( parent->left, new_node );
 			}
+
+			bool chek_duplicates( pair< key_type, mapped_type > p ) {
+				for ( iterator it = begin(); it != end(); it++ )
+					if ( !_comparer( p.first, it->first ) && !_comparer( it->first, p.first ) )
+						return true;
+				return false;
+			}
 			
 			void check_color( tree_node< pair< key_type, mapped_type > > * node ) {
-				if ( node == root )
+				if ( node == _root )
 					return ;
 				if ( !node->black && !node->parent->black )
 					correct_tree( node );
@@ -188,7 +252,7 @@ namespace ft {
 					}
 					else {
 						temp->isLeft = false;
-						temp->parent->right = temp
+						temp->parent->right = temp;
 					}
 				}
 				temp->left = node;
@@ -215,7 +279,7 @@ namespace ft {
 					}
 					else {
 						temp->isLeft = false;
-						temp->parent->right = temp
+						temp->parent->right = temp;
 					}
 				}
 				temp->right = node;
@@ -232,28 +296,6 @@ namespace ft {
 				left_rotate( node->left );
 				right_rotate( node );
 			}
-
-		public:
-
-			class value_comp {
-
-				friend class map;
-
-			protected:
-
-				Compare comp;
-				value_comp( Compare c ) : comp( c ) {}
-
-			public:
-
-				typedef bool result_type;
-				typedef value_type first_argument_type;
-				typedef value_type second_argument_type;
-				bool operator()( const value_type& x, const value_type& y ) const {
-				  return comp( x.first, y.first );
-				}
-
-			};
 
 	};
 

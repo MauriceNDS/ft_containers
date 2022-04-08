@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <memory>
+#include "map.hpp"
 #include "vector.hpp"
 
 namespace ft {
@@ -30,6 +31,9 @@ namespace ft {
 
 	template < class T, class Alloc >
 	class vector;
+
+	template < class Key, class T, class Compare, class Alloc >
+	class map;
 
 	template < class T, class V = ft::vector<T, std::allocator<T> > >
 	class iterator 
@@ -214,15 +218,15 @@ namespace ft {
 			/************************* Constructors and Destructor ***************************/
 
 			tree_iterator( void ) {}
-			tree_iterator( tree_iterator const & copy ) {
-				*this = copy;
+			tree_iterator( tree_iterator const & cpy ) {
+				*this = cpy;
 			}
 			~tree_iterator( void );
 
 			/************************* Implement operators ***********************************/
 
 			tree_iterator& operator=( tree_iterator const & rhs ) {
-				_ptr = copy;
+				_ptr = rhs._ptr;
 				return *this;
 			}
 
@@ -301,7 +305,7 @@ namespace ft {
 			/************************* Implement operators ***********************************/
 
 			const_tree_iterator& operator=( const_tree_iterator const & rhs ) {
-				_ptr = copy;
+				_ptr = rhs._ptr;
 				return *this;
 			}
 
