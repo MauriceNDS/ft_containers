@@ -8,6 +8,7 @@ INCLUDES = -I./header
 HEADER =	header/iterator.hpp				\
 			header/map.hpp					\
 			header/stack.hpp				\
+			header/tree.hpp					\
 			header/type_traits.hpp			\
 			header/utility.hpp				\
 			header/vector.hpp				\

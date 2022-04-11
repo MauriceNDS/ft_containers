@@ -1,9 +1,7 @@
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include <functional>
-#include <memory>
-#include "iterator.hpp"
+#include "tree.hpp"
 
 namespace ft {
 
@@ -19,55 +17,10 @@ namespace ft {
 	template <class ConstIter>
 	class const_reverse_iterator;
 
-	template <class T>
-	struct tree_node {
-
-		T			value;
-		bool		black;
-		bool		isLeft;
-		tree_node*	parent;
-		tree_node*	left;
-		tree_node*	right;
-
-		tree_node( void ) : parent( NULL ), left( NULL ), right( NULL ), black( true ), isLeft( false ) {}
-		tree_node( T val ) : value( val ), parent( NULL ), left( NULL ), right( NULL ), black( false ), isLeft( false ) {}
-
-	};
-
-	template <class T1, class T2>
-	struct pair {
-
-		typedef T1						first_type;
-		typedef T2						second_type;
-
-		first_type						first;
-		second_type						second;
-
-		pair( void ) {}
-
-		template<class U, class V>
-		pair( const pair<U,V>& pr ) {
-			*this = pr;
-		}
-
-		pair( const first_type& a, const second_type& b ) : first( a.first ), second( b.second ) {}
-
-		pair& operator=( const pair& pr ) {
-			first = pr.first;
-			second = pr.second;
-		}
-
-	};
-
-	template <class T1, class T2>
-	pair<T1,T2> make_pair( T1 x, T2 y ) {
-		return pair<T1,T2>( x, y );
-	}
-
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator<pair<const Key,T> > >
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< tree_node < pair<const Key,T> > > >
 	class map {
 
-		private: coucou
+		private:
 
 			class value_comp {
 
@@ -84,7 +37,7 @@ namespace ft {
 				typedef T			first_argument_type;
 				typedef T			second_argument_type;
 				bool operator()( const T& x, const T& y ) const {
-				  return comp( x.first, y.first );
+					return comp( x.first, y.first );
 				}
 
 			};
@@ -111,218 +64,98 @@ namespace ft {
 
 		private:
 
-			tree_node< pair< key_type, mapped_type > > * _root;
-			size_type _size;
-			allocator_type _allocator;
-			key_compare _comparer;
+			tree _tree;
 
 		public:
 
 			/************************************* Constructors **************************************/
 
-			explicit map( const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() ) : _size( 0 ), _root( NULL ) {
-				_comparer = comp;
-				_allocator = alloc;
-			}
+			explicit map( const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() )
+			: _tree( comp, alloc ) {}
 
 			template <class InputIterator>
-			map( InputIterator first, InputIterator last, const key_compare& comp = key_compare(),const allocator_type& alloc = allocator_type() ) {
-				_comparer = comp;
-				_allocator = alloc;
-				// to be continued
+			map( InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() ) 
+			: tree( first, last, comp, alloc ) {}
+
+			map( const map& x ) {
+				*this = x;
+			}
+
+			/************************************* Destructor ****************************************/
+
+			~map( void ) {}
+
+			/************************************* Operator = ****************************************/
+
+			map& operator=( const map& x ) {
+				_tree = x._tree;
+			}
+
+			/************************************* Iterators *****************************************/
+
+			iterator begin( void ) {
+				return iterator( _tree.getFirst() );
+			}
+
+			const_iterator begin( void ) const {
+				return const_iterator( _tree.getFirst() );
+			}
+
+			iterator end( void ) {
+				if ( _tree.getLast() )
+					return iterator( _tree.getLast()->right );
+				return begin();
+			}
+
+			const_iterator end( void ) const {
+				if ( _tree.getLast() )
+					return const_iterator( _tree.getLast()->right );
+				return begin();
+			}
+
+			reverse_iterator rbegin( void ) {
+				return reverse_iterator( _tree.getLast() );
+			}
+
+			const_reverse_iterator rbegin( void ) const {
+				return const_reverse_iterator( _tree.getLast() );
+			}
+
+			reverse_iterator rend( void ) {
+				if ( _tree.getFirst() )
+					return reverse_iterator( _tree.getFirst()->left );
+				return rbegin();
+			}
+
+			const_reverse_iterator rend( void ) const {
+				if ( _tree.getFirst() )
+					return const_reverse_iterator( _tree.getFirst()->left );
+				return rbegin();
+			}
+
+			/************************************* Capacity ******************************************/
+
+			bool empty() const {
+				return ( _tree.getSize() == 0 ) ? true : false;
+			}
+
+			size_type size( void ) const {
+				return _tree.getSize();
+			}
+
+			size_type max_size( void ) const {
+				return _tree.getAllocator().max_size();
+			}
+
+			/************************************* Element access ************************************/
+
+			mapped_type& operator[]( const key_type& k ) {
+				
 			}
 
 		private:
 
-			void add( pair< key_type, mapped_type > p ) {
-				if ( check_duplicates( p ) )
-					return ;
-				// TO change
-				tree_node< pair< key_type, mapped_type > > * node = new tree_node< pair< key_type, mapped_type > >( p );
-				if ( _root == NULL ) {
-					_root = node;
-					_root->black = true;
-					_size++;
-					return ;
-				}
-				add( _root, node );
-				check_color( node );
-				_size++;
-			}
-
-			void add( tree_node< pair< key_type, mapped_type > > * parent, tree_node< pair< key_type, mapped_type > > * new_node ) {
-				if ( key_compare( parent->key, new_node->key ) ) {
-					if ( parent->right == NULL ) {
-						parent->right = new_node;
-						new_node->parent = parent;
-						new_node->isLeft = false;
-						return ;
-					}
-					return add( parent->right, new_node );
-				}
-				if ( parent->left == NULL ) {
-					parent->left = new_node;
-					new_node->parent = parent;
-					new_node->isLeft = true;
-					return ;
-				}
-				return add( parent->left, new_node );
-			}
-
-			bool chek_duplicates( pair< key_type, mapped_type > p ) {
-				for ( iterator it = begin(); it != end(); it++ )
-					if ( !_comparer( p.first, it->first ) && !_comparer( it->first, p.first ) )
-						return true;
-				return false;
-			}
-			
-			void check_color( tree_node< pair< key_type, mapped_type > > * node ) {
-				if ( node == _root )
-					return ;
-				if ( !node->black && !node->parent->black )
-					correct_tree( node );
-				check_color( node->parent ); 
-			}
-
-			void correct_tree( tree_node< pair< key_type, mapped_type > > * node ) {
-				if ( node->parent->isLeft ) { // aunt is node->parent->parent->right
-					if ( node->parent->parent->right == NULL || node->parent->parent->right->black )
-						return rotate( node );
-					if ( node->parent->parent->right != NULL )
-						node->parent->parent->right->black = true;
-					node->parent->parent->black = false;
-					node->parent->black = true;
-					return ;
-				}
-				// aunt is node->parent->parent->left
-				if ( node->parent->parent->left == NULL || node->parent->parent->left->black )
-					return rotate( node );
-				if ( node->parent->parent->left != NULL )
-					node->parent->parent->left->black = true;
-				node->parent->parent->black = false;
-				node->parent->black = true;
-			}
-
-			void rotate( tree_node< pair< key_type, mapped_type > > * node ) {
-				if ( node->isLeft ) {
-					if ( node->parent->isLeft ) {
-						right_rotate( node->parent->parent );
-						node->black = false;
-						node->parent->black = true;
-						if ( node->parent->right != NULL )
-							node->parent->right->black = false;
-						return ;
-					}
-					rightleft_rotate( node->parent->parent );
-					node->black = true;
-					node->right->black = false;
-					node->left->black = false;
-					return ;
-				}
-				if ( node->parent->isLeft ) {
-					left_rotate( node->parent->parent );
-					node->black = false;
-					node->parent->black = true;
-					if ( node->parent->right != NULL )
-						node->parent->right->black = false;
-					return ;
-				}
-				leftright_rotate( node->parent->parent );
-				node->black = true;
-				node->right->black = false;
-				node->left->black = false;
-			}
-
-			void left_rotate( tree_node< pair< key_type, mapped_type > > * node ) {
-				tree_node< pair< key_type, mapped_type > > * temp = node->right;
-				node->right = temp->left;
-				if ( node->right != NULL ) {
-					node->right->parent = node;
-					node->right->isLeft = false;
-				}
-				if ( node->parent == NULL ) { // we are a root node
-					_root = temp;
-					temp->parent = NULL;
-				}
-				else {
-					temp->parent = node->parent;
-					if ( node->isLeft ) {
-						temp->isLeft = true;
-						temp->parent->left = temp;
-					}
-					else {
-						temp->isLeft = false;
-						temp->parent->right = temp;
-					}
-				}
-				temp->left = node;
-				node->isLeft = true;
-				node->parent = temp;
-			}
-
-			void right_rotate( tree_node< pair< key_type, mapped_type > > * node ) {
-				tree_node< pair< key_type, mapped_type > > * temp = node->left;
-				node->left = temp->right;
-				if ( node->left != NULL ) {
-					node->left->parent = node;
-					node->left->isLeft = true;
-				}
-				if ( node->parent == NULL ) { // we are a root node
-					_root = temp;
-					temp->parent = NULL;
-				}
-				else {
-					temp->parent = node->parent;
-					if ( node->isLeft ) {
-						temp->isLeft = true;
-						temp->parent->left = temp;
-					}
-					else {
-						temp->isLeft = false;
-						temp->parent->right = temp;
-					}
-				}
-				temp->right = node;
-				node->isLeft = false;
-				node->parent = temp;
-			}
-
-			void leftright_rotate( tree_node< pair< key_type, mapped_type > > * node ) {
-				left_rotate( node->left );
-				right_rotate( node );
-			}
-
-			void rightleft_rotate( tree_node< pair< key_type, mapped_type > > * node ) {
-				left_rotate( node->left );
-				right_rotate( node );
-			}
-
 	};
-
-	template <class T1, class T2>
-	bool operator==( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs ) {
-		return lhs.first == rhs.first && lhs.second == rhs.second;
-	}
-	template <class T1, class T2>
-	bool operator!=( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs ) {
-		return !( lhs == rhs );
-	}
-	template <class T1, class T2>
-	bool operator<( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs ) {
-		return lhs.first < rhs.first || ( !( rhs.first < lhs.first ) && lhs.second < rhs.second );
-	}
-	template <class T1, class T2>
-	bool operator<=( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs ) {
-		return !( rhs < lhs );
-	}
-	template <class T1, class T2>
-	bool operator>( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs ) {
-		return rhs < lhs;
-	}
-	template <class T1, class T2>
-	bool operator>=( const pair<T1,T2>& lhs, const pair<T1,T2>& rhs ) {
-		return !( lhs < rhs );
-	}
 
 }
 

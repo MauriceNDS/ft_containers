@@ -1302,23 +1302,23 @@ void stackNonMemberOverloadsTests( void ) {
 
 int	main(void) {
 	// Iterator Tests
-	iteratorTests();
-	constIteratorTests();
-	reverseIteratorTests();
-	constReverseIteratorTests();
+	// iteratorTests();
+	// constIteratorTests();
+	// reverseIteratorTests();
+	// constReverseIteratorTests();
 
 	// Vector Tests
-	vectorConstructorTests();
-	vectorIteratorTests();
-	vectorCapacityTests();
-	vectorElementAccessTests();
-	vectorModifiersTests();
-	vectorNonMemberOverloadsTests();
+	// vectorConstructorTests();
+	// vectorIteratorTests();
+	// vectorCapacityTests();
+	// vectorElementAccessTests();
+	// vectorModifiersTests();
+	// vectorNonMemberOverloadsTests();
 
 	// Stack Tests
-	stackConstructorTests();
-	stackMemberFunctionTests();
-	stackNonMemberOverloadsTests();
+	// stackConstructorTests();
+	// stackMemberFunctionTests();
+	// stackNonMemberOverloadsTests();
 
 	return (0);
 }
