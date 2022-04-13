@@ -22,7 +22,19 @@ namespace ft {
 
 	};
 
-	template < class T, class Compare, class Alloc >
+	template <class T>
+	class tree_iterator;
+
+	template <class T>
+	class const_tree_iterator;
+
+	template <class Iter>
+	class reverse_iterator;
+
+	template <class ConstIter>
+	class const_reverse_iterator;
+
+	template < class T, class value_comp, class Alloc >
 	class tree {
 
 		private:
@@ -32,17 +44,16 @@ namespace ft {
 			tree_node< T > * _last;
 			size_t _size;
 			Alloc _allocator;
-			Compare _comparer;
+			value_comp _comparer;
 
 		public:
 
-			typedef Compare														key_compare;
-			typedef tree_iterator< T >											iterator;
+			typedef ft::tree_iterator< T >										iterator;
 			typedef const_tree_iterator< T >									const_iterator;
 			typedef reverse_iterator<iterator>									reverse_iterator;
 			typedef const_reverse_iterator<const_iterator>						const_reverse_iterator;
 
-			explicit tree( const key_compare& comp = key_compare(), const Alloc& alloc = Alloc() ) : _size( 0 ), _root( NULL ) {
+			tree( const value_comp& comp, const Alloc& alloc ) : _root( NULL ), _size( 0 ) {
 				_comparer = comp;
 				_allocator = alloc;
 				_first = NULL;
@@ -50,13 +61,11 @@ namespace ft {
 			}
 
 			template <class InputIterator>
-			tree( InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const Alloc& alloc = Alloc() ) {
+			tree( InputIterator first, InputIterator last, const value_comp& comp, const Alloc& alloc ) {
 				_comparer = comp;
 				_allocator = alloc;
-				while ( first != last ) {
-					add( *first );
-					first++;
-				}
+				while ( first != last )
+					add( *first++ );
 			}
 
 			tree( const tree& x ) {
@@ -71,6 +80,30 @@ namespace ft {
 			tree& operator=( const tree& x ) {
 				_root = x._root;
 				_size = x._size;
+			}
+
+			iterator begin( void ) {
+				return iterator( &_first->value );
+			}
+
+			const_iterator begin( void ) const {
+				return const_iterator( &_first->value );
+			}
+
+			iterator end( void ) {
+				if ( _last )
+					return iterator( _last->right );
+				return begin();
+			}
+
+			const_iterator end( void ) const {
+				if ( _last )
+					return const_iterator( _last->right );
+				return begin();
+			}
+
+			tree_node< T > * getRoot( void ) const {
+				return _root;
 			}
 
 			tree_node< T > const * getFirst( void ) const {
@@ -92,8 +125,9 @@ namespace ft {
 			void add( T p ) {
 				if ( check_duplicates( p ) )
 					return ;
-				tree_node< T > * node = _allocator.allocate( 1 );
-				_allocator.construct( node, tree_node<T>( p ) )
+				tree_node< T >* node;
+				node = this->_allocator.allocate( 1 );
+				_allocator.construct( node, tree_node<T>( p ) );
 				if ( _root == NULL ) {
 					_root = node;
 					_root->black = true;
@@ -104,17 +138,27 @@ namespace ft {
 				}
 				add( _root, node );
 				check_color( node );
-				if ( key_compare( node, _first ) )
+				if ( _comparer( node->value, _first->value ) )
 					_first = node;
-				if ( key_compare( _last, node ) )
+				if ( _comparer( _last->value, node->value ) )
 					_last = node;
 				_size++;
+			}
+
+			tree_node<T>* search( tree_node<T> * node, T const key ) const {
+				if ( node && !_comparer( node->value, key ) && !_comparer( key, node->value ) )
+					return node;
+				if ( node->left )
+					return search( node->left, key );
+				if ( node->right )
+					return search( node->right, key );
+				return NULL;
 			}
 
 		private:
 
 			void add( tree_node< T > * parent, tree_node< T > * new_node ) {
-				if ( key_compare( parent->key, new_node->key ) ) {
+				if ( _comparer( parent->value.first, new_node->key ) ) {
 					if ( parent->right == NULL ) {
 						parent->right = new_node;
 						new_node->parent = parent;
@@ -132,9 +176,9 @@ namespace ft {
 				return add( parent->left, new_node );
 			}
 
-			bool chek_duplicates( T p ) {
+			bool check_duplicates( T p ) {
 				for ( iterator it = begin(); it != end(); it++ )
-					if ( !_comparer( p.first, it->first ) && !_comparer( it->first, p.first ) )
+					if ( !_comparer( p, *it ) && !_comparer( *it, p ) )
 						return true;
 				return false;
 			}
@@ -278,7 +322,7 @@ namespace ft {
 			*this = pr;
 		}
 
-		pair( const first_type& a, const second_type& b ) : first( a.first ), second( b.second ) {}
+		pair( const first_type& a, const second_type& b ) : first( a ), second( b ) {}
 
 		pair& operator=( const pair& pr ) {
 			first = pr.first;

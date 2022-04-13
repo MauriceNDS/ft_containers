@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <memory>
-#include "map.hpp"
+#include "tree.hpp"
 #include "vector.hpp"
 
 namespace ft {
@@ -31,9 +31,6 @@ namespace ft {
 
 	template < class T, class Alloc >
 	class vector;
-
-	template < class Key, class T, class Compare, class Alloc >
-	class map;
 
 	template < class T, class V = ft::vector<T, std::allocator<T> > >
 	class iterator 

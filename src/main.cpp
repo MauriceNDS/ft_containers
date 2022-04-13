@@ -10,6 +10,7 @@
 #else
 	#include "vector.hpp"
 	#include "stack.hpp"
+	#include "map.hpp"
 #endif
 
 template<typename T>
@@ -1319,6 +1320,8 @@ int	main(void) {
 	// stackConstructorTests();
 	// stackMemberFunctionTests();
 	// stackNonMemberOverloadsTests();
+	ft::map<int, std::string> a;
+	a[5];
 
 	return (0);
 }

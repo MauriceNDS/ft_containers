@@ -5,42 +5,12 @@
 
 namespace ft {
 
-	template <class T>
-	class tree_iterator;
-
-	template <class T>
-	class const_tree_iterator;
-
-	template <class Iter>
-	class reverse_iterator;
-
-	template <class ConstIter>
-	class const_reverse_iterator;
-
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< tree_node < pair<const Key,T> > > >
+	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< tree_node < pair<Key,T> > > >
 	class map {
 
 		private:
 
-			class value_comp {
-
-				friend class map;
-
-			protected:
-
-				Compare comp;
-				value_comp( Compare c ) : comp( c ) {}
-
-			public:
-
-				typedef bool 		result_type;
-				typedef T			first_argument_type;
-				typedef T			second_argument_type;
-				bool operator()( const T& x, const T& y ) const {
-					return comp( x.first, y.first );
-				}
-
-			};
+			class value_comp;
 
 		public:
 
@@ -49,14 +19,15 @@ namespace ft {
 			typedef Key															key_type;
 			typedef T															mapped_type;
 			typedef Compare														key_compare;
-			typedef value_comp													value_compare; // ?
+			typedef value_comp													value_compare;
+			typedef pair< key_type, mapped_type >								value_type;
 			typedef Alloc														allocator_type;
 			typedef typename allocator_type::reference							reference;
 			typedef typename allocator_type::const_reference					const_reference;
 			typedef typename allocator_type::pointer							pointer;
 			typedef typename allocator_type::const_pointer						const_pointer;
-			typedef tree_iterator< pair< key_type, mapped_type > >				iterator;
-			typedef const_tree_iterator< pair< key_type, mapped_type > >		const_iterator;
+			typedef tree_iterator<value_type>									iterator;
+			typedef const_tree_iterator<value_type>								const_iterator;
 			typedef reverse_iterator<iterator>									reverse_iterator;
 			typedef const_reverse_iterator<const_iterator>						const_reverse_iterator;
 			typedef std::ptrdiff_t												difference_type;
@@ -64,18 +35,19 @@ namespace ft {
 
 		private:
 
-			tree _tree;
+			tree< value_type, value_compare, allocator_type > _tree;
+			value_compare _vcomparer;
 
 		public:
 
 			/************************************* Constructors **************************************/
 
 			explicit map( const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() )
-			: _tree( comp, alloc ) {}
+			: _tree( _vcomparer, alloc ), _vcomparer( comp ) {}
 
 			template <class InputIterator>
 			map( InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type() ) 
-			: tree( first, last, comp, alloc ) {}
+			: _tree( first, last, comp, alloc ) {}
 
 			map( const map& x ) {
 				*this = x;
@@ -150,10 +122,40 @@ namespace ft {
 			/************************************* Element access ************************************/
 
 			mapped_type& operator[]( const key_type& k ) {
-				
+				tree_node<value_type> * res = _tree.search( _tree.getRoot(), ft::make_pair< key_type, mapped_type >( k, mapped_type() ) );
+				if ( res )
+					return res->value.second;
+				_tree.add( ft::make_pair< key_type, mapped_type >( k, mapped_type() ) );
+				return _tree.search( _tree.getRoot(), ft::make_pair< key_type, mapped_type >( k, mapped_type() ) )->value.second;
 			}
 
 		private:
+
+			class value_comp : std::binary_function< value_type, value_type, bool > {
+
+				friend class map;
+
+			protected:
+
+				Compare comp;
+				value_comp( Compare c ) : comp( c ) {}
+
+			public:
+				value_comp( void ) {}
+
+				typedef bool 				result_type;
+				typedef value_type			first_argument_type;
+				typedef value_type			second_argument_type;
+				bool operator()( const value_type& x, const value_type& y ) const {
+					return comp( x.first, y.first );
+				}
+				
+				value_comp& operator=( const value_comp& rhs ) {
+					comp = rhs.comp;
+					return *this;
+				}
+
+			};
 
 	};
 
