@@ -1321,7 +1321,21 @@ int	main(void) {
 	// stackMemberFunctionTests();
 	// stackNonMemberOverloadsTests();
 	ft::map<int, std::string> a;
-	a[5];
+	ft::map<int, std::string> b;
+	a.insert( ft::make_pair<int, std::string>( 8, "Jack" ) );
+	a.insert( ft::make_pair<int, std::string>( 8, "Jack" ) );
+	a.insert( ft::make_pair<int, std::string>( 7, "Fred" ) );
+	a.insert( ft::make_pair<int, std::string>( 6, "Ham" ) );
+	a.insert( ft::make_pair<int, std::string>( 5, "Duck" ) );
+	a.insert( ft::make_pair<int, std::string>( 4, "Simon" ) );
+	b.insert( a.begin(), a.end() );
+	for ( ft::map<int, std::string>::iterator i = a.begin(); i != a.end(); i++ ) {
+		std::cout << i->first << " " << i->second << std::endl;
+	}
+	std::cout << std::endl;
+	for ( ft::map<int, std::string>::iterator i = b.begin(); i != b.end(); i++ ) {
+		std::cout << i->first << " " << i->second << std::endl;
+	}
 
 	return (0);
 }

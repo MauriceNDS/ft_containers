@@ -215,11 +215,11 @@ namespace ft {
 			/************************* Constructors and Destructor ***************************/
 
 			tree_iterator( void ) {}
-			tree_iterator( pointer ptr ) : _ptr( ptr ) {}
+			tree_iterator( tree_node<value_type>* ptr ) : _ptr( ptr ) {}
 			tree_iterator( tree_iterator const & cpy ) {
 				*this = cpy;
 			}
-			~tree_iterator( void );
+			~tree_iterator( void ) {}
 
 			/************************* Implement operators ***********************************/
 

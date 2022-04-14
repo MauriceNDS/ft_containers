@@ -18,7 +18,7 @@ namespace ft {
 		tree_node*	right;
 
 		tree_node( void ) : parent( NULL ), left( NULL ), right( NULL ), black( true ), isLeft( false ) {}
-		tree_node( T val ) : value( val ), parent( NULL ), left( NULL ), right( NULL ), black( false ), isLeft( false ) {}
+		tree_node( T val ) : value( val ), black( false ), isLeft( false ), parent( NULL ), left( NULL ), right( NULL ) {}
 
 	};
 
@@ -83,11 +83,11 @@ namespace ft {
 			}
 
 			iterator begin( void ) {
-				return iterator( &_first->value );
+				return iterator( _first );
 			}
 
 			const_iterator begin( void ) const {
-				return const_iterator( &_first->value );
+				return const_iterator( _first );
 			}
 
 			iterator end( void ) {
@@ -122,11 +122,10 @@ namespace ft {
 				return _allocator;
 			}
 
-			void add( T p ) {
-				if ( check_duplicates( p ) )
-					return ;
-				tree_node< T >* node;
-				node = this->_allocator.allocate( 1 );
+			tree_node<T>* add( T p ) {
+				// if ( check_duplicates( p ) )
+				// 	return NULL;
+				tree_node< T >* node = _allocator.allocate( 1 );
 				_allocator.construct( node, tree_node<T>( p ) );
 				if ( _root == NULL ) {
 					_root = node;
@@ -134,7 +133,7 @@ namespace ft {
 					_first = _root;
 					_last = _root;
 					_size++;
-					return ;
+					return node;
 				}
 				add( _root, node );
 				check_color( node );
@@ -142,15 +141,31 @@ namespace ft {
 					_first = node;
 				if ( _comparer( _last->value, node->value ) )
 					_last = node;
+				_root->black = true;
 				_size++;
+				return node;
+			}
+
+			tree_node<T>* hint_add( tree_node< T >* position, T p ) {
+				tree_node< T >* node = _allocator.allocate( 1 );
+				_allocator.construct( node, tree_node<T>( p ) );
+				add( position, node );
+				check_color( node );
+				if ( _comparer( node->value, _first->value ) )
+					_first = node;
+				if ( _comparer( _last->value, node->value ) )
+					_last = node;
+				_root->black = true;
+				_size++;
+				return node;
 			}
 
 			tree_node<T>* search( tree_node<T> * node, T const key ) const {
 				if ( node && !_comparer( node->value, key ) && !_comparer( key, node->value ) )
 					return node;
-				if ( node->left )
+				if ( node && node->left )
 					return search( node->left, key );
-				if ( node->right )
+				if ( node && node->right )
 					return search( node->right, key );
 				return NULL;
 			}
@@ -158,7 +173,7 @@ namespace ft {
 		private:
 
 			void add( tree_node< T > * parent, tree_node< T > * new_node ) {
-				if ( _comparer( parent->value.first, new_node->key ) ) {
+				if ( _comparer( parent->value, new_node->value ) ) {
 					if ( parent->right == NULL ) {
 						parent->right = new_node;
 						new_node->parent = parent;
@@ -227,17 +242,17 @@ namespace ft {
 					return ;
 				}
 				if ( node->parent->isLeft ) {
-					left_rotate( node->parent->parent );
+					leftright_rotate( node->parent->parent );
 					node->black = false;
 					node->parent->black = true;
 					if ( node->parent->right != NULL )
 						node->parent->right->black = false;
 					return ;
 				}
-				leftright_rotate( node->parent->parent );
-				node->black = true;
-				node->right->black = false;
-				node->left->black = false;
+				left_rotate( node->parent->parent );
+				node->parent->black = true;
+				node->parent->right->black = false;
+				node->parent->left->black = false;
 			}
 
 			void left_rotate( tree_node< T > * node ) {
@@ -247,7 +262,7 @@ namespace ft {
 					node->right->parent = node;
 					node->right->isLeft = false;
 				}
-				if ( node->parent == NULL ) { // we are a root node
+				if ( node->parent == NULL ) { // we are the root node
 					_root = temp;
 					temp->parent = NULL;
 				}
