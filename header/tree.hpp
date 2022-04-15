@@ -319,6 +319,125 @@ namespace ft {
 				right_rotate( node );
 			}
 
+			tree_node< T >* bst_delete_no_leaf( tree_node< T >* node ) {
+				if ( node->parent && node->isLeft )
+					node->parent->left = NULL;
+				else if ( node->parent )
+					node->parent->right = NULL;
+				else
+					_root = NULL;
+				_size--;
+				return node;
+			}
+
+			tree_node< T >* bst_delete_left_leaf( tree_node< T >* node ) {
+				_size--;
+				if ( node->parent == NULL ) {
+					_root = node->left;
+					node->left->parent = NULL;
+					node->left->isLeft = false;
+					return node;
+				}
+				if ( node->isLeft )
+					node->parent->left = node->left;
+				else {
+					node->parent->right = node->left;
+					node->left->isLeft = false;
+				}
+				node->left->parent = node->parent;
+				return node;
+			}
+
+			tree_node< T >* bst_delete_right_leaf( tree_node< T >* node ) {
+				_size--;
+				if ( node->parent == NULL ) {
+					_root = node->right;
+					node->right->parent = NULL;
+					return node;
+				}
+				if ( node->isLeft ) {
+					node->parent->left = node->right;
+					node->right->isLeft = true;
+				}
+				else
+					node->parent->right = node->right;
+				node->right->parent = node->parent;
+				return node;
+			}
+
+			tree_node< T >* bst_delete_two_leaf( tree_node< T >* node ) {
+				_size--;
+				tree_node< T >* next = node->right;
+				while ( next->left )
+					next = next->left;
+				if ( node->parent == NULL ) {
+					if ( next->isLeft ) {
+						next->parent->left = next->right;
+						if ( next->right ) {
+							next->right->isLeft = true;
+							next->right->parent = next->parent;
+						}
+						next->right = node->right;
+						node->right->parent = next;
+					}
+					next->parent = NULL;
+					next->isLeft = node->isLeft;
+					next->left = node->left;
+					node->left->parent = next;
+					_root = next;
+					return node;
+				}
+				if ( next->isLeft ) {
+					next->parent->left = next->right;
+					if ( next->right ) {
+						next->right->isLeft = true;
+						next->right->parent = next->parent;
+					}
+					next->right = node->right;
+					node->right->parent = next;
+				}
+				if ( node->isLeft )
+					node->parent->left = next;
+				else
+					node->parent->right = next;
+				next->parent = node->parent;
+				next->isLeft = node->isLeft;
+				next->left = node->left;
+				node->left->parent = next;
+				return node;
+			}
+
+			tree_node< T >* bst_delete( tree_node< T > * node ) {
+				if ( node == NULL )
+					return NULL;
+				if ( node->left == NULL && node->right == NULL )
+					return bst_delete_no_leaf( node );
+				else if ( node->left != NULL && node->right == NULL )
+					return bst_delete_left_leaf( node );
+				else if ( node->left == NULL && node->right != NULL )
+					return bst_delete_right_leaf( node );
+				else
+					return bst_delete_two_leaf( node );				
+			}
+
+			void del( tree_node< T >* node ) {
+				tree_node< T >* v = bst_delete( node );
+				if ( v == NULL )
+					return ;
+				tree_node< T >* u;
+				if ( v->isLeft )
+					u = v->parent->left;
+				else
+					u = v->parent->right;
+				// Code case 2
+				
+			}
+
+			void free_node( tree_node< T > * node ) {
+				_allocator.destroy( node );
+				_allocator.deallocate( node );
+			}
+
 	};
 
 	template <class T1, class T2>
