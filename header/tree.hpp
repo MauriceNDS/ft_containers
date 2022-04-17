@@ -327,7 +327,7 @@ namespace ft {
 				else
 					_root = NULL;
 				_size--;
-				return node;
+				return NULL;
 			}
 
 			tree_node< T >* bst_delete_left_leaf( tree_node< T >* node ) {
@@ -345,7 +345,7 @@ namespace ft {
 					node->left->isLeft = false;
 				}
 				node->left->parent = node->parent;
-				return node;
+				return node->left;
 			}
 
 			tree_node< T >* bst_delete_right_leaf( tree_node< T >* node ) {
@@ -362,7 +362,7 @@ namespace ft {
 				else
 					node->parent->right = node->right;
 				node->right->parent = node->parent;
-				return node;
+				return node->right;
 			}
 
 			tree_node< T >* bst_delete_two_leaf( tree_node< T >* node ) {
@@ -385,7 +385,7 @@ namespace ft {
 					next->left = node->left;
 					node->left->parent = next;
 					_root = next;
-					return node;
+					return next;
 				}
 				if ( next->isLeft ) {
 					next->parent->left = next->right;
@@ -404,7 +404,7 @@ namespace ft {
 				next->isLeft = node->isLeft;
 				next->left = node->left;
 				node->left->parent = next;
-				return node;
+				return next;
 			}
 
 			tree_node< T >* bst_delete( tree_node< T > * node ) {
@@ -420,18 +420,19 @@ namespace ft {
 					return bst_delete_two_leaf( node );				
 			}
 
-			void del( tree_node< T >* node ) {
-				tree_node< T >* v = bst_delete( node );
-				if ( v == NULL )
-					return ;
-				tree_node< T >* u;
-				if ( v->isLeft )
-					u = v->parent->left;
-				else
-					u = v->parent->right;
-				// Code case 2
-				
-			}
+			void del( tree_node< T >* v ) {
+				// step one - perform a basic binary tree deletion
+				tree_node< T >* u = bst_delete( v );
+				// step two - if either 'u' or 'v' are red
+				if ( v->black == false || ( u && u->black == false ) )
+					u->black = true;
+				// step three - if both 'u' and 'v' are black
+				else {
+					if ( u == _root )
+						return ;
+					bool double_black = true;
+				}
+			}				
 
 			void free_node( tree_node< T > * node ) {
 				_allocator.destroy( node );
