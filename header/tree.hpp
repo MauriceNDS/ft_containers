@@ -315,8 +315,8 @@ namespace ft {
 			}
 
 			void rightleft_rotate( tree_node< T > * node ) {
-				left_rotate( node->left );
-				right_rotate( node );
+				right_rotate( node->right );
+				left_rotate( node );
 			}
 
 			tree_node< T >* bst_delete_no_leaf( tree_node< T >* node ) {
@@ -408,8 +408,6 @@ namespace ft {
 			}
 
 			tree_node< T >* bst_delete( tree_node< T > * node ) {
-				if ( node == NULL )
-					return NULL;
 				if ( node->left == NULL && node->right == NULL )
 					return bst_delete_no_leaf( node );
 				else if ( node->left != NULL && node->right == NULL )
@@ -420,18 +418,51 @@ namespace ft {
 					return bst_delete_two_leaf( node );				
 			}
 
+			void rotate_double_black( tree_node< T >* s, tree_node< T >* r ) {
+				if ( s->isLeft && r->isLeft )
+					right_rotate( s->parent );
+				else if ( s->isLeft && !r->isLeft )
+					leftright_rotate( s->parent );
+				else if ( !s->isLeft && !r->isLeft )
+					left_rotate( s->parent );
+				else
+					rightleft_rotate( node->parent->parent );
+			}
+
+			void handle_double_black( tree_node< T >* v, tree_node< T >* u ) {
+				tree_node< T >* s, r;
+				tree_node< T >* double_black = v;
+				if ( u == _root )
+					return ;
+				if ( v && v->isLeft )
+					s = v->parent->right;
+				else
+					s = v->parent->left;
+				if ( s->black && ( ( s->left && !s->left->black ) || ( s->right && !s->right->black ) ) ) {
+					if ( s->left && !s->left->black && s->right && !s->right->black && v->isLeft )
+						r = s->right;
+					else if ( s->left && !s->left->black && s->right && !s->right->black )
+						r = s->left;
+					else if ( s->left && !s->left->black )
+						r = s->left;
+					else
+						r = s->right;
+					rotate_double_black( s, r );
+				}
+				else if (  )
+			}
+
 			void del( tree_node< T >* v ) {
+				if ( v )
+					return ;
 				// step one - perform a basic binary tree deletion
 				tree_node< T >* u = bst_delete( v );
 				// step two - if either 'u' or 'v' are red
 				if ( v->black == false || ( u && u->black == false ) )
 					u->black = true;
 				// step three - if both 'u' and 'v' are black
-				else {
-					if ( u == _root )
-						return ;
-					bool double_black = true;
-				}
+				else 
+					handle_double_black( v, u );
 			}				
 
 			void free_node( tree_node< T > * node ) {

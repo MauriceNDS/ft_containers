@@ -249,11 +249,13 @@ namespace ft {
 				}
 				return *this;
 			}
+
 			tree_iterator operator++( int ) {
 				tree_iterator tmp = *this;
 				++( *this );
 				return tmp;
 			}
+
 			tree_iterator& operator--( void ) {
 				if ( _ptr->left == NULL ) {
 					while ( _ptr->parent && _ptr->parent->value > _ptr->value )
@@ -267,6 +269,7 @@ namespace ft {
 				}
 				return *this;
 			}
+			
 			tree_iterator operator--( int ) {
 				tree_iterator tmp = *this;
 				--( *this );
