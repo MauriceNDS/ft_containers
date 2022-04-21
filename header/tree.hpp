@@ -53,6 +53,8 @@ namespace ft {
 			typedef reverse_iterator<iterator>									reverse_iterator;
 			typedef const_reverse_iterator<const_iterator>						const_reverse_iterator;
 
+			tree( void ) : _root( NULL ), _first( NULL ), _last( NULL ), _size( 0 ) {}
+
 			tree( const value_comp& comp, const Alloc& alloc ) : _root( NULL ), _size( 0 ) {
 				_comparer = comp;
 				_allocator = alloc;
@@ -80,6 +82,10 @@ namespace ft {
 			tree& operator=( const tree& x ) {
 				_root = x._root;
 				_size = x._size;
+				_first = x._first;
+				_last = x._last;
+				_allocator = x._allocator;
+				_comparer = x._comparer;
 				return *this;
 			}
 
