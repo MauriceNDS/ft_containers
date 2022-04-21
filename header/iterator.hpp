@@ -298,10 +298,11 @@ namespace ft {
 			/************************* Constructors and Destructor ***************************/
 
 			const_tree_iterator( void ) {}
+			const_tree_iterator( tree_node<value_type>* ptr ) : _ptr( ptr ) {}
 			const_tree_iterator( const_tree_iterator const & copy ) {
 				*this = copy;
 			}
-			~const_tree_iterator( void );
+			~const_tree_iterator( void ) {}
 
 			/************************* Implement operators ***********************************/
 

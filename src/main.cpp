@@ -1481,6 +1481,7 @@ int	main(void) {
 	// reverseIteratorTests();
 	// constReverseIteratorTests();
 	treeIteratorTests();
+	constTreeIteratorTests();
 
 	// Vector Tests
 	// vectorConstructorTests();

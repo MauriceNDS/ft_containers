@@ -62,6 +62,7 @@ namespace ft {
 
 			map& operator=( const map& x ) {
 				_tree = x._tree;
+				return *this;
 			}
 
 			/************************************* Iterators *****************************************/

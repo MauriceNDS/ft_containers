@@ -80,6 +80,7 @@ namespace ft {
 			tree& operator=( const tree& x ) {
 				_root = x._root;
 				_size = x._size;
+				return *this;
 			}
 
 			iterator begin( void ) {
