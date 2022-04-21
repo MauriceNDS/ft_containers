@@ -168,6 +168,30 @@ namespace ft {
 				}
 			}
 
+			void erase( iterator position ) {
+				_tree.del( position._ptr );
+			}
+
+			size_type erase( const key_type& k ) {
+				tree_node< value_type >* res = _tree.search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
+				if ( res ) {
+					_tree.del( res );
+					return 1;
+				}
+				return 0;
+			}
+
+			void erase( iterator first, iterator last ) {
+				while ( first != last ) {
+					_tree.erase( first );
+					first++;
+				}
+			}
+
+			void swap( map& x ) {
+				(void)x;
+			}
+
 		private:
 
 			class value_comp : std::binary_function< value_type, value_type, bool > {

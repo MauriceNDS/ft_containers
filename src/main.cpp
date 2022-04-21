@@ -585,6 +585,179 @@ void constReverseIteratorTests( void ) {
 	}
 }
 
+void treeIteratorTests( void ) {
+	std::cout << "TREE ITERATOR TESTS:" << std::endl << std::endl;
+
+	{
+		std::cout << "Constructors:" << std::endl;
+		ft::map<int, int> m;
+		m[5] = 5;
+		m[15] = 15;
+		m[25] = 25;
+		m[35] = 35;
+		ft::map<int, int>::iterator a;
+		ft::map<int, int>::iterator b = m.begin();
+		std::cout << b->first << " " << b->second << std::endl;;
+		ft::map<int, int>::iterator c( b );
+		std::cout << c->first << " " << c->second << std::endl;
+		b->second += 10;
+		std::cout << b->second << " " << c->second << std::endl;
+		a = b;
+		std::cout << a->second << " " << b->second << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+	{
+		std::cout << "Equality operators:" << std::endl;
+		ft::map<int, std::string> m;
+		ft::map<int, int> x;
+		std::cout << std::boolalpha << ( x.begin() != x.end() ) << std::endl;
+		m[42] = "Hello";
+		m[21] = "HellO";
+		ft::map<int, std::string>::iterator a = m.begin();
+		ft::map<int, std::string>::iterator b = a;
+		b++;
+		std::cout << (a == b) << std::endl;
+		std::cout << (a != b) << std::endl;
+		std::cout << (a != a) << std::endl;
+		std::cout << (a == a) << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+	{
+		std::cout << "Dereferenable:" << std::endl;
+		ft::map<int, int> m;
+		m[15] = 15;
+		m[5] = 5;
+		m[25] = 25;
+		m[35] = 35;
+		ft::map<int, int>::iterator a = m.begin();
+		std::cout << a->first << " " << a->second << std::endl;
+		a->second += 42;
+		std::cout << a->first << " " << a->second << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+	{
+		std::cout << "Incrementation:" << std::endl;
+		ft::map<int, int> m;
+		m[5] = 5;
+		m[15] = 15;
+		m[35] = 35;
+		m[25] = 25;
+		ft::map<int, int>::iterator a = m.begin();
+		std::cout << a->first << " " << a->second << std::endl;
+		a++;
+		std::cout << a->first << " " << a->second << std::endl;
+		++a;
+		std::cout << a->first << " " << a->second << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+	{
+		std::cout << "Decrementation:" << std::endl;
+		ft::map<int, int> m;
+		m[35] = 35;
+		m[5] = 5;
+		m[15] = 15;
+		m[25] = 25;
+		ft::map<int, int>::iterator a = m.begin();
+		a++;
+		a++;
+		a++;
+		std::cout << a->first << " " << a->second << std::endl;
+		a--;
+		std::cout << a->first << " " << a->second << std::endl;
+		--a;
+		std::cout << a->first << " " << a->second << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+}
+
+void constTreeIteratorTests( void ) {
+	std::cout << "CONST TREE ITERATOR TESTS:" << std::endl << std::endl;
+
+	{
+		std::cout << "Constructors:" << std::endl;
+		ft::map<int, int> m;
+		m[5] = 5;
+		m[15] = 15;
+		m[25] = 25;
+		m[35] = 35;
+		ft::map<int, int>::const_iterator a;
+		const ft::map<int, int> cm( m );
+		ft::map<int, int>::const_iterator b = cm.begin();
+		std::cout << b->first << " " << b->second << std::endl;;
+		ft::map<int, int>::const_iterator c( b );
+		std::cout << c->first << " " << c->second << std::endl;
+		std::cout << b->second << " " << c->second << std::endl;
+		a = b;
+		std::cout << a->second << " " << b->second << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+	{
+		std::cout << "Equality operators:" << std::endl;
+		ft::map<int, std::string> m;
+		ft::map<int, int> x;
+		std::cout << std::boolalpha << ( x.begin() != x.end() ) << std::endl;
+		m[42] = "Hello";
+		m[21] = "HellO";
+		const ft::map<int, std::string> cm( m );
+		ft::map<int, std::string>::const_iterator a = cm.begin();
+		ft::map<int, std::string>::const_iterator b = a;
+		b++;
+		std::cout << (a == b) << std::endl;
+		std::cout << (a != b) << std::endl;
+		std::cout << (a != a) << std::endl;
+		std::cout << (a == a) << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+	{
+		std::cout << "Dereferenable:" << std::endl;
+		ft::map<int, int> m;
+		m[15] = 15;
+		m[5] = 5;
+		m[25] = 25;
+		m[35] = 35;
+		const ft::map<int, int> cm( m );
+		ft::map<int, int>::const_iterator a = cm.begin();
+		std::cout << a->first << " " << a->second << std::endl;
+		std::cout << a->first << " " << a->second << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+	{
+		std::cout << "Incrementation:" << std::endl;
+		ft::map<int, int> m;
+		m[5] = 5;
+		m[15] = 15;
+		m[35] = 35;
+		m[25] = 25;
+		const ft::map<int, int> cm( m );
+		ft::map<int, int>::const_iterator a = cm.begin();
+		std::cout << a->first << " " << a->second << std::endl;
+		a++;
+		std::cout << a->first << " " << a->second << std::endl;
+		++a;
+		std::cout << a->first << " " << a->second << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+	{
+		std::cout << "Decrementation:" << std::endl;
+		ft::map<int, int> m;
+		m[35] = 35;
+		m[5] = 5;
+		m[15] = 15;
+		m[25] = 25;
+		const ft::map<int, int> cm( m );
+		ft::map<int, int>::const_iterator a = cm.begin();
+		a++;
+		a++;
+		a++;
+		std::cout << a->first << " " << a->second << std::endl;
+		a--;
+		std::cout << a->first << " " << a->second << std::endl;
+		--a;
+		std::cout << a->first << " " << a->second << std::endl;
+		std::cout << "=======================================================" << std::endl;
+	}
+}
+
 void vectorConstructorTests( void ) {
 	std::cout << "VECTOR CONSTRUCTOR TESTS:" << std::endl << std::endl;
 
@@ -1307,6 +1480,7 @@ int	main(void) {
 	// constIteratorTests();
 	// reverseIteratorTests();
 	// constReverseIteratorTests();
+	treeIteratorTests();
 
 	// Vector Tests
 	// vectorConstructorTests();
@@ -1320,22 +1494,5 @@ int	main(void) {
 	// stackConstructorTests();
 	// stackMemberFunctionTests();
 	// stackNonMemberOverloadsTests();
-	ft::map<int, std::string> a;
-	ft::map<int, std::string> b;
-	a.insert( ft::make_pair<int, std::string>( 8, "Jack" ) );
-	a.insert( ft::make_pair<int, std::string>( 8, "Jack" ) );
-	a.insert( ft::make_pair<int, std::string>( 7, "Fred" ) );
-	a.insert( ft::make_pair<int, std::string>( 6, "Ham" ) );
-	a.insert( ft::make_pair<int, std::string>( 5, "Duck" ) );
-	a.insert( ft::make_pair<int, std::string>( 4, "Simon" ) );
-	b.insert( a.begin(), a.end() );
-	for ( ft::map<int, std::string>::iterator i = a.begin(); i != a.end(); i++ ) {
-		std::cout << i->first << " " << i->second << std::endl;
-	}
-	std::cout << std::endl;
-	for ( ft::map<int, std::string>::iterator i = b.begin(); i != b.end(); i++ ) {
-		std::cout << i->first << " " << i->second << std::endl;
-	}
-
 	return (0);
 }

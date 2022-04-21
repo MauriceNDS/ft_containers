@@ -170,6 +170,25 @@ namespace ft {
 				return NULL;
 			}
 
+			void del( tree_node< T >* v ) {
+				if ( v )
+					return ;
+				// step one - perform a basic binary tree deletion
+				tree_node< T >* u = bst_delete( v );
+				// step two - if either 'u' or 'v' are red
+				if ( v->black == false || ( u && u->black == false ) )
+					u->black = true;
+				// step three - if both 'u' and 'v' are black
+				else 
+					handle_double_black( v, u );
+				iterator it( v );
+				if ( v == _first )
+					_first = (it++)._ptr;
+				if ( v == _last )
+					_last = (it--)._ptr;
+				free_node( v );
+			}
+
 		private:
 
 			void add( tree_node< T > * parent, tree_node< T > * new_node ) {
@@ -203,6 +222,8 @@ namespace ft {
 					return ;
 				if ( !node->black && !node->parent->black )
 					correct_tree( node );
+				if ( node == _root )
+					return ;
 				check_color( node->parent ); 
 			}
 
@@ -243,16 +264,16 @@ namespace ft {
 				}
 				if ( node->parent->isLeft ) {
 					leftright_rotate( node->parent->parent );
-					node->black = false;
-					node->parent->black = true;
-					if ( node->parent->right != NULL )
-						node->parent->right->black = false;
+					node->black = true;
+					node->right->black = false;
+					node->left->black = false;
 					return ;
 				}
 				left_rotate( node->parent->parent );
+				node->black = false;
 				node->parent->black = true;
-				node->parent->right->black = false;
-				node->parent->left->black = false;
+				if ( node->parent->right != NULL )
+					node->parent->right->black = false;
 			}
 
 			void left_rotate( tree_node< T > * node ) {
@@ -426,7 +447,7 @@ namespace ft {
 				else if ( !s->isLeft && !r->isLeft )
 					left_rotate( s->parent );
 				else
-					rightleft_rotate( node->parent->parent );
+					rightleft_rotate( s->parent );
 			}
 
 			void handle_double_black( tree_node< T >* v, tree_node< T >* u ) {
@@ -449,21 +470,23 @@ namespace ft {
 						r = s->right;
 					rotate_double_black( s, r );
 				}
-				else if (  )
+				else if ( s->black && ( !s->left || s->left->black ) && ( !s->right || s->right->black ) ) {
+					s->black = false;
+					if ( !s->parent->black )
+						s->parent->black = true;
+					else
+						handle_double_black( s->parent, s->parent );
+				}
+				else if ( s->red ) {
+					s->black = !s->black;
+					s->parent->black = !s->parent->black;
+					if ( s->isLeft )
+						right_rotate( s->parent );
+					else
+						left_rotate( s->parent );
+					handle_double_black( v, v );
+				}
 			}
-
-			void del( tree_node< T >* v ) {
-				if ( v )
-					return ;
-				// step one - perform a basic binary tree deletion
-				tree_node< T >* u = bst_delete( v );
-				// step two - if either 'u' or 'v' are red
-				if ( v->black == false || ( u && u->black == false ) )
-					u->black = true;
-				// step three - if both 'u' and 'v' are black
-				else 
-					handle_double_black( v, u );
-			}				
 
 			void free_node( tree_node< T > * node ) {
 				_allocator.destroy( node );
