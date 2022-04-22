@@ -22,7 +22,7 @@ namespace ft {
 
 	};
 
-	template <class T>
+	template <class T, class Comp>
 	class tree_iterator;
 
 	template <class T>
@@ -63,7 +63,7 @@ namespace ft {
 			}
 
 			template <class InputIterator>
-			tree( InputIterator first, InputIterator last, const value_comp& comp, const Alloc& alloc ) {
+			tree( InputIterator first, InputIterator last, const value_comp& comp, const Alloc& alloc ) : _root( NULL ), _first( NULL ), _last( NULL ), _size( 0 ) {
 				_comparer = comp;
 				_allocator = alloc;
 				while ( first != last )

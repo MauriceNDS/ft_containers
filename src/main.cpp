@@ -25,6 +25,16 @@ void	displayVect( ft::vector<T> &vect, std::string test ) {
 	std::cout << "capacity = " << vect.capacity() << std::endl << std::endl;
 }
 
+template< typename K, typename V, typename Comp >
+void displayMap( ft::map<K, V, Comp> &m, std::string test ) {
+	std::cout << "=======================================================" << std::endl;
+	std::cout << test << std::endl;
+	for ( typename ft::map<K, V, Comp>::iterator it = m.begin(); it != m.end(); it++ )
+		std::cout << it->first << " " << it->second << std::endl;
+
+	std::cout << std::endl << "size = " << m.size() << std::endl << std::endl;
+}
+
 void iteratorTests( void ) {
 	std::cout << "ITERATOR TESTS:" << std::endl << std::endl;
 
@@ -1474,6 +1484,50 @@ void stackNonMemberOverloadsTests( void ) {
 	}
 }
 
+bool fncomp( char lhs, char rhs ) {
+	return lhs > rhs;
+}
+
+struct classcomp {
+  bool operator()( const char& lhs, const char& rhs ) const {
+		return lhs > rhs;
+	}
+};
+
+void mapConstructorTests( void ) {
+	std::cout << "MAP CONSTRUCTOR TESTS:" << std::endl << std::endl;
+
+	{
+		ft::map<char,int> first;
+		first['a']=10;
+		first['b']=30;
+		first['c']=50;
+		first['d']=70;
+		displayMap( first, "Constructor test 1" );
+
+		ft::map<char,int> second( first.begin(), first.end() );
+		displayMap( second, "Constructor test 2" );
+
+		ft::map<char,int> third( second );
+		displayMap( third, "Constructor test 3" );
+
+		ft::map<char,int,classcomp> fourth;
+		fourth['d']=70;
+		fourth['a']=10;
+		fourth['b']=30;
+		fourth['c']=50;
+		displayMap( fourth, "Constructor test 4" );
+
+		bool(*fn_pt)(char,char) = fncomp;
+		ft::map<char,int,bool(*)(char,char)> fifth( fn_pt );
+		fifth['d']=70;
+		fifth['b']=30;
+		fifth['c']=50;
+		fifth['a']=10;
+		displayMap( fifth, "Constructor test 5" );
+	}
+}
+
 int	main(void) {
 	// Iterator Tests
 	// iteratorTests();
@@ -1495,5 +1549,8 @@ int	main(void) {
 	// stackConstructorTests();
 	// stackMemberFunctionTests();
 	// stackNonMemberOverloadsTests();
+
+	// Map Tests
+	mapConstructorTests();
 	return (0);
 }

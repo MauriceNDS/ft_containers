@@ -201,7 +201,7 @@ namespace ft {
 
 	};
 
-	template <class T>
+	template < class T, class Comp >
 	class tree_iterator {
 
 		public:
@@ -279,6 +279,7 @@ namespace ft {
 		private:
 
 			tree_node<T> * _ptr;
+			Comp _comparer;
 
 	};
 
@@ -604,12 +605,12 @@ namespace ft {
 		return &*lhs - &*rhs;
 	}
 
-	template <class T>
-	bool operator==( tree_iterator<T> const & lhs, tree_iterator<T> const & rhs ) {
+	template <class T, class Comp>
+	bool operator==( tree_iterator<T, Comp> const & lhs, tree_iterator<T, Comp> const & rhs ) {
 		return &*lhs == &*rhs;
 	}
-	template <class T>
-	bool operator!=( tree_iterator<T> const & lhs, tree_iterator<T> const & rhs ) {
+	template <class T, class Comp>
+	bool operator!=( tree_iterator<T, Comp> const & lhs, tree_iterator<T, Comp> const & rhs ) {
 		return &*lhs != &*rhs;
 	}
 
