@@ -1528,6 +1528,91 @@ void mapConstructorTests( void ) {
 	}
 }
 
+void mapIteratorTests( void ) {
+	std::cout << "MAP ITERATOR TESTS:" << std::endl << std::endl;
+
+	{
+		ft::map<int, int> a;
+		a[5] = 5;
+		a[15] = 15;
+		a[25] = 25;
+		a[35] = 35;
+		std::cout << a.begin()->first << std::endl;
+		std::cout << (a.begin()++)->first << std::endl;
+		std::cout << a.rbegin()->first << std::endl;
+		std::cout << (a.rbegin()++)->first << std::endl;
+	}
+}
+
+void mapCapacityTests( void ) {
+	std::cout << "MAP CAPACITY TESTS:" << std::endl << std::endl;
+
+	{
+		ft::map<int, int> a;
+		ft::map<char, char> b;
+
+		std::cout << a.max_size() << std::endl;
+		std::cout << b.max_size() << std::endl;
+		a[2] = 2;
+		b['a'] = 'a';
+		std::cout << a.max_size() << std::endl;
+		std::cout << b.max_size() << std::endl;
+		displayMap( a, "Max_size test" );
+		displayMap( b, "Max_size test" );
+	}
+	{
+		ft::map<int, int> a;
+		std::cout << std::boolalpha << a.empty() << std::endl;
+		displayMap( a, "size test 1" );
+		a[5] = 5;
+		std::cout << std::boolalpha << a.empty() << std::endl;
+		displayMap( a, "size test 2" );
+		a[1] = 1;
+		a[2] = 2;
+		std::cout << std::boolalpha << a.empty() << std::endl;
+		displayMap( a, "size test 3" );
+		a[-42] = -42;
+		a[-10] = -10;
+		a[10] = 10;
+		std::cout << std::boolalpha << a.empty() << std::endl;
+		displayMap( a, "size test 4" );
+	}
+}
+
+void mapElementAccessTests( void ) {
+	std::cout << "MAP ELEMENT ACCESS TESTS:" << std::endl << std::endl;
+
+	{
+		ft::map<int, int> a;
+		a[2];
+		a[2] = 21;
+		displayMap( a, "Element access test 1" );
+		a[5] = 5;
+		a[6] = 6;
+		a[8] = 8;
+		displayMap( a, "Element access test 2" );
+		a[-8] = -8;
+		a[12] = 12;
+		a[55] = 55;
+		displayMap( a, "Element access test 3" );
+	}
+	{
+		ft::map<std::string, std::string> a;
+		a["hi"] = "Hello world!";
+		a["bye"] = "Good buy";
+		displayMap( a, "Element access test 4" );
+		a["ty"] = "Thank you";
+		a["np"] = "You are welcome";
+		displayMap( a, "Element access test 5" );
+		std::cout << a["ty"] << std::endl;
+		std::cout << a["np"] << std::endl;
+		std::cout << a["bye"] << std::endl;
+		std::cout << a["hi"] << std::endl;
+		std::cout << a["hi"] << std::endl;
+		std::cout << a["wtf"] << std::endl;
+	}
+}
+
 int	main(void) {
 	// Iterator Tests
 	// iteratorTests();
@@ -1552,5 +1637,8 @@ int	main(void) {
 
 	// Map Tests
 	mapConstructorTests();
+	mapIteratorTests();
+	mapCapacityTests();
+	mapElementAccessTests();
 	return (0);
 }

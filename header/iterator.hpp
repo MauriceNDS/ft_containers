@@ -201,7 +201,7 @@ namespace ft {
 
 	};
 
-	template < class T, class Comp >
+	template < class T >
 	class tree_iterator {
 
 		public:
@@ -211,11 +211,13 @@ namespace ft {
 			typedef T												value_type;
 			typedef T*												pointer;
 			typedef T&												reference;
+			typedef ft::tree< T >									container_type;
+			typedef ft::tree< T >*									container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
 
 			tree_iterator( void ) {}
-			tree_iterator( tree_node<value_type>* ptr ) : _ptr( ptr ) {}
+			tree_iterator( tree_node<value_type> * ptr ) : _ptr( ptr ) {}
 			tree_iterator( tree_iterator const & cpy ) {
 				*this = cpy;
 			}
@@ -238,9 +240,12 @@ namespace ft {
 
 			tree_iterator& operator++( void ) {
 				if ( _ptr->right == NULL ) {
-					while ( _ptr->parent && _ptr->parent->value < _ptr->value )
+					while ( _ptr->parent && !_ptr->isLeft )
 						_ptr = _ptr->parent;
-					_ptr = _ptr->parent;
+					if ( _ptr->parent )
+						_ptr = _ptr->parent;
+					else
+						_ptr = NULL;
 				}
 				else {
 					_ptr = _ptr->right;
@@ -258,9 +263,12 @@ namespace ft {
 
 			tree_iterator& operator--( void ) {
 				if ( _ptr->left == NULL ) {
-					while ( _ptr->parent && _ptr->parent->value > _ptr->value )
+					while ( _ptr->parent && _ptr->isLeft )
 						_ptr = _ptr->parent;
-					_ptr = _ptr->parent;
+					if ( _ptr->parent )
+						_ptr = _ptr->parent;
+					else
+						_ptr = NULL;
 				}
 				else {
 					_ptr = _ptr->left;
@@ -279,7 +287,6 @@ namespace ft {
 		private:
 
 			tree_node<T> * _ptr;
-			Comp _comparer;
 
 	};
 
@@ -295,6 +302,8 @@ namespace ft {
 			typedef T&												reference;
 			typedef T const *										const_pointer;
 			typedef T const &										const_reference;
+			typedef ft::tree< T >									container_type;
+			typedef ft::tree< T >*									container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
 
@@ -322,9 +331,12 @@ namespace ft {
 
 			const_tree_iterator& operator++( void ) {
 				if ( _ptr->right == NULL ) {
-					while ( _ptr->parent && _ptr->parent->value < _ptr->value )
+					while ( _ptr->parent && !_ptr->isLeft )
 						_ptr = _ptr->parent;
-					_ptr = _ptr->parent;
+					if ( _ptr->parent )
+						_ptr = _ptr->parent;
+					else
+						_ptr = NULL;
 				}
 				else {
 					_ptr = _ptr->right;
@@ -340,9 +352,12 @@ namespace ft {
 			}
 			const_tree_iterator& operator--( void ) {
 				if ( _ptr->left == NULL ) {
-					while ( _ptr->parent && _ptr->parent->value > _ptr->value )
+					while ( _ptr->parent && _ptr->isLeft )
 						_ptr = _ptr->parent;
-					_ptr = _ptr->parent;
+					if ( _ptr->parent )
+						_ptr = _ptr->parent;
+					else
+						_ptr = NULL;
 				}
 				else {
 					_ptr = _ptr->left;
@@ -384,6 +399,7 @@ namespace ft {
 
 			reverse_iterator( void ) {}
 			explicit reverse_iterator( container_pointer ptr, long idx ) : _iter( ptr, idx ) {}
+			reverse_iterator( tree_node< value_type > * ptr ) : _iter( ptr ) {}
 			template <class It>
 			reverse_iterator( reverse_iterator<It> const & cpy ) { 
 				this->_iter = cpy._iter;
@@ -471,6 +487,7 @@ namespace ft {
 
 			const_reverse_iterator( void ) {}
 			explicit const_reverse_iterator( container_pointer ptr, long idx ) : _iter( ptr, idx ) {}
+			const_reverse_iterator( tree_node< value_type > * ptr ) : _iter( ptr ) {}
 			template <class ConstIt>
 			const_reverse_iterator( const_reverse_iterator<ConstIt> const & cpy ) { 
 				this->_iter = cpy._iter;
@@ -605,12 +622,12 @@ namespace ft {
 		return &*lhs - &*rhs;
 	}
 
-	template <class T, class Comp>
-	bool operator==( tree_iterator<T, Comp> const & lhs, tree_iterator<T, Comp> const & rhs ) {
+	template <class T>
+	bool operator==( tree_iterator<T> const & lhs, tree_iterator<T> const & rhs ) {
 		return &*lhs == &*rhs;
 	}
-	template <class T, class Comp>
-	bool operator!=( tree_iterator<T, Comp> const & lhs, tree_iterator<T, Comp> const & rhs ) {
+	template <class T>
+	bool operator!=( tree_iterator<T> const & lhs, tree_iterator<T> const & rhs ) {
 		return &*lhs != &*rhs;
 	}
 

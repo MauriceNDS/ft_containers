@@ -22,7 +22,7 @@ namespace ft {
 
 	};
 
-	template <class T, class Comp>
+	template <class T>
 	class tree_iterator;
 
 	template <class T>
@@ -34,7 +34,7 @@ namespace ft {
 	template <class ConstIter>
 	class const_reverse_iterator;
 
-	template < class T, class value_comp, class Alloc >
+	template < class T, class value_comp = std::less<T>, class Alloc = std::allocator< tree_node< T > > >
 	class tree {
 
 		private:
@@ -76,7 +76,7 @@ namespace ft {
 
 			// to be continued
 			~tree( void ) {
-				
+				clear( _root );
 			}
 
 			tree& operator=( const tree& x ) {
@@ -113,11 +113,11 @@ namespace ft {
 				return _root;
 			}
 
-			tree_node< T > const * getFirst( void ) const {
+			tree_node< T > * getFirst( void ) const {
 				return _first;
 			}
 
-			tree_node< T > const * getLast( void ) const {
+			tree_node< T > * getLast( void ) const {
 				return _last;
 			}
 
@@ -197,6 +197,16 @@ namespace ft {
 			}
 
 		private:
+
+		void clear( tree_node< T >* node ) {
+			if ( node == NULL )
+				return ;
+			clear( node->left );
+			clear( node->right );
+
+			free_node( node );
+			node = NULL;
+		}
 
 			void add( tree_node< T > * parent, tree_node< T > * new_node ) {
 				if ( _comparer( parent->value, new_node->value ) ) {
@@ -496,8 +506,10 @@ namespace ft {
 			}
 
 			void free_node( tree_node< T > * node ) {
-				_allocator.destroy( node );
-				_allocator.deallocate( node );
+				if ( node ) {
+					_allocator.destroy( node );
+					_allocator.deallocate( node, 1 );
+				}
 			}
 
 	};

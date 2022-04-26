@@ -27,7 +27,7 @@ namespace ft {
 			typedef typename allocator_type::const_reference									const_reference;
 			typedef typename allocator_type::pointer											pointer;
 			typedef typename allocator_type::const_pointer										const_pointer;
-			typedef tree_iterator<value_type, value_compare>									iterator;
+			typedef tree_iterator< value_type >													iterator;
 			typedef const_tree_iterator<value_type>												const_iterator;
 			typedef reverse_iterator<iterator>													reverse_iterator;
 			typedef const_reverse_iterator<const_iterator>										const_reverse_iterator;
@@ -36,15 +36,15 @@ namespace ft {
 
 		private:
 
-			tree< value_type, value_compare, new_alloc > _tree;
 			value_compare _vcomparer;
+			tree< value_type, value_compare, new_alloc > _tree;
 
 		public:
 
 			/************************************* Constructors **************************************/
 
 			explicit map( const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() )
-			: _tree( _vcomparer, alloc ), _vcomparer( comp ) {}
+			: _vcomparer( comp ), _tree( _vcomparer, alloc ) {}
 
 			template <class InputIterator>
 			map( InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() ) 
@@ -201,8 +201,8 @@ namespace ft {
 
 			protected:
 
-				Compare comp;
-				value_comp( Compare c ) : comp( c ) {}
+				key_compare comp;
+				value_comp( key_compare c ) : comp( c ) {}
 
 			public:
 				value_comp( void ) {}
