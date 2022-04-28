@@ -1,6 +1,6 @@
 CC = clang++
 
-CFLAGS = -g3 -Wall -Wextra -Werror -std=c++98
+CFLAGS = -Wall -Wextra -Werror -std=c++98 -g3 #-fsanitize=address
 STLFLAG = -DSTL_CONTAINERS
 
 INCLUDES = -I./header

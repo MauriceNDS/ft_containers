@@ -31,7 +31,7 @@ void displayMap( ft::map<K, V, Comp> &m, std::string test ) {
 	std::cout << test << std::endl;
 	for ( typename ft::map<K, V, Comp>::iterator it = m.begin(); it != m.end(); it++ )
 		std::cout << it->first << " " << it->second << std::endl;
-
+	m.printBT();
 	std::cout << std::endl << "size = " << m.size() << std::endl << std::endl;
 }
 
@@ -1599,7 +1599,7 @@ void mapElementAccessTests( void ) {
 	{
 		ft::map<std::string, std::string> a;
 		a["hi"] = "Hello world!";
-		a["bye"] = "Good buy";
+		a["bye"] = "Good bye";
 		displayMap( a, "Element access test 4" );
 		a["ty"] = "Thank you";
 		a["np"] = "You are welcome";
@@ -1610,6 +1610,83 @@ void mapElementAccessTests( void ) {
 		std::cout << a["hi"] << std::endl;
 		std::cout << a["hi"] << std::endl;
 		std::cout << a["wtf"] << std::endl;
+	}
+}
+
+void mapModifiersTests( void ) {
+	std::cout << "MAP MODIFIERS TESTS:" << std::endl << std::endl;
+
+	{
+		ft::map<int, int> a;
+		displayMap( a, "Insert test 1" );
+		a.insert( ft::make_pair<int, int>( 5, 5 ) );
+		a.insert( ft::make_pair<int, int>( 15, 15 ) );
+		a.insert( ft::make_pair<int, int>( 25, 25 ) );
+		a.insert( ft::make_pair<int, int>( 35, 35 ) );
+		a.insert( ft::make_pair<int, int>( 45, 45 ) );
+		a.insert( ft::make_pair<int, int>( 55, 55 ) );
+		a.insert( ft::make_pair<int, int>( 65, 65 ) );
+		displayMap( a, "Insert test 2" );
+		a.insert( ft::make_pair<int, int>( 75, 75 ) );
+		a.insert( ft::make_pair<int, int>( 85, 85 ) );
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		a.insert( ft::make_pair<int, int>( 1, 1 ) );
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		displayMap( a, "Insert test 3" );
+	}
+	{
+		ft::map<int, int> a;
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		a.insert( ft::make_pair<int, int>( 5, 5 ) );
+		a.insert( ft::make_pair<int, int>( 65, 65 ) );
+		a.insert( ft::make_pair<int, int>( 85, 85 ) );
+		displayMap( a, "Insert test 4" );
+		a.insert( ft::make_pair<int, int>( 55, 55 ) );
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		a.insert( ft::make_pair<int, int>( 25, 25 ) );
+		a.insert( ft::make_pair<int, int>( 45, 45 ) );
+		displayMap( a, "Insert test 5" );
+		a.insert( ft::make_pair<int, int>( 15, 15 ) );
+		a.insert( ft::make_pair<int, int>( 1, 1 ) );
+		a.insert( ft::make_pair<int, int>( 35, 35 ) );
+		a.insert( ft::make_pair<int, int>( 75, 75 ) );
+		displayMap( a, "Insert test 6" );
+	}
+	{
+		ft::map<int, int> a;
+		a.insert( ft::make_pair<int, int>( 15, 15 ) );
+		a.insert( ft::make_pair<int, int>( 25, 25 ) );
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		a.insert( ft::make_pair<int, int>( 95, 95 ) );
+		displayMap( a, "Insert test 7" );
+	}
+	{
+		ft::map<int, int> a;
+		ft::map<int, int> b;
+		a.insert( ft::make_pair<int, int>( 0, 0 ) );
+		a.insert( ft::make_pair<int, int>( 10, 10 ) );
+		a.insert( ft::make_pair<int, int>( -10, -10 ) );
+		displayMap( a, "Insert test 8" );
+		a.insert( a.begin(), ft::make_pair<int, int>( 20, 20 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( -20, -20 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 30, 30 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( -30, -30 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 25, 25 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( -25, -25 ) );
+		displayMap( a, "Insert test 9" );
+		a.insert( a.begin(), ft::make_pair<int, int>( 15, 15 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( -15, -15 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 22, 22 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( -22, -22 ) );
+		displayMap( a, "Insert test 10" );
+		a.insert( a.begin(), ft::make_pair<int, int>( 15, 15 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( -15, -15 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 22, 22 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( -22, -22 ) );
+		displayMap( a, "Insert test 11" );
 	}
 }
 
@@ -1640,5 +1717,6 @@ int	main(void) {
 	mapIteratorTests();
 	mapCapacityTests();
 	mapElementAccessTests();
+	mapModifiersTests();
 	return (0);
 }

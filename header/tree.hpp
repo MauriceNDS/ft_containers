@@ -55,11 +55,9 @@ namespace ft {
 
 			tree( void ) : _root( NULL ), _first( NULL ), _last( NULL ), _size( 0 ) {}
 
-			tree( const value_comp& comp, const Alloc& alloc ) : _root( NULL ), _size( 0 ) {
+			tree( const value_comp& comp, const Alloc& alloc ) : _root( NULL ), _first( NULL ), _last( NULL ), _size( 0 ) {
 				_comparer = comp;
 				_allocator = alloc;
-				_first = NULL;
-				_last = NULL;
 			}
 
 			template <class InputIterator>
@@ -79,13 +77,35 @@ namespace ft {
 				clear( _root );
 			}
 
+			void printBT( const std::string& prefix, const tree_node<T>* node, bool isLeft ) {
+				if ( node != NULL ) {
+					std::cout << prefix;
+
+					std::cout << (isLeft ? "├──L:" : "└──R:" );
+
+					// print the value of the node
+					if ( !node->black ) {
+						std::cout << "\033[31m[" << node->value.first << " -- ";
+						std::cout << node->value.second << "]\033[0m" << std::endl;
+					}
+					else {
+						std::cout << "[" << node->value.first << " -- ";
+						std::cout << node->value.second << "]" << std::endl;
+					}
+
+					// enter the next tree level - left and right branch
+					printBT( prefix + (isLeft ? "│   " : "    "), node->left, true);
+					printBT( prefix + (isLeft ? "│   " : "    "), node->right, false);
+				}
+			}
+
 			tree& operator=( const tree& x ) {
-				_root = x._root;
-				_size = x._size;
-				_first = x._first;
-				_last = x._last;
-				_allocator = x._allocator;
+				clear( _root );
+				_root = NULL;
+				_size = 0;
 				_comparer = x._comparer;
+				_allocator = x._allocator;
+				copy( x._root );
 				return *this;
 			}
 
@@ -167,14 +187,15 @@ namespace ft {
 				return node;
 			}
 
-			tree_node<T>* search( tree_node<T> * node, T const key ) const {
-				if ( node && !_comparer( node->value, key ) && !_comparer( key, node->value ) )
-					return node;
-				if ( node && node->left )
-					return search( node->left, key );
-				if ( node && node->right )
-					return search( node->right, key );
-				return NULL;
+			void search( tree_node< T >* node, T const key, tree_node< T >** res ) const {
+				if ( node == NULL ) {
+					res = NULL;
+					return ;
+				}
+				if ( !_comparer( node->value, key ) && !_comparer( key, node->value ) )
+					*res = node;
+				search( node->left, key, res );
+				search( node->right, key, res );
 			}
 
 			void del( tree_node< T >* v ) {
@@ -198,12 +219,19 @@ namespace ft {
 
 		private:
 
+		void copy( tree_node< T >* node ) {
+			if ( node == NULL )
+				return ;
+			add( node->value );
+			copy( node->left );
+			copy( node->right );
+		}
+
 		void clear( tree_node< T >* node ) {
 			if ( node == NULL )
 				return ;
 			clear( node->left );
 			clear( node->right );
-
 			free_node( node );
 			node = NULL;
 		}
@@ -289,8 +317,8 @@ namespace ft {
 				left_rotate( node->parent->parent );
 				node->black = false;
 				node->parent->black = true;
-				if ( node->parent->right != NULL )
-					node->parent->right->black = false;
+				if ( node->parent->left != NULL )
+					node->parent->left->black = false;
 			}
 
 			void left_rotate( tree_node< T > * node ) {

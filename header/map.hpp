@@ -124,7 +124,8 @@ namespace ft {
 			/************************************* Element access ************************************/
 
 			mapped_type& operator[]( const key_type& k ) {
-				tree_node<value_type>* res = _tree.search( _tree.getRoot(), ft::make_pair< key_type, mapped_type >( k, mapped_type() ) );
+				tree_node<value_type>* res = NULL;
+				_tree.search( _tree.getRoot(), ft::make_pair< key_type, mapped_type >( k, mapped_type() ), &res );
 				if ( res )
 					return res->value.second;
 				return _tree.add( ft::make_pair< key_type, mapped_type >( k, mapped_type() ) )->value.second;
@@ -133,7 +134,8 @@ namespace ft {
 			/************************************* Modifiers *****************************************/
 
 			pair<iterator, bool> insert( const value_type& val ) {
-				tree_node< value_type >* res = _tree.search( _tree.getRoot(), val );
+				tree_node< value_type >* res = NULL;
+				_tree.search( _tree.getRoot(), val, &res );
 				if ( res ) {
 					iterator it( res );
 					return ft::make_pair< iterator, bool >( it, false );
@@ -143,22 +145,24 @@ namespace ft {
 			}
 
 			iterator insert( iterator position, const value_type& val ) {
-				tree_node< value_type >* walk = position._ptr->parent;
-				if ( _vcomparer( val, *position ) ) {
-					while ( walk ) {
-						if ( _vcomparer( walk->value, *position ) && _vcomparer( val, walk->value ) )
-							return insert( val ).first;
-						walk = walk->parent;
-					}
+				tree_node< value_type > *walk, *node;
+				_tree.search( _tree.getRoot(), *position, &node );
+				if ( node == NULL || node == _tree.getRoot() )
+					return insert( val ).first;
+				walk = node->parent;
+				if ( _vcomparer( val, node->value ) ) {
+					if ( !node->isLeft && _vcomparer( val, walk->value ) )
+						return insert( val ).first;
+					else if ( node->isLeft )
+						return iterator( _tree.hint_add( node, val ) );
 				}
 				else {
-					while ( walk ) {
-						if ( _vcomparer( *position, walk->value ) && _vcomparer( walk->value, val ) )
-							return insert( val ).first;
-						walk = walk->parent;
-					}
+					if ( node->isLeft && _vcomparer( walk->value, val ) )
+						return insert( val ).first;
+					else if ( !node->isLeft )
+						return iterator( _tree.hint_add( node, val ) );
 				}
-				return iterator( hint_add( position._ptr, val ) );
+				return iterator( _tree.hint_add( node, val ) );
 			}
 
 			template <class InputIterator>
@@ -174,7 +178,8 @@ namespace ft {
 			}
 
 			size_type erase( const key_type& k ) {
-				tree_node< value_type >* res = _tree.search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
+				tree_node< value_type >* res = NULL;
+				_tree.search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ), &res );
 				if ( res ) {
 					_tree.del( res );
 					return 1;
@@ -191,6 +196,10 @@ namespace ft {
 
 			void swap( map& x ) {
 				(void)x;
+			}
+			
+			void printBT( void ) {
+				_tree.printBT( "", _tree.getRoot(), false );
 			}
 
 		private:
