@@ -187,33 +187,47 @@ namespace ft {
 				return node;
 			}
 
-			void search( tree_node< T >* node, T const key, tree_node< T >** res ) const {
+			tree_node< T >* search( tree_node< T >* node, T const key ) const {
 				if ( node == NULL ) {
-					res = NULL;
-					return ;
+					return NULL;
 				}
-				if ( !_comparer( node->value, key ) && !_comparer( key, node->value ) )
-					*res = node;
-				search( node->left, key, res );
-				search( node->right, key, res );
+				if ( !_comparer( node->value, key ) && !_comparer( key, node->value ) ) {
+					return node;
+				}
+				tree_node< T >* res = NULL;
+				if (!(res = search( node->left, key ))) {
+					res = search( node->right, key );
+				}
+				return res;
 			}
 
 			void del( tree_node< T >* v ) {
-				if ( v )
-					return ;
 				// step one - perform a basic binary tree deletion
 				tree_node< T >* u = bst_delete( v );
 				// step two - if either 'u' or 'v' are red
-				if ( v->black == false || ( u && u->black == false ) )
+				if ( u && v->black == false ) {
+					u->black = false;
+					if ( u->right )
+						u->right->black = true;
+					if ( u->left )
+						u->left->black = true;
+				}
+				else if ( u && u->black == false )
 					u->black = true;
 				// step three - if both 'u' and 'v' are black
-				else 
+				else if ( v->black )
 					handle_double_black( v, u );
 				iterator it( v );
-				if ( v == _first )
-					_first = (it++)._ptr;
-				if ( v == _last )
-					_last = (it--)._ptr;
+				if ( v->parent == NULL ) {
+					_first = NULL;
+					_last = NULL;
+				}
+				else {
+					if ( v == _first )
+						_first = search( _root, *(++it) );
+					if ( v == _last )
+						_last = search( _root, *(--it) );
+				}
 				free_node( v );
 			}
 
@@ -496,8 +510,8 @@ namespace ft {
 			}
 
 			void handle_double_black( tree_node< T >* v, tree_node< T >* u ) {
-				tree_node< T >* s, r;
-				tree_node< T >* double_black = v;
+				tree_node< T >* s, *r;
+				// tree_node< T >* double_black = v;
 				if ( u == _root )
 					return ;
 				if ( v && v->isLeft )
@@ -514,6 +528,9 @@ namespace ft {
 					else
 						r = s->right;
 					rotate_double_black( s, r );
+					r->black = true;
+					if ( u && u->black )
+						u->black = false;
 				}
 				else if ( s->black && ( !s->left || s->left->black ) && ( !s->right || s->right->black ) ) {
 					s->black = false;
@@ -522,7 +539,7 @@ namespace ft {
 					else
 						handle_double_black( s->parent, s->parent );
 				}
-				else if ( s->red ) {
+				else if ( !s->black ) {
 					s->black = !s->black;
 					s->parent->black = !s->parent->black;
 					if ( s->isLeft )

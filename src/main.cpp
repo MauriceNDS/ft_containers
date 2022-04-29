@@ -1654,6 +1654,7 @@ void mapModifiersTests( void ) {
 	}
 	{
 		ft::map<int, int> a;
+		ft::map<int, int> b;
 		a.insert( ft::make_pair<int, int>( 15, 15 ) );
 		a.insert( ft::make_pair<int, int>( 25, 25 ) );
 		a.insert( ft::make_pair<int, int>( 95, 95 ) );
@@ -1662,6 +1663,8 @@ void mapModifiersTests( void ) {
 		a.insert( ft::make_pair<int, int>( 95, 95 ) );
 		a.insert( ft::make_pair<int, int>( 95, 95 ) );
 		displayMap( a, "Insert test 7" );
+		b.insert( a.begin(), a.end() );
+		displayMap( b, "Insert test 7.5" );
 	}
 	{
 		ft::map<int, int> a;
@@ -1687,6 +1690,43 @@ void mapModifiersTests( void ) {
 		a.insert( a.begin(), ft::make_pair<int, int>( 22, 22 ) );
 		a.insert( a.begin(), ft::make_pair<int, int>( -22, -22 ) );
 		displayMap( a, "Insert test 11" );
+		ft::map<int, int>::iterator it = a.begin()++;
+		it++;
+		a.insert( it, ft::make_pair<int, int>( -12, -12 ) );
+		displayMap( a, "Insert test 12" );
+		a.insert( it, ft::make_pair<int, int>( 3, 3 ) );
+		displayMap( a, "Insert test 13" );
+		for ( size_t i = 0; i < 8; i++ )
+			it++;
+		std::cout << it->first << " " << it->second << std::endl;
+		a.insert( it, ft::make_pair<int, int>( 21, 21 ) );
+		displayMap( a, "Insert test 14" );
+		a.insert( it, ft::make_pair<int, int>( 8, 8 ) );
+		a.insert( it, ft::make_pair<int, int>( 19, 19 ) );
+		displayMap( a, "Insert test 15" );
+		b.insert( a.begin(), it );
+		std::cout << it->first << " " << it->second << std::endl;
+		displayMap( b, "Insert test 16" );
+		b.insert( a.begin(), a.end() );
+		displayMap( b, "Insert test 17" );
+		displayMap( a, "Insert test 18" );
+		std::cout << it->first << " " << it->second << std::endl;
+		a.erase( it );
+		displayMap( a, "Erase test 1" );
+		it--;
+		it--;
+		it--;
+		it--;
+		std::cout << it->first << " " << it->second << std::endl;
+		a.erase( it );
+		displayMap( a, "Erase test 2" );
+		it--;
+		a.erase( it );
+		displayMap( a, "Erase test 3" );
+		it--;
+		it--;
+		a.erase( it );
+		displayMap( a, "Erase test 4" );
 	}
 }
 
@@ -1713,10 +1753,10 @@ int	main(void) {
 	// stackNonMemberOverloadsTests();
 
 	// Map Tests
-	mapConstructorTests();
-	mapIteratorTests();
-	mapCapacityTests();
-	mapElementAccessTests();
+	// mapConstructorTests();
+	// mapIteratorTests();
+	// mapCapacityTests();
+	// mapElementAccessTests();
 	mapModifiersTests();
 	return (0);
 }

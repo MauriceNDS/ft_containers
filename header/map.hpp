@@ -124,8 +124,7 @@ namespace ft {
 			/************************************* Element access ************************************/
 
 			mapped_type& operator[]( const key_type& k ) {
-				tree_node<value_type>* res = NULL;
-				_tree.search( _tree.getRoot(), ft::make_pair< key_type, mapped_type >( k, mapped_type() ), &res );
+				tree_node<value_type>* res = _tree.search( _tree.getRoot(), ft::make_pair< key_type, mapped_type >( k, mapped_type() ) );
 				if ( res )
 					return res->value.second;
 				return _tree.add( ft::make_pair< key_type, mapped_type >( k, mapped_type() ) )->value.second;
@@ -134,8 +133,7 @@ namespace ft {
 			/************************************* Modifiers *****************************************/
 
 			pair<iterator, bool> insert( const value_type& val ) {
-				tree_node< value_type >* res = NULL;
-				_tree.search( _tree.getRoot(), val, &res );
+				tree_node< value_type >* res = _tree.search( _tree.getRoot(), val );
 				if ( res ) {
 					iterator it( res );
 					return ft::make_pair< iterator, bool >( it, false );
@@ -146,7 +144,7 @@ namespace ft {
 
 			iterator insert( iterator position, const value_type& val ) {
 				tree_node< value_type > *walk, *node;
-				_tree.search( _tree.getRoot(), *position, &node );
+				node = _tree.search( _tree.getRoot(), *position );
 				if ( node == NULL || node == _tree.getRoot() )
 					return insert( val ).first;
 				walk = node->parent;
@@ -174,12 +172,14 @@ namespace ft {
 			}
 
 			void erase( iterator position ) {
-				_tree.del( position._ptr );
+				tree_node< value_type > *node = _tree.search( _tree.getRoot(), *position );
+				if ( node == NULL )
+					return ;
+				_tree.del( node );
 			}
 
 			size_type erase( const key_type& k ) {
-				tree_node< value_type >* res = NULL;
-				_tree.search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ), &res );
+				tree_node< value_type >* res = _tree.search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
 				if ( res ) {
 					_tree.del( res );
 					return 1;
