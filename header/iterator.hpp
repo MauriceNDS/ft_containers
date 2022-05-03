@@ -201,7 +201,7 @@ namespace ft {
 
 	};
 
-	template < class T >
+	template < class T, class Container >
 	class tree_iterator {
 
 		public:
@@ -211,13 +211,13 @@ namespace ft {
 			typedef T												value_type;
 			typedef T*												pointer;
 			typedef T&												reference;
-			typedef ft::tree< T >									container_type;
-			typedef ft::tree< T >*									container_pointer;
+			typedef Container										container_type;
+			typedef container_type*									container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
 
 			tree_iterator( void ) {}
-			tree_iterator( tree_node<value_type> * ptr ) : _ptr( ptr ) {}
+			tree_iterator( container_pointer container, tree_node<value_type> * ptr ) : _container( container ), _ptr( ptr ) {}
 			tree_iterator( tree_iterator const & cpy ) {
 				*this = cpy;
 			}
@@ -227,6 +227,7 @@ namespace ft {
 
 			tree_iterator& operator=( tree_iterator const & rhs ) {
 				_ptr = rhs._ptr;
+				_container = rhs._container;
 				return *this;
 			}
 
@@ -239,7 +240,9 @@ namespace ft {
 			}
 
 			tree_iterator& operator++( void ) {
-				if ( _ptr->right == NULL ) {
+				if ( _ptr == NULL )
+					_ptr = _container->getFirst();
+				else if ( _ptr->right == NULL ) {
 					while ( _ptr->parent && !_ptr->isLeft )
 						_ptr = _ptr->parent;
 					if ( _ptr->parent )
@@ -262,7 +265,9 @@ namespace ft {
 			}
 
 			tree_iterator& operator--( void ) {
-				if ( _ptr->left == NULL ) {
+				if ( _ptr == NULL )
+					_ptr = _container->getLast();
+				else if ( _ptr->left == NULL ) {
 					while ( _ptr->parent && _ptr->isLeft )
 						_ptr = _ptr->parent;
 					if ( _ptr->parent )
@@ -286,11 +291,12 @@ namespace ft {
 
 		private:
 
+			container_pointer _container;
 			tree_node<T> * _ptr;
 
 	};
 
-	template <class T>
+	template <class T,  class Container>
 	class const_tree_iterator {
 
 		public:
@@ -302,13 +308,13 @@ namespace ft {
 			typedef T&												reference;
 			typedef T const *										const_pointer;
 			typedef T const &										const_reference;
-			typedef ft::tree< T >									container_type;
-			typedef ft::tree< T >*									container_pointer;
+			typedef Container										container_type;
+			typedef Container const *										container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
 
 			const_tree_iterator( void ) {}
-			const_tree_iterator( tree_node<value_type>* ptr ) : _ptr( ptr ) {}
+			const_tree_iterator( container_pointer container, tree_node<value_type>* ptr ) : _container( container ), _ptr( ptr ) {}
 			const_tree_iterator( const_tree_iterator const & copy ) {
 				*this = copy;
 			}
@@ -318,6 +324,7 @@ namespace ft {
 
 			const_tree_iterator& operator=( const_tree_iterator const & rhs ) {
 				_ptr = rhs._ptr;
+				_container = rhs._container;
 				return *this;
 			}
 
@@ -330,7 +337,9 @@ namespace ft {
 			}
 
 			const_tree_iterator& operator++( void ) {
-				if ( _ptr->right == NULL ) {
+				if ( _ptr == NULL )
+					_ptr = _container->getFirst();
+				else if ( _ptr->right == NULL ) {
 					while ( _ptr->parent && !_ptr->isLeft )
 						_ptr = _ptr->parent;
 					if ( _ptr->parent )
@@ -351,7 +360,9 @@ namespace ft {
 				return tmp;
 			}
 			const_tree_iterator& operator--( void ) {
-				if ( _ptr->left == NULL ) {
+				if ( _ptr == NULL )
+					_ptr = _container->getLast();
+				else if ( _ptr->left == NULL ) {
 					while ( _ptr->parent && _ptr->isLeft )
 						_ptr = _ptr->parent;
 					if ( _ptr->parent )
@@ -374,6 +385,7 @@ namespace ft {
 
 		private:
 
+			container_pointer _container;
 			tree_node<T> * _ptr;
 
 	};
@@ -399,7 +411,7 @@ namespace ft {
 
 			reverse_iterator( void ) {}
 			explicit reverse_iterator( container_pointer ptr, long idx ) : _iter( ptr, idx ) {}
-			reverse_iterator( tree_node< value_type > * ptr ) : _iter( ptr ) {}
+			reverse_iterator( container_pointer container, tree_node< value_type > * ptr ) : _iter( container, ptr ) {}
 			template <class It>
 			reverse_iterator( reverse_iterator<It> const & cpy ) { 
 				this->_iter = cpy._iter;
@@ -487,7 +499,7 @@ namespace ft {
 
 			const_reverse_iterator( void ) {}
 			explicit const_reverse_iterator( container_pointer ptr, long idx ) : _iter( ptr, idx ) {}
-			const_reverse_iterator( tree_node< value_type > * ptr ) : _iter( ptr ) {}
+			const_reverse_iterator( container_pointer container, tree_node< value_type > * ptr ) : _iter( container, ptr ) {}
 			template <class ConstIt>
 			const_reverse_iterator( const_reverse_iterator<ConstIt> const & cpy ) { 
 				this->_iter = cpy._iter;
@@ -622,21 +634,21 @@ namespace ft {
 		return &*lhs - &*rhs;
 	}
 
-	template <class T>
-	bool operator==( tree_iterator<T> const & lhs, tree_iterator<T> const & rhs ) {
+	template <class T, class Container>
+	bool operator==( tree_iterator<T, Container> const & lhs, tree_iterator<T, Container> const & rhs ) {
 		return &*lhs == &*rhs;
 	}
-	template <class T>
-	bool operator!=( tree_iterator<T> const & lhs, tree_iterator<T> const & rhs ) {
+	template <class T, class Container>
+	bool operator!=( tree_iterator<T, Container> const & lhs, tree_iterator<T, Container> const & rhs ) {
 		return &*lhs != &*rhs;
 	}
 
-	template <class T>
-	bool operator==( const_tree_iterator<T> const & lhs, const_tree_iterator<T> const & rhs ) {
+	template <class T, class Container>
+	bool operator==( const_tree_iterator<T, Container> const & lhs, const_tree_iterator<T, Container> const & rhs ) {
 		return &*lhs == &*rhs;
 	}
-	template <class T>
-	bool operator!=( const_tree_iterator<T> const & lhs, const_tree_iterator<T> const & rhs ) {
+	template <class T, class Container>
+	bool operator!=( const_tree_iterator<T, Container> const & lhs, const_tree_iterator<T, Container> const & rhs ) {
 		return &*lhs != &*rhs;
 	}
 

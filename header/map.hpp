@@ -16,23 +16,23 @@ namespace ft {
 
 			/************************************* Typedefs ******************************************/
 
-			typedef Key																			key_type;
-			typedef T																			mapped_type;
-			typedef Compare																		key_compare;
-			typedef value_comp																	value_compare;
-			typedef pair< key_type, mapped_type >												value_type;
-			typedef Alloc																		allocator_type;
-			typedef typename allocator_type::template rebind< tree_node< value_type > >::other	new_alloc;
-			typedef typename allocator_type::reference											reference;
-			typedef typename allocator_type::const_reference									const_reference;
-			typedef typename allocator_type::pointer											pointer;
-			typedef typename allocator_type::const_pointer										const_pointer;
-			typedef tree_iterator< value_type >													iterator;
-			typedef const_tree_iterator<value_type>												const_iterator;
-			typedef reverse_iterator<iterator>													reverse_iterator;
-			typedef const_reverse_iterator<const_iterator>										const_reverse_iterator;
-			typedef std::ptrdiff_t																difference_type;
-			typedef size_t																		size_type;
+			typedef Key																					key_type;
+			typedef T																					mapped_type;
+			typedef Compare																				key_compare;
+			typedef value_comp																			value_compare;
+			typedef pair< key_type, mapped_type >														value_type;
+			typedef Alloc																				allocator_type;
+			typedef typename allocator_type::template rebind< tree_node< value_type > >::other			new_alloc;
+			typedef typename allocator_type::reference													reference;
+			typedef typename allocator_type::const_reference											const_reference;
+			typedef typename allocator_type::pointer													pointer;
+			typedef typename allocator_type::const_pointer												const_pointer;
+			typedef tree_iterator< value_type, ft::tree< value_type, value_compare, new_alloc > >		iterator;
+			typedef const_tree_iterator< value_type, ft::tree< value_type, value_compare, new_alloc > >	const_iterator;
+			typedef reverse_iterator<iterator>															reverse_iterator;
+			typedef const_reverse_iterator<const_iterator>												const_reverse_iterator;
+			typedef std::ptrdiff_t																		difference_type;
+			typedef size_t																				size_type;
 
 		private:
 
@@ -88,22 +88,22 @@ namespace ft {
 			}
 
 			reverse_iterator rbegin( void ) {
-				return reverse_iterator( _tree.getLast() );
+				return reverse_iterator( &_tree, _tree.getLast() );
 			}
 
 			const_reverse_iterator rbegin( void ) const {
-				return const_reverse_iterator( _tree.getLast() );
+				return const_reverse_iterator( &_tree, _tree.getLast() );
 			}
 
 			reverse_iterator rend( void ) {
 				if ( _tree.getFirst() )
-					return reverse_iterator( _tree.getFirst()->left );
+					return reverse_iterator( &_tree, _tree.getFirst()->left );
 				return rbegin();
 			}
 
 			const_reverse_iterator rend( void ) const {
 				if ( _tree.getFirst() )
-					return const_reverse_iterator( _tree.getFirst()->left );
+					return const_reverse_iterator( &_tree, _tree.getFirst()->left );
 				return rbegin();
 			}
 
@@ -135,10 +135,10 @@ namespace ft {
 			pair<iterator, bool> insert( const value_type& val ) {
 				tree_node< value_type >* res = _tree.search( _tree.getRoot(), val );
 				if ( res ) {
-					iterator it( res );
+					iterator it( &_tree, res );
 					return ft::make_pair< iterator, bool >( it, false );
 				}
-				iterator new_elem( _tree.add( val ) );
+				iterator new_elem( &_tree, _tree.add( val ) );
 				return ft::make_pair< iterator, bool >( new_elem, true );
 			}
 
@@ -152,15 +152,15 @@ namespace ft {
 					if ( !node->isLeft && _vcomparer( val, walk->value ) )
 						return insert( val ).first;
 					else if ( node->isLeft )
-						return iterator( _tree.hint_add( node, val ) );
+						return iterator( &_tree, _tree.hint_add( node, val ) );
 				}
 				else {
 					if ( node->isLeft && _vcomparer( walk->value, val ) )
 						return insert( val ).first;
 					else if ( !node->isLeft )
-						return iterator( _tree.hint_add( node, val ) );
+						return iterator( &_tree, _tree.hint_add( node, val ) );
 				}
-				return iterator( _tree.hint_add( node, val ) );
+				return iterator( &_tree, _tree.hint_add( node, val ) );
 			}
 
 			template <class InputIterator>

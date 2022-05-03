@@ -22,10 +22,10 @@ namespace ft {
 
 	};
 
-	template <class T>
+	template <class T, class Container>
 	class tree_iterator;
 
-	template <class T>
+	template <class T, class Container>
 	class const_tree_iterator;
 
 	template <class Iter>
@@ -48,8 +48,8 @@ namespace ft {
 
 		public:
 
-			typedef ft::tree_iterator< T >										iterator;
-			typedef const_tree_iterator< T >									const_iterator;
+			typedef ft::tree_iterator< T, ft::tree< T, value_comp, Alloc > >	iterator;
+			typedef const_tree_iterator< T, ft::tree< T, value_comp, Alloc > >	const_iterator;
 			typedef reverse_iterator<iterator>									reverse_iterator;
 			typedef const_reverse_iterator<const_iterator>						const_reverse_iterator;
 
@@ -110,22 +110,22 @@ namespace ft {
 			}
 
 			iterator begin( void ) {
-				return iterator( _first );
+				return iterator( this, _first );
 			}
 
 			const_iterator begin( void ) const {
-				return const_iterator( _first );
+				return const_iterator( this, _first );
 			}
 
 			iterator end( void ) {
 				if ( _last )
-					return iterator( _last->right );
+					return iterator( this, _last->right );
 				return begin();
 			}
 
 			const_iterator end( void ) const {
 				if ( _last )
-					return const_iterator( _last->right );
+					return const_iterator( this, _last->right );
 				return begin();
 			}
 
@@ -202,25 +202,11 @@ namespace ft {
 			}
 
 			void del( tree_node< T >* v ) {
-				// step one - perform a basic binary tree deletion
-				tree_node< T >* u = bst_delete( v );
-				// step two - if either 'u' or 'v' are red
-				if ( u && v->black == false ) {
-					u->black = false;
-					if ( u->right )
-						u->right->black = true;
-					if ( u->left )
-						u->left->black = true;
-				}
-				else if ( u && u->black == false )
-					u->black = true;
-				// step three - if both 'u' and 'v' are black
-				else if ( v->black )
-					handle_double_black( v, u );
-				iterator it( v );
+				v = bst_delete( v );
+				iterator it( this, v );
 				if ( v->parent == NULL ) {
-					_first = NULL;
-					_last = NULL;
+					_first = _root;
+					_last = _root;
 				}
 				else {
 					if ( v == _first )
@@ -229,6 +215,10 @@ namespace ft {
 						_last = search( _root, *(--it) );
 				}
 				free_node( v );
+				if ( _size )
+					_size--;
+				if ( _root )
+					_root->black = true;
 			}
 
 		private:
@@ -399,19 +389,80 @@ namespace ft {
 				left_rotate( node );
 			}
 
-			tree_node< T >* bst_delete_no_leaf( tree_node< T >* node ) {
-				if ( node->parent && node->isLeft )
-					node->parent->left = NULL;
-				else if ( node->parent )
-					node->parent->right = NULL;
+			void handle_double_black( tree_node< T >* p ) {
+				tree_node< T> *x, *y, *z;
+				z = p->parent;
+				if ( p->isLeft )
+					y = z->right;
 				else
+					y = z->left;
+				x = NULL;
+				if ( y && y->right && !y->right->black )
+					x = y->right;
+				if ( y && y->left && !y->left->black )
+					x = y->left;
+				solve_no_double_black( x, y, z, p );
+			}
+
+			void solve_no_double_black( tree_node< T >* x, tree_node< T >* y, tree_node< T >* z, tree_node< T >* p ) {
+				if ( x && y->black ) {
+					x->black = true;
+					y->black = z->black;
+					z->black = true;
+					rotate_double_black( y, x );
+				}
+				else if ( y == NULL || ( y->black && ( ( !y->left || y->left->black ) && ( !y->right || y->right->black ) ) ) ) {
+					if ( y )
+						y->black = false;
+					if ( !z->black )
+						z->black = true;
+					else if ( z != _root )
+						handle_double_black( z );
+				}
+				else if ( y && !y->black ) {
+					y->parent = z->parent;
+					z->parent = y;
+					if ( y->isLeft ) {
+						y->isLeft = z->isLeft;
+						z->left = y->right;
+						y->right = z;
+						z->isLeft = false;
+					}
+					else {
+						y->isLeft = z->isLeft;
+						z->right = y->left;
+						y->left = z;
+						z->isLeft = true;
+					}
+					y->black = true;
+					z->black = false;
+					handle_double_black( p );
+				}
+			}
+
+			tree_node< T >* bst_delete_no_leaf( tree_node< T >* p ) {
+				if ( p == _root ) {
 					_root = NULL;
-				_size--;
-				return NULL;
+					return p;
+				}
+				if ( !p->black ) {
+					if ( p->isLeft )
+						p->parent->left = NULL;
+					else
+						p->parent->right = NULL;
+					return p;
+				}
+				if ( p->isLeft ) {
+					p->parent->left = NULL;
+				}
+				else {
+					p->parent->right = NULL;
+				}
+				handle_double_black( p );
+				return p;
 			}
 
 			tree_node< T >* bst_delete_left_leaf( tree_node< T >* node ) {
-				_size--;
 				if ( node->parent == NULL ) {
 					_root = node->left;
 					node->left->parent = NULL;
@@ -425,11 +476,12 @@ namespace ft {
 					node->left->isLeft = false;
 				}
 				node->left->parent = node->parent;
-				return node->left;
+				if ( node->black )
+					node->left->black = true;
+				return node;
 			}
 
 			tree_node< T >* bst_delete_right_leaf( tree_node< T >* node ) {
-				_size--;
 				if ( node->parent == NULL ) {
 					_root = node->right;
 					node->right->parent = NULL;
@@ -442,111 +494,65 @@ namespace ft {
 				else
 					node->parent->right = node->right;
 				node->right->parent = node->parent;
-				return node->right;
+				if ( node->black )
+					node->right->black = true;
+				return node;
+			}
+
+			void swap_values_color( tree_node< T >* p, tree_node< T >* r ) {
+				T tmp;
+				bool color;
+				tmp = p->value;
+				p->value = r->value;
+				r->value = tmp;
+				color = p->black;
+				p->black = r->black;
+				r->black = color;
+			}
+
+			void swap_values( tree_node< T >* p, tree_node< T >* r ) {
+				T tmp;
+				tmp = p->value;
+				p->value = r->value;
+				r->value = tmp;
 			}
 
 			tree_node< T >* bst_delete_two_leaf( tree_node< T >* node ) {
-				_size--;
-				tree_node< T >* next = node->right;
-				while ( next->left )
-					next = next->left;
-				if ( node->parent == NULL ) {
-					if ( next->isLeft ) {
-						next->parent->left = next->right;
-						if ( next->right ) {
-							next->right->isLeft = true;
-							next->right->parent = next->parent;
-						}
-						next->right = node->right;
-						node->right->parent = next;
-					}
-					next->parent = NULL;
-					next->isLeft = node->isLeft;
-					next->left = node->left;
-					node->left->parent = next;
-					_root = next;
-					return next;
-				}
-				if ( next->isLeft ) {
-					next->parent->left = next->right;
-					if ( next->right ) {
-						next->right->isLeft = true;
-						next->right->parent = next->parent;
-					}
-					next->right = node->right;
-					node->right->parent = next;
-				}
-				if ( node->isLeft )
-					node->parent->left = next;
-				else
-					node->parent->right = next;
-				next->parent = node->parent;
-				next->isLeft = node->isLeft;
-				next->left = node->left;
-				node->left->parent = next;
+				tree_node< T >* next = node->left;
+				while ( next->right )
+					next = next->right;
+				swap_values( node, next );
+				bst_delete( next );
 				return next;
 			}
 
 			tree_node< T >* bst_delete( tree_node< T > * node ) {
-				if ( node->left == NULL && node->right == NULL )
-					return bst_delete_no_leaf( node );
-				else if ( node->left != NULL && node->right == NULL )
+				if ( node->left != NULL && node->right == NULL )
 					return bst_delete_left_leaf( node );
 				else if ( node->left == NULL && node->right != NULL )
 					return bst_delete_right_leaf( node );
-				else
-					return bst_delete_two_leaf( node );				
+				else if ( node->left != NULL && node->right != NULL )
+					return bst_delete_two_leaf( node );
+				return bst_delete_no_leaf( node );	
 			}
 
 			void rotate_double_black( tree_node< T >* s, tree_node< T >* r ) {
+				bool color;
 				if ( s->isLeft && r->isLeft )
 					right_rotate( s->parent );
-				else if ( s->isLeft && !r->isLeft )
+				else if ( s->isLeft && !r->isLeft ) {
 					leftright_rotate( s->parent );
+					color = s->black;
+					s->black = r->black;
+					r->black = color;
+				}
 				else if ( !s->isLeft && !r->isLeft )
 					left_rotate( s->parent );
-				else
+				else {
 					rightleft_rotate( s->parent );
-			}
-
-			void handle_double_black( tree_node< T >* v, tree_node< T >* u ) {
-				tree_node< T >* s, *r;
-				// tree_node< T >* double_black = v;
-				if ( u == _root )
-					return ;
-				if ( v && v->isLeft )
-					s = v->parent->right;
-				else
-					s = v->parent->left;
-				if ( s->black && ( ( s->left && !s->left->black ) || ( s->right && !s->right->black ) ) ) {
-					if ( s->left && !s->left->black && s->right && !s->right->black && v->isLeft )
-						r = s->right;
-					else if ( s->left && !s->left->black && s->right && !s->right->black )
-						r = s->left;
-					else if ( s->left && !s->left->black )
-						r = s->left;
-					else
-						r = s->right;
-					rotate_double_black( s, r );
-					r->black = true;
-					if ( u && u->black )
-						u->black = false;
-				}
-				else if ( s->black && ( !s->left || s->left->black ) && ( !s->right || s->right->black ) ) {
-					s->black = false;
-					if ( !s->parent->black )
-						s->parent->black = true;
-					else
-						handle_double_black( s->parent, s->parent );
-				}
-				else if ( !s->black ) {
-					s->black = !s->black;
-					s->parent->black = !s->parent->black;
-					if ( s->isLeft )
-						right_rotate( s->parent );
-					else
-						left_rotate( s->parent );
-					handle_double_black( v, v );
+					color = s->black;
+					s->black = r->black;
+					r->black = color;
 				}
 			}
 
@@ -580,6 +586,7 @@ namespace ft {
 		pair& operator=( const pair& pr ) {
 			first = pr.first;
 			second = pr.second;
+			return *this;
 		}
 
 	};

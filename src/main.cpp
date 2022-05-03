@@ -31,7 +31,7 @@ void displayMap( ft::map<K, V, Comp> &m, std::string test ) {
 	std::cout << test << std::endl;
 	for ( typename ft::map<K, V, Comp>::iterator it = m.begin(); it != m.end(); it++ )
 		std::cout << it->first << " " << it->second << std::endl;
-	m.printBT();
+	// m.printBT();
 	std::cout << std::endl << "size = " << m.size() << std::endl << std::endl;
 }
 
@@ -676,6 +676,8 @@ void treeIteratorTests( void ) {
 		std::cout << a->first << " " << a->second << std::endl;
 		--a;
 		std::cout << a->first << " " << a->second << std::endl;
+		for ( ft::map<int, int>::iterator it = --m.end(); it != --m.begin(); it-- )
+			std::cout << it->first << " " << it->second << std::endl;
 		std::cout << "=======================================================" << std::endl;
 	}
 }
@@ -764,6 +766,8 @@ void constTreeIteratorTests( void ) {
 		std::cout << a->first << " " << a->second << std::endl;
 		--a;
 		std::cout << a->first << " " << a->second << std::endl;
+		for ( ft::map<int, int>::iterator it = --m.end(); it != --m.begin(); it-- )
+			std::cout << it->first << " " << it->second << std::endl;
 		std::cout << "=======================================================" << std::endl;
 	}
 }
@@ -1669,40 +1673,40 @@ void mapModifiersTests( void ) {
 	{
 		ft::map<int, int> a;
 		ft::map<int, int> b;
-		a.insert( ft::make_pair<int, int>( 0, 0 ) );
-		a.insert( ft::make_pair<int, int>( 10, 10 ) );
-		a.insert( ft::make_pair<int, int>( -10, -10 ) );
+		a.insert( ft::make_pair<int, int>( 30, 30 ) );
+		a.insert( ft::make_pair<int, int>( 40, 40 ) );
+		a.insert( ft::make_pair<int, int>( 20, 20 ) );
 		displayMap( a, "Insert test 8" );
-		a.insert( a.begin(), ft::make_pair<int, int>( 20, 20 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( -20, -20 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( 30, 30 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( -30, -30 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( 25, 25 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( -25, -25 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 50, 50 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 10, 10 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 60, 60 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 0, 0 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 55, 55 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 5, 5 ) );
 		displayMap( a, "Insert test 9" );
+		a.insert( a.begin(), ft::make_pair<int, int>( 45, 45 ) );
 		a.insert( a.begin(), ft::make_pair<int, int>( 15, 15 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( -15, -15 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( 22, 22 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( -22, -22 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 52, 52 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 8, 8 ) );
 		displayMap( a, "Insert test 10" );
+		a.insert( a.begin(), ft::make_pair<int, int>( 45, 45 ) );
 		a.insert( a.begin(), ft::make_pair<int, int>( 15, 15 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( -15, -15 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( 22, 22 ) );
-		a.insert( a.begin(), ft::make_pair<int, int>( -22, -22 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 52, 52 ) );
+		a.insert( a.begin(), ft::make_pair<int, int>( 8, 8 ) );
 		displayMap( a, "Insert test 11" );
 		ft::map<int, int>::iterator it = a.begin()++;
 		it++;
-		a.insert( it, ft::make_pair<int, int>( -12, -12 ) );
+		a.insert( it, ft::make_pair<int, int>( 18, 18 ) );
 		displayMap( a, "Insert test 12" );
-		a.insert( it, ft::make_pair<int, int>( 3, 3 ) );
+		a.insert( it, ft::make_pair<int, int>( 33, 33 ) );
 		displayMap( a, "Insert test 13" );
 		for ( size_t i = 0; i < 8; i++ )
 			it++;
 		std::cout << it->first << " " << it->second << std::endl;
-		a.insert( it, ft::make_pair<int, int>( 21, 21 ) );
+		a.insert( it, ft::make_pair<int, int>( 51, 51 ) );
 		displayMap( a, "Insert test 14" );
-		a.insert( it, ft::make_pair<int, int>( 8, 8 ) );
-		a.insert( it, ft::make_pair<int, int>( 19, 19 ) );
+		a.insert( it, ft::make_pair<int, int>( 38, 38 ) );
+		a.insert( it, ft::make_pair<int, int>( 49, 49 ) );
 		displayMap( a, "Insert test 15" );
 		b.insert( a.begin(), it );
 		std::cout << it->first << " " << it->second << std::endl;
@@ -1710,23 +1714,63 @@ void mapModifiersTests( void ) {
 		b.insert( a.begin(), a.end() );
 		displayMap( b, "Insert test 17" );
 		displayMap( a, "Insert test 18" );
-		std::cout << it->first << " " << it->second << std::endl;
-		a.erase( it );
+		std::cout << 18 << std::endl;
+		a.erase( 18 );
 		displayMap( a, "Erase test 1" );
-		it--;
-		it--;
-		it--;
-		it--;
-		std::cout << it->first << " " << it->second << std::endl;
-		a.erase( it );
+		std::cout << 10 << std::endl;
+		a.erase( 10 );
 		displayMap( a, "Erase test 2" );
-		it--;
-		a.erase( it );
+		std::cout << 33 << std::endl;
+		a.erase( 33 );
 		displayMap( a, "Erase test 3" );
-		it--;
-		it--;
-		a.erase( it );
+		std::cout << 45 << std::endl;
+		a.erase( 45 );
 		displayMap( a, "Erase test 4" );
+		std::cout << 60 << std::endl;
+		a.erase( 60 );
+		displayMap( a, "Erase test 5" );
+		std::cout << 40 << std::endl;
+		a.erase( 40 );
+		displayMap( a, "Erase test 6" );
+		std::cout << 50 << std::endl;
+		a.erase( 50 );
+		displayMap( a, "Erase test 7" );
+		std::cout << 30 << std::endl;
+		a.erase( 30 );
+		displayMap( a, "Erase test 8" );
+		std::cout << 15 << std::endl;
+		a.erase( 15 );
+		displayMap( a, "Erase test 9" );
+		std::cout << 55 << std::endl;
+		a.erase( 55 );
+		displayMap( a, "Erase test 10" );
+		std::cout << 0 << std::endl;
+		a.erase( 0 );
+		displayMap( a, "Erase test 11" );
+		std::cout << 5 << std::endl;
+		a.erase( 5 );
+		displayMap( a, "Erase test 12" );
+		std::cout << 38 << std::endl;
+		a.erase( 38 );
+		displayMap( a, "Erase test 13" );
+		std::cout << 49 << std::endl;
+		a.erase( 49 );
+		displayMap( a, "Erase test 14" );
+		std::cout << 8 << std::endl;
+		a.erase( 8 );
+		displayMap( a, "Erase test 15" );
+		std::cout << 20 << std::endl;
+		a.erase( 20 );
+		displayMap( a, "Erase test 16" );
+		std::cout << 51 << std::endl;
+		a.erase( 51 );
+		displayMap( a, "Erase test 17" );
+		std::cout << 52 << std::endl;
+		a.erase( 52 );
+		displayMap( a, "Erase test 18" );
+		std::cout << 52 << std::endl;
+		a.erase( 52 );
+		displayMap( a, "Erase test 19" );
 	}
 }
 
