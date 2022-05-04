@@ -1,17 +1,17 @@
 #include <iostream>
 #include <deque>
 
-#ifdef STL_CONTAINERS
+// #ifdef STL_CONTAINERS
 	#include <iterator>
 	#include <vector>
 	#include <stack>
 	#include <map>
 	namespace ft = std;
-#else
-	#include "vector.hpp"
-	#include "stack.hpp"
-	#include "map.hpp"
-#endif
+// #else
+// 	#include "vector.hpp"
+// 	#include "stack.hpp"
+// 	#include "map.hpp"
+// #endif
 
 template<typename T>
 void	displayVect( ft::vector<T> &vect, std::string test ) {
@@ -1772,6 +1772,125 @@ void mapModifiersTests( void ) {
 		a.erase( 52 );
 		displayMap( a, "Erase test 19" );
 	}
+	{
+		ft::map<int, int> a;
+		a.insert( ft::make_pair<int, int>( 42, 42 ) );
+		a.insert( ft::make_pair<int, int>( 64, 64 ) );
+		a.insert( ft::make_pair<int, int>( 83, 83 ) );
+		a.insert( ft::make_pair<int, int>( 10, 10 ) );
+		a.insert( ft::make_pair<int, int>( 7, 7 ) );
+		a.insert( ft::make_pair<int, int>( 50, 50 ) );
+		a.insert( ft::make_pair<int, int>( 29, 29 ) );
+		a.insert( ft::make_pair<int, int>( 5, 5 ) );
+		a.insert( ft::make_pair<int, int>( 31, 31 ) );
+		displayMap( a, "Pre Erase" );
+		a.erase( 5 );
+		displayMap( a, "Erase test 20" );
+		a.erase( 10 );
+		displayMap( a, "Erase test 21" );
+		a.erase( 31 );
+		displayMap( a, "Erase test 22" );
+		a.erase( 7 );
+		displayMap( a, "Erase test 23" );
+		a.erase( 29 );
+		displayMap( a, "Erase test 24" );
+		std::cout << "Every node, from last to first:" << std::endl;
+		for (ft::map<int, int>::reverse_iterator it = a.rbegin(); it != a.rend(); ++it)
+			std::cout << it->first << "=>" << it->second << std::endl;
+		std::cout << std::endl;
+		a.erase( a.begin(), a.end() );
+		displayMap( a, "Erase test 25" );
+	}
+	{
+		ft::map<int, int> a;
+		a.insert( ft::make_pair<int, int>( 42, 42 ) );
+		a.insert( ft::make_pair<int, int>( 64, 64 ) );
+		a.insert( ft::make_pair<int, int>( 83, 83 ) );
+		a.insert( ft::make_pair<int, int>( 10, 10 ) );
+		a.insert( ft::make_pair<int, int>( 7, 7 ) );
+		a.insert( ft::make_pair<int, int>( 50, 50 ) );
+		a.insert( ft::make_pair<int, int>( 29, 29 ) );
+		a.insert( ft::make_pair<int, int>( 5, 5 ) );
+		a.insert( ft::make_pair<int, int>( 31, 31 ) );
+		ft::map<int, int> b( a );
+		ft::map<int, int> c;
+		displayMap( a, "Erase test 26" );
+		ft::map<int, int>::iterator it = a.begin();
+		it++;
+		it++;
+		it++;
+		a.erase( a.begin(), it );
+		displayMap( a, "Erase test 27" );
+		a.swap( b );
+		displayMap( a, "Swap test 1" );
+		displayMap( b, "Swap test 2" );
+		a.swap( c );
+		displayMap( a, "Swap test 3" );
+		displayMap( c, "Swap test 4" );
+		a.clear();
+		b.clear();
+		c.clear();
+		displayMap( a, "Clear test 1" );
+		displayMap( b, "Clear test 2" );
+		displayMap( c, "Clear test 3" );
+	}
+	{
+		ft::map<int, int> a;
+		displayMap( a, "Clear test 4" );
+		a.insert( ft::make_pair<int, int>( 42, 42 ) );
+		a.insert( ft::make_pair<int, int>( 64, 64 ) );
+		a.insert( ft::make_pair<int, int>( 83, 83 ) );
+		a.insert( ft::make_pair<int, int>( 10, 10 ) );
+		a.insert( ft::make_pair<int, int>( 7, 7 ) );
+		a.insert( ft::make_pair<int, int>( 50, 50 ) );
+		a.insert( ft::make_pair<int, int>( 29, 29 ) );
+		a.insert( ft::make_pair<int, int>( 5, 5 ) );
+		a.insert( ft::make_pair<int, int>( 31, 31 ) );
+		a.clear();
+		displayMap( a, "Clear test 5" );
+	}
+	{
+		ft::map<char, int, classcomp> a;
+		ft::pair<char, int> p1( 'f', 10 ), p2( 'h', 20 );
+		ft::pair<char, int> p3( 'z', 10 ), p4( 'a', 20 );
+		std::cout << std::boolalpha << a.key_comp()( 'f', 'h' ) << std::endl;
+		std::cout << std::boolalpha << a.key_comp()( 'z', 'a' ) << std::endl;
+		std::cout << std::boolalpha << a.value_comp()( p1, p2 ) << std::endl;
+		std::cout << std::boolalpha << a.value_comp()( p3, p4 ) << std::endl;
+	}
+}
+
+void mapOperationsTests( void ) {
+	std::cout << "MAP OPERATIONS TESTS:" << std::endl << std::endl;
+
+	{
+		ft::map<int, int> a;
+		a.insert( ft::make_pair<int, int>( 42, 42 ) );
+		a.insert( ft::make_pair<int, int>( 64, 64 ) );
+		a.insert( ft::make_pair<int, int>( 83, 83 ) );
+		a.insert( ft::make_pair<int, int>( 10, 10 ) );
+		a.insert( ft::make_pair<int, int>( 7, 7 ) );
+		a.insert( ft::make_pair<int, int>( 50, 50 ) );
+		a.insert( ft::make_pair<int, int>( 29, 29 ) );
+		a.insert( ft::make_pair<int, int>( 5, 5 ) );
+		a.insert( ft::make_pair<int, int>( 31, 31 ) );
+		a.insert( ft::make_pair<int, int>( 32, 32 ) );
+		const ft::map<int, int> b( a );
+		std::cout << a.find( 50 )->first << std::endl;
+		std::cout << b.find( 50 )->first << std::endl;
+		std::cout << b.find( 5 )->first << std::endl;
+		std::cout << a.find( 5 )->first << std::endl;
+		std::cout << b.find( 10 )->first << std::endl;
+		std::cout << a.find( 10 )->first << std::endl;
+		if ( b.find( 11 ) == b.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		if ( a.find( 11 ) == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		ft::map<int, int>::iterator it1, it2;
+		it1 = a.lower_bound( 100000 );
+		it2 = a.lower_bound( 11 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+	}
 }
 
 int	main(void) {
@@ -1797,10 +1916,11 @@ int	main(void) {
 	// stackNonMemberOverloadsTests();
 
 	// Map Tests
-	// mapConstructorTests();
-	// mapIteratorTests();
-	// mapCapacityTests();
-	// mapElementAccessTests();
+	mapConstructorTests();
+	mapIteratorTests();
+	mapCapacityTests();
+	mapElementAccessTests();
 	mapModifiersTests();
+	mapOperationsTests();
 	return (0);
 }

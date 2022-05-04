@@ -74,7 +74,7 @@ namespace ft {
 
 			// to be continued
 			~tree( void ) {
-				clear( _root );
+				clear();
 			}
 
 			void printBT( const std::string& prefix, const tree_node<T>* node, bool isLeft ) {
@@ -102,6 +102,8 @@ namespace ft {
 			tree& operator=( const tree& x ) {
 				clear( _root );
 				_root = NULL;
+				_first = NULL;
+				_last = NULL;
 				_size = 0;
 				_comparer = x._comparer;
 				_allocator = x._allocator;
@@ -150,8 +152,6 @@ namespace ft {
 			}
 
 			tree_node<T>* add( T p ) {
-				// if ( check_duplicates( p ) )
-				// 	return NULL;
 				tree_node< T >* node = _allocator.allocate( 1 );
 				_allocator.construct( node, tree_node<T>( p ) );
 				if ( _root == NULL ) {
@@ -217,8 +217,20 @@ namespace ft {
 				free_node( v );
 				if ( _size )
 					_size--;
-				if ( _root )
+				while ( _root && _root->parent )
+					_root = _root->parent;
+				if ( _root ) {
 					_root->black = true;
+					_root->isLeft = false;
+				}
+			}
+
+			void clear( void ) {
+				clear( _root );
+				_size = 0;
+				_first = NULL;
+				_last = NULL;
+				_root = NULL;
 			}
 
 		private:
@@ -425,12 +437,20 @@ namespace ft {
 					if ( y->isLeft ) {
 						y->isLeft = z->isLeft;
 						z->left = y->right;
+						if ( y->right ) {
+							y->right->parent = z;
+							y->right->isLeft = true;
+						}
 						y->right = z;
 						z->isLeft = false;
 					}
 					else {
 						y->isLeft = z->isLeft;
 						z->right = y->left;
+						if ( y->left ) {
+							y->left->parent = z;
+							y->left->isLeft = false;
+						}
 						y->left = z;
 						z->isLeft = true;
 					}

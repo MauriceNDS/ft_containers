@@ -243,7 +243,7 @@ namespace ft {
 				if ( _ptr == NULL )
 					_ptr = _container->getFirst();
 				else if ( _ptr->right == NULL ) {
-					while ( _ptr->parent && !_ptr->isLeft )
+					while (_ptr->isLeft == false && _ptr->parent )
 						_ptr = _ptr->parent;
 					if ( _ptr->parent )
 						_ptr = _ptr->parent;
@@ -268,7 +268,7 @@ namespace ft {
 				if ( _ptr == NULL )
 					_ptr = _container->getLast();
 				else if ( _ptr->left == NULL ) {
-					while ( _ptr->parent && _ptr->isLeft )
+					while ( _ptr->isLeft == true && _ptr->parent )
 						_ptr = _ptr->parent;
 					if ( _ptr->parent )
 						_ptr = _ptr->parent;
@@ -340,7 +340,7 @@ namespace ft {
 				if ( _ptr == NULL )
 					_ptr = _container->getFirst();
 				else if ( _ptr->right == NULL ) {
-					while ( _ptr->parent && !_ptr->isLeft )
+					while ( _ptr->isLeft == false && _ptr->parent )
 						_ptr = _ptr->parent;
 					if ( _ptr->parent )
 						_ptr = _ptr->parent;
@@ -363,7 +363,7 @@ namespace ft {
 				if ( _ptr == NULL )
 					_ptr = _container->getLast();
 				else if ( _ptr->left == NULL ) {
-					while ( _ptr->parent && _ptr->isLeft )
+					while ( _ptr->isLeft  == true && _ptr->parent )
 						_ptr = _ptr->parent;
 					if ( _ptr->parent )
 						_ptr = _ptr->parent;
@@ -411,9 +411,8 @@ namespace ft {
 
 			reverse_iterator( void ) {}
 			explicit reverse_iterator( container_pointer ptr, long idx ) : _iter( ptr, idx ) {}
-			reverse_iterator( container_pointer container, tree_node< value_type > * ptr ) : _iter( container, ptr ) {}
-			template <class It>
-			reverse_iterator( reverse_iterator<It> const & cpy ) { 
+			explicit reverse_iterator( container_pointer container, tree_node< value_type > * ptr ) : _iter( container, ptr ) {}
+			reverse_iterator( reverse_iterator<Iter> const & cpy ) { 
 				this->_iter = cpy._iter;
 			}
 			~reverse_iterator( void ) {}
@@ -499,9 +498,8 @@ namespace ft {
 
 			const_reverse_iterator( void ) {}
 			explicit const_reverse_iterator( container_pointer ptr, long idx ) : _iter( ptr, idx ) {}
-			const_reverse_iterator( container_pointer container, tree_node< value_type > * ptr ) : _iter( container, ptr ) {}
-			template <class ConstIt>
-			const_reverse_iterator( const_reverse_iterator<ConstIt> const & cpy ) { 
+			explicit const_reverse_iterator( container_pointer container, tree_node< value_type > * ptr ) : _iter( container, ptr ) {}
+			const_reverse_iterator( const_reverse_iterator<ConstIter> const & cpy ) { 
 				this->_iter = cpy._iter;
 			}
 			~const_reverse_iterator( void ) {}

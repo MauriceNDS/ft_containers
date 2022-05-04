@@ -2,6 +2,7 @@
 #define MAP_HPP
 
 #include "tree.hpp"
+#include "stack.hpp"
 
 namespace ft {
 
@@ -36,6 +37,7 @@ namespace ft {
 
 		private:
 
+			key_compare _kcomparer;
 			value_compare _vcomparer;
 			tree< value_type, value_compare, new_alloc > _tree;
 
@@ -44,11 +46,11 @@ namespace ft {
 			/************************************* Constructors **************************************/
 
 			explicit map( const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() )
-			: _vcomparer( comp ), _tree( _vcomparer, alloc ) {}
+			: _kcomparer( comp ), _vcomparer( comp ), _tree( _vcomparer, alloc ) {}
 
 			template <class InputIterator>
 			map( InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() ) 
-			: _tree( first, last, comp, alloc ) {}
+			: _kcomparer( comp ), _vcomparer( comp ), _tree( first, last, comp, alloc ) {}
 
 			map( const map& x ) {
 				*this = x;
@@ -62,6 +64,8 @@ namespace ft {
 
 			map& operator=( const map& x ) {
 				_tree = x._tree;
+				_vcomparer = x._vcomparer;
+				_kcomparer = x._kcomparer;
 				return *this;
 			}
 
@@ -188,21 +192,69 @@ namespace ft {
 			}
 
 			void erase( iterator first, iterator last ) {
+				ft::stack<key_type> a;
 				while ( first != last ) {
-					_tree.erase( first );
+					a.push( first->first );
 					first++;
+				}
+				while ( !a.empty() ) {
+					erase( a.top() );
+					a.pop();
 				}
 			}
 
 			void swap( map& x ) {
-				(void)x;
+				map a;
+				a = *this;
+				*this = x;
+				x = a;
 			}
+
+			void clear( void ) {
+				_tree.clear();
+			}
+
+			/************************************* Observers *****************************************/
+
+			key_compare key_comp( void ) const {
+				return _kcomparer;
+			}
+
+			value_compare value_comp( void ) const {
+				return _vcomparer;
+			}
+			
+			/************************************* Operations ****************************************/
+			
+			iterator find( const key_type& k ) {
+				return iterator( &_tree, _tree.search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) ) );
+			}
+
+			const_iterator find( const key_type& k ) const {
+				return const_iterator( &_tree, _tree.search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) ) );
+			}
+
+			size_type count( const key_type& k ) const {
+				if ( _tree.search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) ) )
+					return 1;
+				return 0;
+			}
+			// to be continued
+			iterator lower_bound( const key_type& k ) {
+				for ( iterator it = begin(); it != end(); it++ )
+					if ( _kcomparer( k, it->first ) )
+						return it;
+				return iterator( &_tree, )
+			}
+
+			const_iterator lower_bound( const key_type& k ) const;
+			
+
+		private:
 			
 			void printBT( void ) {
 				_tree.printBT( "", _tree.getRoot(), false );
 			}
-
-		private:
 
 			class value_comp : std::binary_function< value_type, value_type, bool > {
 
