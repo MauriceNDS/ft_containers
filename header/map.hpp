@@ -39,6 +39,7 @@ namespace ft {
 
 			key_compare _kcomparer;
 			value_compare _vcomparer;
+			allocator_type _allocator;
 			tree< value_type, value_compare, new_alloc > _tree;
 
 		public:
@@ -46,11 +47,11 @@ namespace ft {
 			/************************************* Constructors **************************************/
 
 			explicit map( const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() )
-			: _kcomparer( comp ), _vcomparer( comp ), _tree( _vcomparer, alloc ) {}
+			: _kcomparer( comp ), _vcomparer( comp ), _allocator( alloc ), _tree( _vcomparer, alloc ) {}
 
 			template <class InputIterator>
 			map( InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() ) 
-			: _kcomparer( comp ), _vcomparer( comp ), _tree( first, last, comp, alloc ) {}
+			: _kcomparer( comp ), _vcomparer( comp ), _allocator( alloc ), _tree( first, last, comp, alloc ) {}
 
 			map( const map& x ) {
 				*this = x;
@@ -66,6 +67,7 @@ namespace ft {
 				_tree = x._tree;
 				_vcomparer = x._vcomparer;
 				_kcomparer = x._kcomparer;
+				_allocator = x._allocator;
 				return *this;
 			}
 
@@ -223,7 +225,7 @@ namespace ft {
 			value_compare value_comp( void ) const {
 				return _vcomparer;
 			}
-			
+
 			/************************************* Operations ****************************************/
 			
 			iterator find( const key_type& k ) {
@@ -239,16 +241,64 @@ namespace ft {
 					return 1;
 				return 0;
 			}
-			// to be continued
+
 			iterator lower_bound( const key_type& k ) {
-				for ( iterator it = begin(); it != end(); it++ )
-					if ( _kcomparer( k, it->first ) )
-						return it;
-				return iterator( &_tree, )
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
+				if ( node )
+					return iterator( &_tree, node );
+				return end();
 			}
 
-			const_iterator lower_bound( const key_type& k ) const;
-			
+			const_iterator lower_bound( const key_type& k ) const {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
+				if ( node )
+					return iterator( &_tree, node );
+				return end();
+			}
+
+			iterator upper_bound( const key_type& k ) {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
+				if ( node ) {
+					if ( !_kcomparer( k, node->value.first ) && !_kcomparer( node->value.first, k ) )
+						return ++iterator( &_tree, node );
+					return iterator( &_tree, node );
+				}
+				return end();
+			}
+
+			const_iterator upper_bound( const key_type& k ) const {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
+				if ( node ) {
+					if ( !_kcomparer( k, node->value.first ) && !_kcomparer( node->value.first, k ) )
+						return ++const_iterator( &_tree, node );
+					return const_iterator( &_tree, node );
+				}
+				return end();
+			}
+
+			pair<iterator,iterator> equal_range( const key_type& k ) {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
+				if ( node ) {
+					if ( !_kcomparer( k, node->value.first ) && !_kcomparer( node->value.first, k ) )
+						return ft::make_pair<iterator,iterator>( iterator( &_tree, node ), ++iterator( &_tree, node ) );
+				}
+				return ft::make_pair<iterator,iterator>( iterator( &_tree, node ), iterator( &_tree, node ) );
+			}
+
+			pair<const_iterator,const_iterator> equal_range (const key_type& k) const {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), make_pair<key_type, mapped_type>( k, mapped_type() ) );
+				if ( node ) {
+					if ( !_kcomparer( k, node->value.first ) && !_kcomparer( node->value.first, k ) )
+						return make_pair<const_iterator,const_iterator>( const_iterator( &_tree, node ), ++const_iterator( &_tree, node ) );
+				}
+				return make_pair<const_iterator,const_iterator>( const_iterator( &_tree, node ), const_iterator( &_tree, node ) );
+			}
+
+			/************************************* Allocator *****************************************/
+
+			allocator_type get_allocator( void ) const {
+				return _allocator;
+			}
 
 		private:
 			

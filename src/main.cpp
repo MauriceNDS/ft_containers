@@ -1,17 +1,17 @@
 #include <iostream>
 #include <deque>
 
-// #ifdef STL_CONTAINERS
+#ifdef STL_CONTAINERS
 	#include <iterator>
 	#include <vector>
 	#include <stack>
 	#include <map>
 	namespace ft = std;
-// #else
-// 	#include "vector.hpp"
-// 	#include "stack.hpp"
-// 	#include "map.hpp"
-// #endif
+#else
+	#include "vector.hpp"
+	#include "stack.hpp"
+	#include "map.hpp"
+#endif
 
 template<typename T>
 void	displayVect( ft::vector<T> &vect, std::string test ) {
@@ -1887,33 +1887,104 @@ void mapOperationsTests( void ) {
 		if ( a.find( 11 ) == a.end() )
 			std::cout << std::boolalpha << true << std::endl;
 		ft::map<int, int>::iterator it1, it2;
-		it1 = a.lower_bound( 100000 );
+		it1 = a.lower_bound( 100 );
 		it2 = a.lower_bound( 11 );
+		if ( it1 == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.lower_bound( -10000 );
+		it2 = a.lower_bound( 2 );
 		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.lower_bound( 5 );
+		it2 = a.lower_bound( 6 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.lower_bound( 40 );
+		it2 = a.lower_bound( 20 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.lower_bound( 8 );
+		it2 = a.lower_bound( 31 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		std::cout << std::endl;
+		it1 = a.upper_bound( 10 );
+		it2 = a.upper_bound( 31 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.upper_bound( 32 );
+		it2 = a.upper_bound( 0 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.upper_bound( 44 );
+		it2 = a.upper_bound( 7 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.upper_bound( 51 );
+		it2 = a.upper_bound( 35 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.upper_bound( 80 );
+		it2 = a.upper_bound( 47 );
+		std::cout << it1->first << " " << it1->first << std::endl;
+		std::cout << it2->first << " " << it2->first << std::endl;
+		it1 = a.upper_bound( 83 );
+		if ( it1 == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		std::cout << std::endl;
+		ft::pair<ft::map<int, int>::iterator, ft::map<int, int>::iterator> p;
+		p = a.equal_range( 29 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
+		p = a.equal_range( 30 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
+		p = a.equal_range( 4 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
+		p = a.equal_range( 5 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
+		p = a.equal_range( 32 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
+		p = a.equal_range( 42 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
+		p = a.equal_range( 43 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
+		p = a.equal_range( 82 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
+		p = a.equal_range( 83 );
+		std::cout << p.first->first << std::endl;
+		if ( p.second == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		p = a.equal_range( 100 );
+		if ( p.first == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		if ( p.second == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		p = a.equal_range( -100 );
+		std::cout << p.first->first << " " << p.second->first << std::endl;
 	}
 }
 
 int	main(void) {
 	// Iterator Tests
-	// iteratorTests();
-	// constIteratorTests();
-	// reverseIteratorTests();
-	// constReverseIteratorTests();
+	iteratorTests();
+	constIteratorTests();
+	reverseIteratorTests();
+	constReverseIteratorTests();
 	treeIteratorTests();
 	constTreeIteratorTests();
 
 	// Vector Tests
-	// vectorConstructorTests();
-	// vectorIteratorTests();
-	// vectorCapacityTests();
-	// vectorElementAccessTests();
-	// vectorModifiersTests();
-	// vectorNonMemberOverloadsTests();
+	vectorConstructorTests();
+	vectorIteratorTests();
+	vectorCapacityTests();
+	vectorElementAccessTests();
+	vectorModifiersTests();
+	vectorNonMemberOverloadsTests();
 
 	// Stack Tests
-	// stackConstructorTests();
-	// stackMemberFunctionTests();
-	// stackNonMemberOverloadsTests();
+	stackConstructorTests();
+	stackMemberFunctionTests();
+	stackNonMemberOverloadsTests();
 
 	// Map Tests
 	mapConstructorTests();

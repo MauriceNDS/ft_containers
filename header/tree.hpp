@@ -188,17 +188,32 @@ namespace ft {
 			}
 
 			tree_node< T >* search( tree_node< T >* node, T const key ) const {
-				if ( node == NULL ) {
+				if ( node == NULL )
 					return NULL;
-				}
-				if ( !_comparer( node->value, key ) && !_comparer( key, node->value ) ) {
+				if ( !_comparer( node->value, key ) && !_comparer( key, node->value ) )
 					return node;
-				}
 				tree_node< T >* res = NULL;
-				if (!(res = search( node->left, key ))) {
+				if ( !( res = search( node->left, key ) ) )
 					res = search( node->right, key );
-				}
 				return res;
+			}
+
+			tree_node< T >* lower_search( tree_node< T >* node, T const key ) const {
+				tree_node< T >* res = NULL;
+				while ( node ) {
+					if ( !_comparer( node->value, key ) && !_comparer( key, node->value ) )
+						return node;
+					if ( _comparer( node->value, key ) )
+						node = node->right;
+					else {
+						if ( res == NULL || _comparer( node->value, res->value ) )
+							res = node;
+						node = node->left;
+					}
+				}
+				if ( res )
+					return res;
+				return NULL;
 			}
 
 			void del( tree_node< T >* v ) {
