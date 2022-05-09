@@ -99,6 +99,28 @@ namespace ft {
 				}
 			}
 
+			void printBT2( const std::string& prefix, const tree_node<T>* node, bool isLeft ) {
+				if ( node != NULL ) {
+					std::cout << prefix;
+
+					std::cout << (isLeft ? "├──L:" : "└──R:" );
+
+					// print the value of the node
+					if ( !node->black ) {
+						std::cout << "\033[31m[" << node->value;
+						std::cout << "]\033[0m" << std::endl;
+					}
+					else {
+						std::cout << "[" << node->value;
+						std::cout << "]" << std::endl;
+					}
+
+					// enter the next tree level - left and right branch
+					printBT2( prefix + (isLeft ? "│   " : "    "), node->left, true);
+					printBT2( prefix + (isLeft ? "│   " : "    "), node->right, false);
+				}
+			}
+
 			tree& operator=( const tree& x ) {
 				clear( _root );
 				_root = NULL;

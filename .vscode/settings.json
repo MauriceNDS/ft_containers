@@ -70,6 +70,8 @@
 		"clocale": "cpp",
 		"numeric": "cpp",
 		"random": "cpp",
-		"fstream": "cpp"
+		"fstream": "cpp",
+		"__functional_03": "cpp",
+		"set": "cpp"
 	}
 }

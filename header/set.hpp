@@ -1,27 +1,22 @@
-#ifndef MAP_HPP
-#define MAP_HPP
+#ifndef SET_HPP
+#define SET_HPP
 
 #include "tree.hpp"
 #include "stack.hpp"
 
 namespace ft {
 
-	template < class Key, class T, class Compare = std::less<Key>, class Alloc = std::allocator< pair< const Key, T > > >
-	class map {
-
-		private:
-
-			class value_comp;
+	template < class T, class Compare = std::less<T>, class Alloc = std::allocator<T> >
+	class set {
 
 		public:
 
 			/************************************* Typedefs ******************************************/
 
-			typedef Key																					key_type;
-			typedef T																					mapped_type;
+			typedef T																					key_type;
+			typedef T																					value_type;
 			typedef Compare																				key_compare;
-			typedef value_comp																			value_compare;
-			typedef pair< key_type, mapped_type >														value_type;
+			typedef Compare																				value_compare;
 			typedef Alloc																				allocator_type;
 			typedef typename allocator_type::template rebind< tree_node< value_type > >::other			new_alloc;
 			typedef typename allocator_type::reference													reference;
@@ -39,31 +34,31 @@ namespace ft {
 
 			key_compare _kcomparer;
 			value_compare _vcomparer;
-			allocator_type _allocator;
+			new_alloc _allocator;
 			tree< value_type, value_compare, new_alloc > _tree;
 
 		public:
 
 			/************************************* Constructors **************************************/
 
-			explicit map( const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() )
+			explicit set( const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() )
 			: _kcomparer( comp ), _vcomparer( comp ), _allocator( alloc ), _tree( _vcomparer, alloc ) {}
 
 			template <class InputIterator>
-			map( InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() ) 
+			set( InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const new_alloc& alloc = new_alloc() ) 
 			: _kcomparer( comp ), _vcomparer( comp ), _allocator( alloc ), _tree( first, last, comp, alloc ) {}
 
-			map( const map& x ) {
+			set( const set& x ) {
 				*this = x;
 			}
 
 			/************************************* Destructor ****************************************/
 
-			~map( void ) {}
+			~set( void ) {}
 
 			/************************************* Operator = ****************************************/
 
-			map& operator=( const map& x ) {
+			set& operator=( const set& x ) {
 				_tree = x._tree;
 				_vcomparer = x._vcomparer;
 				_kcomparer = x._kcomparer;
@@ -127,15 +122,6 @@ namespace ft {
 				return _tree.getAllocator().max_size();
 			}
 
-			/************************************* Element access ************************************/
-
-			mapped_type& operator[]( const key_type& k ) {
-				tree_node<value_type>* res = _tree.search( _tree.getRoot(), ft::make_pair< key_type, mapped_type >( k, mapped_type() ) );
-				if ( res )
-					return res->value.second;
-				return _tree.add( ft::make_pair< key_type, mapped_type >( k, mapped_type() ) )->value.second;
-			}
-
 			/************************************* Modifiers *****************************************/
 
 			pair<iterator, bool> insert( const value_type& val ) {
@@ -184,8 +170,8 @@ namespace ft {
 				_tree.del( node );
 			}
 
-			size_type erase( const key_type& k ) {
-				tree_node< value_type >* res = _tree.search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) );
+			size_type erase( const value_type& val ) {
+				tree_node< value_type >* res = _tree.search( _tree.getRoot(), val );
 				if ( res ) {
 					_tree.del( res );
 					return 1;
@@ -196,7 +182,7 @@ namespace ft {
 			void erase( iterator first, iterator last ) {
 				ft::stack<key_type> a;
 				while ( first != last ) {
-					a.push( first->first );
+					a.push( *first );
 					first++;
 				}
 				while ( !a.empty() ) {
@@ -205,8 +191,8 @@ namespace ft {
 				}
 			}
 
-			void swap( map& x ) {
-				map a;
+			void swap( set& x ) {
+				set a;
 				a = *this;
 				*this = x;
 				x = a;
@@ -228,67 +214,67 @@ namespace ft {
 
 			/************************************* Operations ****************************************/
 			
-			iterator find( const key_type& k ) {
-				return iterator( &_tree, _tree.search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) ) );
+			iterator find( const value_type& val ) {
+				return iterator( &_tree, _tree.search( _tree.getRoot(), val ) );
 			}
 
-			const_iterator find( const key_type& k ) const {
-				return const_iterator( &_tree, _tree.search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) ) );
+			const_iterator find( const value_type& val ) const {
+				return const_iterator( &_tree, _tree.search( _tree.getRoot(), val ) );
 			}
 
-			size_type count( const key_type& k ) const {
-				if ( _tree.search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) ) )
+			size_type count( const value_type& val ) const {
+				if ( _tree.search( _tree.getRoot(), val ) )
 					return 1;
 				return 0;
 			}
 
-			iterator lower_bound( const key_type& k ) {
-				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) );
+			iterator lower_bound( const value_type& val ) {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), val );
 				if ( node )
 					return iterator( &_tree, node );
 				return end();
 			}
 
-			const_iterator lower_bound( const key_type& k ) const {
-				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) );
+			const_iterator lower_bound( const value_type& val ) const {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), val );
 				if ( node )
-					return iterator( &_tree, node );
+					return const_iterator( &_tree, node );
 				return end();
 			}
 
-			iterator upper_bound( const key_type& k ) {
-				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) );
+			iterator upper_bound( const value_type& val ) {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), val );
 				if ( node ) {
-					if ( !_kcomparer( k, node->value.first ) && !_kcomparer( node->value.first, k ) )
+					if ( !_vcomparer( val, node->value ) && !_vcomparer( node->value, val ) )
 						return ++iterator( &_tree, node );
 					return iterator( &_tree, node );
 				}
 				return end();
 			}
 
-			const_iterator upper_bound( const key_type& k ) const {
-				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) );
+			const_iterator upper_bound( const value_type& val ) const {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), val );
 				if ( node ) {
-					if ( !_kcomparer( k, node->value.first ) && !_kcomparer( node->value.first, k ) )
+					if ( !_vcomparer( val, node->value ) && !_vcomparer( node->value, val ) )
 						return ++const_iterator( &_tree, node );
 					return const_iterator( &_tree, node );
 				}
 				return end();
 			}
 
-			pair<iterator,iterator> equal_range( const key_type& k ) {
-				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) );
+			pair<iterator,iterator> equal_range( const value_type& val ) {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), val );
 				if ( node ) {
-					if ( !_kcomparer( k, node->value.first ) && !_kcomparer( node->value.first, k ) )
+					if ( !_vcomparer( val, node->value ) && !_vcomparer( node->value, val ) )
 						return ft::make_pair<iterator,iterator>( iterator( &_tree, node ), ++iterator( &_tree, node ) );
 				}
 				return ft::make_pair<iterator,iterator>( iterator( &_tree, node ), iterator( &_tree, node ) );
 			}
 
-			pair<const_iterator,const_iterator> equal_range (const key_type& k) const {
-				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), ft::make_pair<key_type, mapped_type>( k, mapped_type() ) );
+			pair<const_iterator,const_iterator> equal_range( const value_type& val ) const {
+				tree_node< value_type >* node = _tree.lower_search( _tree.getRoot(), val );
 				if ( node ) {
-					if ( !_kcomparer( k, node->value.first ) && !_kcomparer( node->value.first, k ) )
+					if ( !_vcomparer( val, node->value ) && !_vcomparer( node->value, val ) )
 						return ft::make_pair<const_iterator,const_iterator>( const_iterator( &_tree, node ), ++const_iterator( &_tree, node ) );
 				}
 				return ft::make_pair<const_iterator,const_iterator>( const_iterator( &_tree, node ), const_iterator( &_tree, node ) );
@@ -303,34 +289,8 @@ namespace ft {
 		private:
 			
 			void printBT( void ) {
-				_tree.printBT( "", _tree.getRoot(), false );
+				_tree.printBT2( "", _tree.getRoot(), false );
 			}
-
-			class value_comp : std::binary_function< value_type, value_type, bool > {
-
-				friend class map;
-
-			protected:
-
-				key_compare comp;
-				value_comp( key_compare c ) : comp( c ) {}
-
-			public:
-				value_comp( void ) {}
-
-				typedef bool 				result_type;
-				typedef value_type			first_argument_type;
-				typedef value_type			second_argument_type;
-				bool operator()( const value_type& x, const value_type& y ) const {
-					return comp( x.first, y.first );
-				}
-				
-				value_comp& operator=( const value_comp& rhs ) {
-					comp = rhs.comp;
-					return *this;
-				}
-
-			};
 
 	};
 

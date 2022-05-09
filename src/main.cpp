@@ -6,11 +6,13 @@
 	#include <vector>
 	#include <stack>
 	#include <map>
+	#include <set>
 	namespace ft = std;
 #else
 	#include "vector.hpp"
 	#include "stack.hpp"
 	#include "map.hpp"
+	#include "set.hpp"
 #endif
 
 template<typename T>
@@ -31,6 +33,16 @@ void displayMap( ft::map<K, V, Comp> &m, std::string test ) {
 	std::cout << test << std::endl;
 	for ( typename ft::map<K, V, Comp>::iterator it = m.begin(); it != m.end(); it++ )
 		std::cout << it->first << " " << it->second << std::endl;
+	// m.printBT();
+	std::cout << std::endl << "size = " << m.size() << std::endl << std::endl;
+}
+
+template< typename V, typename Comp >
+void displaySet( ft::set<V, Comp> &m, std::string test ) {
+	std::cout << "=======================================================" << std::endl;
+	std::cout << test << std::endl;
+	for ( typename ft::set<V, Comp>::iterator it = m.begin(); it != m.end(); it++ )
+		std::cout << *it << std::endl;
 	// m.printBT();
 	std::cout << std::endl << "size = " << m.size() << std::endl << std::endl;
 }
@@ -676,7 +688,7 @@ void treeIteratorTests( void ) {
 		std::cout << a->first << " " << a->second << std::endl;
 		--a;
 		std::cout << a->first << " " << a->second << std::endl;
-		for ( ft::map<int, int>::iterator it = --m.end(); it != --m.begin(); it-- )
+		for ( ft::map<int, int>::iterator it = --m.end(); it != m.begin(); --it )
 			std::cout << it->first << " " << it->second << std::endl;
 		std::cout << "=======================================================" << std::endl;
 	}
@@ -1964,6 +1976,435 @@ void mapOperationsTests( void ) {
 	}
 }
 
+void setConstructorTests( void ) {
+	std::cout << "SET CONSTRUCTOR TESTS:" << std::endl << std::endl;
+
+	{
+		ft::set<char> first;
+		first.insert( 'a' );
+		first.insert( 'b' );
+		first.insert( 'c' );
+		first.insert( 'd' );
+		displaySet( first, "Constructor test 1" );
+
+		ft::set<char> second( first.begin(), first.end() );
+		displaySet( second, "Constructor test 2" );
+
+		ft::set<char> third( second );
+		displaySet( third, "Constructor test 3" );
+
+		ft::set<char,classcomp> fourth;
+		first.insert( 'd' );
+		first.insert( 'a' );
+		first.insert( 'b' );
+		first.insert( 'c' );
+		displaySet( fourth, "Constructor test 4" );
+
+		bool(*fn_pt)(char,char) = fncomp;
+		ft::set<char,bool(*)(char,char)> fifth( fn_pt );
+		first.insert( 'd' );
+		first.insert( 'b' );
+		first.insert( 'c' );
+		first.insert( 'a' );
+		displaySet( fifth, "Constructor test 5" );
+	}
+}
+
+void setIteratorTests( void ) {
+	std::cout << "SET ITERATOR TESTS:" << std::endl << std::endl;
+
+	{
+		ft::set<int> a;
+		a.insert( 5 );
+		a.insert( 15 );
+		a.insert( 25 );
+		a.insert( 35 );
+		std::cout << *a.begin() << std::endl;
+		std::cout << *(a.begin()++) << std::endl;
+		std::cout << *a.rbegin() << std::endl;
+		std::cout << *(a.rbegin()++) << std::endl;
+	}
+}
+
+void setCapacityTests( void ) {
+	std::cout << "SET CAPACITY TESTS:" << std::endl << std::endl;
+
+	{
+		ft::set<int> a;
+		ft::set<char> b;
+
+		std::cout << a.max_size() << std::endl;
+		std::cout << b.max_size() << std::endl;
+		a.insert( 2 );
+		b.insert( 'a' );
+		std::cout << a.max_size() << std::endl;
+		std::cout << b.max_size() << std::endl;
+		displaySet( a, "Max_size test" );
+		displaySet( b, "Max_size test" );
+	}
+	{
+		ft::set<int> a;
+		std::cout << std::boolalpha << a.empty() << std::endl;
+		displaySet( a, "size test 1" );
+		a.insert( 5 );
+		std::cout << std::boolalpha << a.empty() << std::endl;
+		displaySet( a, "size test 2" );
+		a.insert( 1 );
+		a.insert( 2 );
+		std::cout << std::boolalpha << a.empty() << std::endl;
+		displaySet( a, "size test 3" );
+		a.insert( -42 );
+		a.insert( -10 );
+		a.insert( 10 );
+		std::cout << std::boolalpha << a.empty() << std::endl;
+		displaySet( a, "size test 4" );
+	}
+}
+
+void setModifiersTests( void ) {
+	std::cout << "SET MODIFIERS TESTS:" << std::endl << std::endl;
+
+	{
+		ft::set<int> a;
+		displaySet( a, "Insert test 1" );
+		a.insert( 5 );
+		a.insert( 15 );
+		a.insert( 25 );
+		a.insert( 35 );
+		a.insert( 45 );
+		a.insert( 55 );
+		a.insert( 65 );
+		displaySet( a, "Insert test 2" );
+		a.insert( 75 );
+		a.insert( 85 );
+		a.insert( 95 );
+		a.insert( 1 );
+		a.insert( 95 );
+		displaySet( a, "Insert test 3" );
+	}
+	{
+		ft::set<int> a;
+		a.insert( 95 );
+		a.insert( 5 );
+		a.insert( 65 );
+		a.insert( 85 );
+		displaySet( a, "Insert test 4" );
+		a.insert( 55 );
+		a.insert( 95 );
+		a.insert( 25 );
+		a.insert( 45 );
+		displaySet( a, "Insert test 5" );
+		a.insert( 15 );
+		a.insert( 1 );
+		a.insert( 35 );
+		a.insert( 75 );
+		displaySet( a, "Insert test 6" );
+	}
+	{
+		ft::set<int> a;
+		ft::set<int> b;
+		a.insert( 15 );
+		a.insert( 25 );
+		a.insert( 95 );
+		a.insert( 95 );
+		a.insert( 95 );
+		a.insert( 95 );
+		a.insert( 95 );
+		displaySet( a, "Insert test 7" );
+		b.insert( a.begin(), a.end() );
+		displaySet( b, "Insert test 7.5" );
+	}
+	{
+		ft::set<int> a;
+		ft::set<int> b;
+		a.insert( 30 );
+		a.insert( 40 );
+		a.insert( 20 );
+		displaySet( a, "Insert test 8" );
+		a.insert( a.begin(), 50 );
+		a.insert( a.begin(), 10 );
+		a.insert( a.begin(), 60 );
+		a.insert( a.begin(), 0 );
+		a.insert( a.begin(), 55 );
+		a.insert( a.begin(), 5 );
+		displaySet( a, "Insert test 9" );
+		a.insert( a.begin(), 45 );
+		a.insert( a.begin(), 15 );
+		a.insert( a.begin(), 52 );
+		a.insert( a.begin(), 9 );
+		displaySet( a, "Insert test 10" );
+		a.insert( a.begin(), 45 );
+		a.insert( a.begin(), 15 );
+		a.insert( a.begin(), 52 );
+		a.insert( a.begin(), 9 );
+		displaySet( a, "Insert test 11" );
+		ft::set<int>::iterator it = a.begin()++;
+		it++;
+		a.insert( it, 18 );
+		displaySet( a, "Insert test 12" );
+		a.insert( it, 33 );
+		displaySet( a, "Insert test 13" );
+		for ( size_t i = 0; i < 8; i++ )
+			it++;
+		std::cout << *it << std::endl;
+		a.insert( it, 51 );
+		displaySet( a, "Insert test 14" );
+		a.insert( it, 38 );
+		a.insert( it, 49 );
+		displaySet( a, "Insert test 15" );
+		b.insert( a.begin(), it );
+		std::cout << *it << std::endl;
+		displaySet( b, "Insert test 16" );
+		b.insert( a.begin(), a.end() );
+		displaySet( b, "Insert test 17" );
+		displaySet( a, "Insert test 18" );
+		std::cout << 18 << std::endl;
+		a.erase( 18 );
+		displaySet( a, "Erase test 1" );
+		std::cout << 10 << std::endl;
+		a.erase( 10 );
+		displaySet( a, "Erase test 2" );
+		std::cout << 33 << std::endl;
+		a.erase( 33 );
+		displaySet( a, "Erase test 3" );
+		std::cout << 45 << std::endl;
+		a.erase( 45 );
+		displaySet( a, "Erase test 4" );
+		std::cout << 60 << std::endl;
+		a.erase( 60 );
+		displaySet( a, "Erase test 5" );
+		std::cout << 40 << std::endl;
+		a.erase( 40 );
+		displaySet( a, "Erase test 6" );
+		std::cout << 50 << std::endl;
+		a.erase( 50 );
+		displaySet( a, "Erase test 7" );
+		std::cout << 30 << std::endl;
+		a.erase( 30 );
+		displaySet( a, "Erase test 8" );
+		std::cout << 15 << std::endl;
+		a.erase( 15 );
+		displaySet( a, "Erase test 9" );
+		std::cout << 55 << std::endl;
+		a.erase( 55 );
+		displaySet( a, "Erase test 10" );
+		std::cout << 0 << std::endl;
+		a.erase( 0 );
+		displaySet( a, "Erase test 11" );
+		std::cout << 5 << std::endl;
+		a.erase( 5 );
+		displaySet( a, "Erase test 12" );
+		std::cout << 38 << std::endl;
+		a.erase( 38 );
+		displaySet( a, "Erase test 13" );
+		std::cout << 49 << std::endl;
+		a.erase( 49 );
+		displaySet( a, "Erase test 14" );
+		std::cout << 8 << std::endl;
+		a.erase( 8 );
+		displaySet( a, "Erase test 15" );
+		std::cout << 20 << std::endl;
+		a.erase( 20 );
+		displaySet( a, "Erase test 16" );
+		std::cout << 51 << std::endl;
+		a.erase( 51 );
+		displaySet( a, "Erase test 17" );
+		std::cout << 52 << std::endl;
+		a.erase( 52 );
+		displaySet( a, "Erase test 18" );
+		std::cout << 52 << std::endl;
+		a.erase( 52 );
+		displaySet( a, "Erase test 19" );
+	}
+	{
+		ft::set<int> a;
+		a.insert( 42 );
+		a.insert( 64 );
+		a.insert( 83 );
+		a.insert( 10 );
+		a.insert( 7 );
+		a.insert( 50 );
+		a.insert( 29 );
+		a.insert( 5 );
+		a.insert( 31 );
+		displaySet( a, "Pre Erase" );
+		a.erase( 5 );
+		displaySet( a, "Erase test 20" );
+		a.erase( 10 );
+		displaySet( a, "Erase test 21" );
+		a.erase( 31 );
+		displaySet( a, "Erase test 22" );
+		a.erase( 7 );
+		displaySet( a, "Erase test 23" );
+		a.erase( 29 );
+		displaySet( a, "Erase test 24" );
+		std::cout << "Every node, from last to first:" << std::endl;
+		for (ft::set<int>::reverse_iterator it = a.rbegin(); it != a.rend(); ++it)
+			std::cout << *it << std::endl;
+		std::cout << std::endl;
+		a.erase( a.begin(), a.end() );
+		displaySet( a, "Erase test 25" );
+	}
+	{
+		ft::set<int> a;
+		a.insert( 42 );
+		a.insert( 64 );
+		a.insert( 83 );
+		a.insert( 10 );
+		a.insert( 7 );
+		a.insert( 50 );
+		a.insert( 29 );
+		a.insert( 5 );
+		a.insert( 31 );
+		ft::set<int> b( a );
+		ft::set<int> c;
+		displaySet( a, "Erase test 26" );
+		ft::set<int>::iterator it = a.begin();
+		it++;
+		it++;
+		it++;
+		a.erase( a.begin(), it );
+		displaySet( a, "Erase test 27" );
+		a.swap( b );
+		displaySet( a, "Swap test 1" );
+		displaySet( b, "Swap test 2" );
+		a.swap( c );
+		displaySet( a, "Swap test 3" );
+		displaySet( c, "Swap test 4" );
+		a.clear();
+		b.clear();
+		c.clear();
+		displaySet( a, "Clear test 1" );
+		displaySet( b, "Clear test 2" );
+		displaySet( c, "Clear test 3" );
+	}
+	{
+		ft::set<int> a;
+		displaySet( a, "Clear test 4" );
+		a.insert( 42 );
+		a.insert( 64 );
+		a.insert( 83 );
+		a.insert( 10 );
+		a.insert( 7 );
+		a.insert( 50 );
+		a.insert( 29 );
+		a.insert( 5 );
+		a.insert( 31 );
+		a.clear();
+		displaySet( a, "Clear test 5" );
+	}
+	{
+		ft::set<char, classcomp> d;
+		char f( 'h' ), h( 'h' ), z( 'z' ), a( 'a' );
+		std::cout << std::boolalpha << d.key_comp()( f, h ) << std::endl;
+		std::cout << std::boolalpha << d.key_comp()( z, a ) << std::endl;
+		std::cout << std::boolalpha << d.value_comp()( f, h ) << std::endl;
+		std::cout << std::boolalpha << d.value_comp()( z, a ) << std::endl;
+	}
+}
+
+void setOperationsTests( void ) {
+	std::cout << "SET OPERATIONS TESTS:" << std::endl << std::endl;
+
+	{
+		ft::set<int> a;
+		a.insert( 42 );
+		a.insert( 64 );
+		a.insert( 83 );
+		a.insert( 10 );
+		a.insert( 7 );
+		a.insert( 50 );
+		a.insert( 29 );
+		a.insert( 5 );
+		a.insert( 31 );
+		a.insert( 32 );
+		const ft::set<int> b( a );
+		std::cout << *a.find( 50 ) << std::endl;
+		std::cout << *b.find( 50 ) << std::endl;
+		std::cout << *b.find( 5 ) << std::endl;
+		std::cout << *a.find( 5 ) << std::endl;
+		std::cout << *b.find( 10 ) << std::endl;
+		std::cout << *a.find( 10 ) << std::endl;
+		if ( a.find( 11 ) == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		ft::set<int>::iterator it1, it2;
+		it1 = a.lower_bound( 100 );
+		it2 = a.lower_bound( 11 );
+		if ( it1 == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.lower_bound( -10000 );
+		it2 = a.lower_bound( 2 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.lower_bound( 5 );
+		it2 = a.lower_bound( 6 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.lower_bound( 40 );
+		it2 = a.lower_bound( 20 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.lower_bound( 8 );
+		it2 = a.lower_bound( 31 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		std::cout << std::endl;
+		it1 = a.upper_bound( 10 );
+		it2 = a.upper_bound( 31 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.upper_bound( 32 );
+		it2 = a.upper_bound( 0 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.upper_bound( 44 );
+		it2 = a.upper_bound( 7 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.upper_bound( 51 );
+		it2 = a.upper_bound( 35 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.upper_bound( 80 );
+		it2 = a.upper_bound( 47 );
+		std::cout << *it1 << std::endl;
+		std::cout << *it2 << std::endl;
+		it1 = a.upper_bound( 83 );
+		if ( it1 == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		std::cout << std::endl;
+		ft::pair<ft::set<int>::iterator, ft::set<int>::iterator> p;
+		p = a.equal_range( 29 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+		p = a.equal_range( 30 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+		p = a.equal_range( 4 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+		p = a.equal_range( 5 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+		p = a.equal_range( 32 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+		p = a.equal_range( 42 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+		p = a.equal_range( 43 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+		p = a.equal_range( 82 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+		p = a.equal_range( 83 );
+		std::cout << *p.first << std::endl;
+		if ( p.second == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		p = a.equal_range( 100 );
+		if ( p.first == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		if ( p.second == a.end() )
+			std::cout << std::boolalpha << true << std::endl;
+		p = a.equal_range( -100 );
+		std::cout << *p.first << " " << *p.second << std::endl;
+	}
+}
+
 int	main(void) {
 	// Iterator Tests
 	iteratorTests();
@@ -1993,5 +2434,12 @@ int	main(void) {
 	mapElementAccessTests();
 	mapModifiersTests();
 	mapOperationsTests();
+
+	// Set Tests
+	setConstructorTests();
+	setIteratorTests();
+	setCapacityTests();
+	setModifiersTests();
+	setOperationsTests();
 	return (0);
 }

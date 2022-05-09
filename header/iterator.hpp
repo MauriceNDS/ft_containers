@@ -211,7 +211,7 @@ namespace ft {
 			typedef T												value_type;
 			typedef T*												pointer;
 			typedef T&												reference;
-			typedef Container										container_type;
+			typedef Container const									container_type;
 			typedef container_type*									container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
@@ -308,8 +308,8 @@ namespace ft {
 			typedef T&												reference;
 			typedef T const *										const_pointer;
 			typedef T const &										const_reference;
-			typedef Container										container_type;
-			typedef Container const *										container_pointer;
+			typedef Container const									container_type;
+			typedef container_type *								container_pointer;
 
 			/************************* Constructors and Destructor ***************************/
 
