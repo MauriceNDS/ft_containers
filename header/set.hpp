@@ -192,10 +192,7 @@ namespace ft {
 			}
 
 			void swap( set& x ) {
-				set a;
-				a = *this;
-				*this = x;
-				x = a;
+				_tree.swap( x._tree );
 			}
 
 			void clear( void ) {

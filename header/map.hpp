@@ -206,10 +206,7 @@ namespace ft {
 			}
 
 			void swap( map& x ) {
-				map a;
-				a = *this;
-				*this = x;
-				x = a;
+				_tree.swap( x._tree );
 			}
 
 			void clear( void ) {

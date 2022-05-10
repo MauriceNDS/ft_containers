@@ -270,6 +270,26 @@ namespace ft {
 				_root = NULL;
 			}
 
+			void swap( tree & x ) {
+				tree tmp( x._comparer, _allocator );
+				tmp._root = x._root;
+				tmp._first = x._first;
+				tmp._last = x._last;
+				tmp._size = x._size;
+				x._root = _root;
+				x._first = _first;
+				x._last = _last;
+				x._size = _size;
+				x._comparer = _comparer;
+				x._allocator = _allocator;
+				_root = tmp._root;
+				_first = tmp._first;
+				_last = tmp._last;
+				_size = tmp._size;
+				_comparer = tmp._comparer;
+				_allocator = tmp._allocator;
+			}
+
 		private:
 
 		void copy( tree_node< T >* node ) {

@@ -65,7 +65,7 @@ namespace ft {
                 _data.pop_back();
             }
 
-        private:
+        protected:
 
             container_type _data;
     
