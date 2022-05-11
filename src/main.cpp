@@ -1,5 +1,7 @@
 #include <iostream>
 #include <deque>
+#include <ctime>
+#include <sys/time.h>
 
 #ifdef STL_CONTAINERS
 	#include <iterator>
@@ -2406,6 +2408,12 @@ void setOperationsTests( void ) {
 }
 
 int	main(void) {
+	struct timeval timer;
+	time_t before, after;
+
+	gettimeofday( &timer, NULL );
+	before = ( timer.tv_sec * 1000 ) + ( timer.tv_usec / 1000 );
+
 	// Iterator Tests
 	iteratorTests();
 	constIteratorTests();
@@ -2441,5 +2449,11 @@ int	main(void) {
 	setCapacityTests();
 	setModifiersTests();
 	setOperationsTests();
+
+	gettimeofday( &timer, NULL );
+	after = ( timer.tv_sec * 1000 ) + ( timer.tv_usec / 1000 );
+
+	std::cout << std::endl << after - before << " ms" << std::endl;
+	
 	return (0);
 }

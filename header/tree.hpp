@@ -271,23 +271,28 @@ namespace ft {
 			}
 
 			void swap( tree & x ) {
-				tree tmp( x._comparer, _allocator );
-				tmp._root = x._root;
-				tmp._first = x._first;
-				tmp._last = x._last;
-				tmp._size = x._size;
+				tree_node< T > *r, *f, *l;
+				size_t s;
+				Alloc a;
+				value_comp v;
+				r = x._root;
+				f = x._first;
+				l = x._last;
+				s = x._size;
+				a = x._allocator;
+				v = x._comparer;
 				x._root = _root;
 				x._first = _first;
 				x._last = _last;
 				x._size = _size;
 				x._comparer = _comparer;
 				x._allocator = _allocator;
-				_root = tmp._root;
-				_first = tmp._first;
-				_last = tmp._last;
-				_size = tmp._size;
-				_comparer = tmp._comparer;
-				_allocator = tmp._allocator;
+				_root = r;
+				_first = f;
+				_last = l;
+				_size = s;
+				_comparer = v;
+				_allocator = a;
 			}
 
 		private:
