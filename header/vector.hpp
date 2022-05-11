@@ -304,10 +304,15 @@ namespace ft {
 			}
 
 			iterator erase( iterator position ) {
-				_allocator.destroy( &*position );
-				for ( iterator it = position; it != end(); it++ )
-					*it = *( it + 1 );
-				_size--;
+				if ( position + 1 == end() ) {
+					pop_back();
+					return position;
+				}
+				vector temp( position + 1, end() );
+				for ( size_type i = 0; i <= temp.size(); i++ )
+					pop_back();
+				for ( size_type i = 0; i < temp.size(); i++ )
+					push_back( temp[i] );
 				return position;
 			}
 

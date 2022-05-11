@@ -283,11 +283,11 @@ namespace ft {
 				return _allocator;
 			}
 
-		private:
-			
 			void printBT( void ) {
 				_tree.printBT2( "", _tree.getRoot(), false );
 			}
+		private:
+			
 
 	};
 

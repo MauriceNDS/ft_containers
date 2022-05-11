@@ -45,7 +45,7 @@ void displaySet( ft::set<V, Comp> &m, std::string test ) {
 	std::cout << test << std::endl;
 	for ( typename ft::set<V, Comp>::iterator it = m.begin(); it != m.end(); it++ )
 		std::cout << *it << std::endl;
-	// m.printBT();
+	m.printBT();
 	std::cout << std::endl << "size = " << m.size() << std::endl << std::endl;
 }
 
@@ -2407,6 +2407,17 @@ void setOperationsTests( void ) {
 	}
 }
 
+void hardTest( void ) {
+	ft::set<int> a;
+	for ( int i = 0; i < 20; i++ ) {
+		a.insert( i );
+	}
+	for ( int i = 0; i < 20; i++ ) {
+		a.erase( i );
+		displaySet( a, "lol" );
+	}
+}
+
 int	main(void) {
 	struct timeval timer;
 	time_t before, after;
@@ -2415,40 +2426,42 @@ int	main(void) {
 	before = ( timer.tv_sec * 1000 ) + ( timer.tv_usec / 1000 );
 
 	// Iterator Tests
-	iteratorTests();
-	constIteratorTests();
-	reverseIteratorTests();
-	constReverseIteratorTests();
-	treeIteratorTests();
-	constTreeIteratorTests();
+	// iteratorTests();
+	// constIteratorTests();
+	// reverseIteratorTests();
+	// constReverseIteratorTests();
+	// treeIteratorTests();
+	// constTreeIteratorTests();
 
 	// Vector Tests
-	vectorConstructorTests();
-	vectorIteratorTests();
-	vectorCapacityTests();
-	vectorElementAccessTests();
-	vectorModifiersTests();
-	vectorNonMemberOverloadsTests();
+	// vectorConstructorTests();
+	// vectorIteratorTests();
+	// vectorCapacityTests();
+	// vectorElementAccessTests();
+	// vectorModifiersTests();
+	// vectorNonMemberOverloadsTests();
 
 	// Stack Tests
-	stackConstructorTests();
-	stackMemberFunctionTests();
-	stackNonMemberOverloadsTests();
+	// stackConstructorTests();
+	// stackMemberFunctionTests();
+	// stackNonMemberOverloadsTests();
 
 	// Map Tests
-	mapConstructorTests();
-	mapIteratorTests();
-	mapCapacityTests();
-	mapElementAccessTests();
-	mapModifiersTests();
-	mapOperationsTests();
+	// mapConstructorTests();
+	// mapIteratorTests();
+	// mapCapacityTests();
+	// mapElementAccessTests();
+	// mapModifiersTests();
+	// mapOperationsTests();
 
 	// Set Tests
-	setConstructorTests();
-	setIteratorTests();
-	setCapacityTests();
-	setModifiersTests();
-	setOperationsTests();
+	// setConstructorTests();
+	// setIteratorTests();
+	// setCapacityTests();
+	// setModifiersTests();
+	// setOperationsTests();
+
+	hardTest();
 
 	gettimeofday( &timer, NULL );
 	after = ( timer.tv_sec * 1000 ) + ( timer.tv_usec / 1000 );
