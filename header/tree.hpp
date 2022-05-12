@@ -173,7 +173,8 @@ namespace ft {
 				return _allocator;
 			}
 
-			tree_node<T>* add( T p ) {
+			tree_node<T>* add( T p, bool *duplicate ) {
+				tree_node< T >* res;
 				tree_node< T >* node = _allocator.allocate( 1 );
 				_allocator.construct( node, tree_node<T>( p ) );
 				if ( _root == NULL ) {
@@ -184,7 +185,11 @@ namespace ft {
 					_size++;
 					return node;
 				}
-				add( _root, node );
+				res = add( _root, node, duplicate );
+				if ( duplicate ) {
+					free_node( node );
+					return res;
+				}
 				check_color( node );
 				if ( _comparer( node->value, _first->value ) )
 					_first = node;
@@ -314,13 +319,17 @@ namespace ft {
 			node = NULL;
 		}
 
-			void add( tree_node< T > * parent, tree_node< T > * new_node ) {
+			tree_node< T > * add( tree_node< T > * parent, tree_node< T > * new_node, bool *duplicate ) {
+				if ( !_comparer( parent->value, new_node->value ) && !_comparer( new_node->value, parent->value ) ) {
+					*duplicate = true;
+					return parent;
+				}
 				if ( _comparer( parent->value, new_node->value ) ) {
 					if ( parent->right == NULL ) {
 						parent->right = new_node;
 						new_node->parent = parent;
 						new_node->isLeft = false;
-						return ;
+						return new_node;
 					}
 					return add( parent->right, new_node );
 				}
@@ -328,7 +337,7 @@ namespace ft {
 					parent->left = new_node;
 					new_node->parent = parent;
 					new_node->isLeft = true;
-					return ;
+					return new_node;
 				}
 				return add( parent->left, new_node );
 			}
@@ -496,6 +505,10 @@ namespace ft {
 				else if ( y && !y->black ) {
 					y->parent = z->parent;
 					z->parent = y;
+					if ( y->parent && z->isLeft )
+						y->parent->left = y;
+					else if ( y->parent )
+						y->parent->right = y;
 					if ( y->isLeft ) {
 						y->isLeft = z->isLeft;
 						z->left = y->right;

@@ -125,6 +125,10 @@ namespace ft {
 			/************************************* Modifiers *****************************************/
 
 			pair<iterator, bool> insert( const value_type& val ) {
+				// bool duplicate = false;
+				// tree_node< value_type >* res = _tree.add( val, &duplicate );
+				// iterator it ( &_tree, res );
+				// return ft::make_pair<iterator, bool>( it, !duplicate );
 				tree_node< value_type >* res = _tree.search( _tree.getRoot(), val );
 				if ( res ) {
 					iterator it( &_tree, res );
@@ -283,11 +287,11 @@ namespace ft {
 				return _allocator;
 			}
 
+		private:
+			
 			void printBT( void ) {
 				_tree.printBT2( "", _tree.getRoot(), false );
 			}
-		private:
-			
 
 	};
 
