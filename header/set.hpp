@@ -125,20 +125,14 @@ namespace ft {
 			/************************************* Modifiers *****************************************/
 
 			pair<iterator, bool> insert( const value_type& val ) {
-				// bool duplicate = false;
-				// tree_node< value_type >* res = _tree.add( val, &duplicate );
-				// iterator it ( &_tree, res );
-				// return ft::make_pair<iterator, bool>( it, !duplicate );
-				tree_node< value_type >* res = _tree.search( _tree.getRoot(), val );
-				if ( res ) {
-					iterator it( &_tree, res );
-					return ft::make_pair< iterator, bool >( it, false );
-				}
-				iterator new_elem( &_tree, _tree.add( val ) );
-				return ft::make_pair< iterator, bool >( new_elem, true );
+				bool duplicate = false;
+				tree_node< value_type >* res = _tree.add( val, &duplicate );
+				iterator it ( &_tree, res );
+				return ft::make_pair<iterator, bool>( it, !duplicate );
 			}
 
 			iterator insert( iterator position, const value_type& val ) {
+				bool duplicate = false;
 				tree_node< value_type > *walk, *node;
 				node = _tree.search( _tree.getRoot(), *position );
 				if ( node == NULL || node == _tree.getRoot() )
@@ -147,16 +141,16 @@ namespace ft {
 				if ( _vcomparer( val, node->value ) ) {
 					if ( !node->isLeft && _vcomparer( val, walk->value ) )
 						return insert( val ).first;
-					else if ( node->isLeft )
-						return iterator( &_tree, _tree.hint_add( node, val ) );
+					else if ( node->isLeft ) 
+						return iterator( &_tree, _tree.hint_add( node, val, &duplicate ) );
 				}
 				else {
 					if ( node->isLeft && _vcomparer( walk->value, val ) )
 						return insert( val ).first;
 					else if ( !node->isLeft )
-						return iterator( &_tree, _tree.hint_add( node, val ) );
+						return iterator( &_tree, _tree.hint_add( node, val, &duplicate ) );
 				}
-				return iterator( &_tree, _tree.hint_add( node, val ) );
+				return iterator( &_tree, _tree.hint_add( node, val, &duplicate ) );
 			}
 
 			template <class InputIterator>

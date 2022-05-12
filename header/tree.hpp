@@ -64,8 +64,9 @@ namespace ft {
 			tree( InputIterator first, InputIterator last, const value_comp& comp, const Alloc& alloc ) : _root( NULL ), _first( NULL ), _last( NULL ), _size( 0 ) {
 				_comparer = comp;
 				_allocator = alloc;
+				bool duplicate = false;
 				while ( first != last )
-					add( *first++ );
+					add( *first++, &duplicate );
 			}
 
 			tree( const tree& x ) {
@@ -186,7 +187,7 @@ namespace ft {
 					return node;
 				}
 				res = add( _root, node, duplicate );
-				if ( duplicate ) {
+				if ( *duplicate ) {
 					free_node( node );
 					return res;
 				}
@@ -200,10 +201,15 @@ namespace ft {
 				return node;
 			}
 
-			tree_node<T>* hint_add( tree_node< T >* position, T p ) {
+			tree_node<T>* hint_add( tree_node< T >* position, T p, bool *duplicate ) {
+				tree_node< T >* res;
 				tree_node< T >* node = _allocator.allocate( 1 );
 				_allocator.construct( node, tree_node<T>( p ) );
-				add( position, node );
+				res = add( position, node, duplicate );
+				if ( *duplicate ) {
+					free_node( node );
+					return res;
+				}
 				check_color( node );
 				if ( _comparer( node->value, _first->value ) )
 					_first = node;
@@ -303,9 +309,10 @@ namespace ft {
 		private:
 
 		void copy( tree_node< T >* node ) {
+			bool duplicate = false;
 			if ( node == NULL )
 				return ;
-			add( node->value );
+			add( node->value, &duplicate );
 			copy( node->left );
 			copy( node->right );
 		}
@@ -331,7 +338,7 @@ namespace ft {
 						new_node->isLeft = false;
 						return new_node;
 					}
-					return add( parent->right, new_node );
+					return add( parent->right, new_node, duplicate );
 				}
 				if ( parent->left == NULL ) {
 					parent->left = new_node;
@@ -339,7 +346,7 @@ namespace ft {
 					new_node->isLeft = true;
 					return new_node;
 				}
-				return add( parent->left, new_node );
+				return add( parent->left, new_node, duplicate );
 			}
 
 			bool check_duplicates( T p ) {
