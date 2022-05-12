@@ -2409,12 +2409,13 @@ void setOperationsTests( void ) {
 
 void hardTest( void ) {
 	ft::set<int> a;
-	for ( int i = 0; i < 2000000; i++ ) {
+	size_t big_num = 20000000;
+	std::cout << "Hard Test - insertion end deletion of " << big_num << " elements" << std::endl;
+	for ( size_t i = 0; i < big_num; i++ ) {
 		a.insert( i );
 	}
-	for ( int i = 0; i < 2000000; i++ ) {
+	for ( size_t i = 0; i < big_num; i++ ) {
 		a.erase( i );
-		// displaySet( a, "lol" );
 	}
 }
 
@@ -2461,7 +2462,7 @@ int	main(void) {
 	setModifiersTests();
 	setOperationsTests();
 
-	// hardTest();
+	hardTest();
 
 	gettimeofday( &timer, NULL );
 	after = ( timer.tv_sec * 1000 ) + ( timer.tv_usec / 1000 );
