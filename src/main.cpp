@@ -2410,9 +2410,12 @@ void setOperationsTests( void ) {
 void hardTest( void ) {
 	ft::set<int> a;
 	size_t big_num = 20000000;
-	std::cout << "Hard Test - insertion end deletion of " << big_num << " elements" << std::endl;
+	std::cout << std::endl << "Hard Test - insertion end deletion of " << big_num << " elements" << std::endl;
 	for ( size_t i = 0; i < big_num; i++ ) {
 		a.insert( i );
+	}
+	for ( size_t i = 0; i < big_num; i += 3 ) {
+		a.lower_bound( i );
 	}
 	for ( size_t i = 0; i < big_num; i++ ) {
 		a.erase( i );
